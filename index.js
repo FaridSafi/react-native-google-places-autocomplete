@@ -153,6 +153,7 @@ exports.create = function(options = {}) {
           <View style={styles.poweredContainer}>
             <Image
               style={styles.powered}
+              resizeMode={Image.resizeMode.contain}
               source={require('image!powered_by_google_on_white')}
             />
           </View>
