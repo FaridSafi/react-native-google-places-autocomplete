@@ -20,7 +20,7 @@ var styles = StyleSheet.create({
 
 var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete').create({
   placeholder: 'Search',
-  positionFromTop: positionFromTop, // position from the top of the screen
+  positionFromTop: positionFromTop, // default: 0 - position from the top of the screen
   minLength: 2, // minimum length of text to search
   onPress(data) {
     console.log(data);
@@ -28,7 +28,7 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
   query: {
     // available options: https://developers.google.com/places/web-service/autocomplete
     key: 'YOUR API KEY',
-    language: 'en', // default: 'en' language of the results
+    language: 'en', // default: 'en' - language of the results
     types: '(cities)', // default: 'geocode'
   },
   styles: {
