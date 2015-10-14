@@ -1,16 +1,10 @@
 # react-native-google-places-autocomplete
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
-### Install
-
-* ```npm install react-native-google-places-autocomplete --save```
-* Get your iOS/Android [Google Places API keys](https://developers.google.com/places/)
-* Add the "Powered by Google" [image assets](https://developers.google.com/places/documentation/images/powered-by-google.zip) to your iOS/Android projects
-
-
-
 
 ### Example
+
+![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
 ```js
 var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete').create({
@@ -40,6 +34,13 @@ var Example = React.createClass({
   }
 });
 ```
+
+
+### Install
+
+* ```npm install react-native-google-places-autocomplete --save```
+* Get your iOS/Android [Google Places API keys](https://developers.google.com/places/)
+* Add the "Powered by Google" [image assets](https://developers.google.com/places/documentation/images/powered-by-google.zip) to your iOS/Android projects
 
 
 ### License
