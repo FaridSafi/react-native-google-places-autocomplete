@@ -28,8 +28,5 @@
   "dependencies": {
     "extend": "^3.0.0",
     "qs": "^5.2.0"
-  },
-  "peerDependencies": {
-    "react-native": "^0.11.4 || ^0.12.0"
   }
 }
