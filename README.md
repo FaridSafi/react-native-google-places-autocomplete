@@ -38,12 +38,22 @@ var Example = React.createClass({
 ```
 
 
-### Install
+### Installation
 
 1. ```npm install react-native-google-places-autocomplete --save```
 2. Get your [Google Places API keys](https://developers.google.com/places/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console.
 3. Add the "Powered by Google" [image assets](https://developers.google.com/places/documentation/images/powered-by-google.zip) to your iOS/Android projects
 
+
+### Features
+
+- [x] Places autocompletion
+- [x] iOS and Android compatibility
+- [x] Places details fetching + ActivityIndicatorIOS/ProgressBarAndroid loaders
+- [x] Customizable using the ```style``` parameter
+- [x] XHR cancellations when typing fast
+- [x] Google Places terms compliant
+- [ ] Caching of results
 
 ### License
 

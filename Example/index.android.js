@@ -24,7 +24,7 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
   minLength: 2, // minimum length of text to search
   fetchDetails: true,
   timeout: 20000,
-  ontimeout() {
+  onTimeout() {
     console.log('please check your internet connection');
   },
   onPress(data, details = null) { // details is provided when fetchDetails = true

@@ -12,7 +12,7 @@ exports.create = function(options = {}) {
   options.minLength = options.minLength || 0;
   options.fetchDetails = options.fetchDetails || false;
   options.timeout = options.timeout || 20000;
-  options.ontimeout = options.ontimeout || () => {
+  options.onTimeout = options.onTimeout || () => {
     console.warn('google places autocomplete: request timeout');
   };
 
@@ -139,7 +139,7 @@ exports.create = function(options = {}) {
         var request = new XMLHttpRequest();
         this._requests.push(request);
         request.timeout = options.timeout;
-        request.ontimeout = options.ontimeout;
+        request.ontimeout = options.onTimeout;
         request.onreadystatechange = (e) => {
           if (request.readyState !== 4) {
             return;
@@ -182,7 +182,7 @@ exports.create = function(options = {}) {
         var request = new XMLHttpRequest();
         this._requests.push(request);
         request.timeout = options.timeout;
-        request.ontimeout = options.ontimeout;
+        request.ontimeout = options.onTimeout;
         request.onreadystatechange = (e) => {
           if (request.readyState !== 4) {
             return;
