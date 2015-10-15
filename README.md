@@ -10,8 +10,10 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete').create({
   placeholder: 'Search',
   minLength: 2, // minimum length of text to search
-  onPress(data) {
+  fetchDetails: true,
+  onPress(data, details = null) { // details is provided when fetchDetails = true
     console.log(data);
+    console.log(details);
   },
   query: {
     // available options: https://developers.google.com/places/web-service/autocomplete

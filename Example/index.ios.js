@@ -9,6 +9,7 @@ var {
   AppRegistry,
   StyleSheet,
   View,
+  Dimensions,
 } = React;
 
 var positionFromTop = 64;
@@ -20,10 +21,15 @@ var styles = StyleSheet.create({
 
 var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete').create({
   placeholder: 'Search',
-  positionFromTop: positionFromTop, // default: 0 - position from the top of the screen
   minLength: 2, // minimum length of text to search
-  onPress(data) {
+  fetchDetails: true,
+  timeout: 20000,
+  ontimeout() {
+    console.log('please check your internet connection');
+  },
+  onPress(data, details = null) { // details is provided when fetchDetails = true
     console.log(data);
+    console.log(details);
   },
   query: {
     // available options: https://developers.google.com/places/web-service/autocomplete
@@ -34,7 +40,15 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
   styles: {
     description: {
       fontWeight: 'bold',
-    }
+    },
+    listView: {
+      height: Dimensions.get('window').height - 44 - positionFromTop, // default: height of screen - 44 (search bar height)
+    },
+    powered: {
+      width: 120,
+      marginTop: 10,
+    },
+    
   }
 });
 
