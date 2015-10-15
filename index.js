@@ -11,6 +11,7 @@ exports.create = function(options = {}) {
   options.onPress = options.onPress || () => {};
   options.minLength = options.minLength || 0;
   options.fetchDetails = options.fetchDetails || false;
+  options.autoFocus = options.autoFocus || false;
   options.timeout = options.timeout || 20000;
   options.onTimeout = options.onTimeout || () => {
     console.warn('google places autocomplete: request timeout');
@@ -294,6 +295,7 @@ exports.create = function(options = {}) {
         <View style={styles.container}>
           <View style={styles.textInputContainer}>
             <TextInput
+              autoFocus={options.autoFocus}
               style={styles.textInput}
               onChangeText={this._onChangeText}
               value={this.state.text}

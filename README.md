@@ -50,7 +50,7 @@ var Example = React.createClass({
 - [x] Places autocompletion
 - [x] iOS and Android compatibility
 - [x] Places details fetching + ActivityIndicatorIOS/ProgressBarAndroid loaders
-- [x] Customizable using the ```style``` parameter
+- [x] Customizable using the ```styles``` parameter
 - [x] XHR cancellations when typing fast
 - [x] Google Places terms compliant
 - [ ] Caching of results

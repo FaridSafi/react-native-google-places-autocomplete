@@ -23,6 +23,7 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
   placeholder: 'Search',
   minLength: 2, // minimum length of text to search
   fetchDetails: true,
+  autoFocus: true,
   timeout: 20000,
   onTimeout() {
     console.log('please check your internet connection');
