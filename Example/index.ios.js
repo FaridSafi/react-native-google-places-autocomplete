@@ -32,6 +32,9 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
     console.log(data);
     console.log(details);
   },
+  getDefaultValue() {
+    return ''; // text input default value
+  },
   query: {
     // available options: https://developers.google.com/places/web-service/autocomplete
     key: 'YOUR API KEY',

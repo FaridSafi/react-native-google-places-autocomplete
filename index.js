@@ -12,6 +12,7 @@ exports.create = function(options = {}) {
   options.minLength = options.minLength || 0;
   options.fetchDetails = options.fetchDetails || false;
   options.autoFocus = options.autoFocus || false;
+  options.getDefaultValue = options.getDefaultValue || function() { return ''; };
   options.timeout = options.timeout || 20000;
   options.onTimeout = options.onTimeout || () => {
     console.warn('google places autocomplete: request timeout');
@@ -88,7 +89,7 @@ exports.create = function(options = {}) {
         return r1 !== r2;
       }});
       return {
-        text: '',
+        text: options.getDefaultValue(),
         dataSource: ds.cloneWithRows([]),
       };
     },
