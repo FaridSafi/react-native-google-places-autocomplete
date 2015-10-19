@@ -91,6 +91,7 @@ exports.create = function(options = {}) {
       return {
         text: options.getDefaultValue(),
         dataSource: ds.cloneWithRows([]),
+        listViewDisplayed: false,
       };
     },
     _abortRequests() {
@@ -152,7 +153,15 @@ exports.create = function(options = {}) {
               if (this.isMounted()) {
                 var details = responseJSON.result;
                 this._disableRowLoaders();
-                
+                if (typeof this.refs.textInput.blur === 'function') {
+                  this.refs.textInput.blur();
+                }
+
+                this.setState({
+                  text: rowData.description,
+                  listViewDisplayed: false,
+                });
+
                 delete rowData.isLoading;
                 options.onPress(rowData, details);
               }
@@ -172,6 +181,14 @@ exports.create = function(options = {}) {
         }));
         request.send();
       } else {
+        this.setState({
+          text: rowData.description,
+          listViewDisplayed: false,
+        });
+        
+        if (typeof this.refs.textInput.blur === 'function') {
+          this.refs.textInput.blur();
+        }
         delete rowData.isLoading;
         options.onPress(rowData);
       }
@@ -217,7 +234,10 @@ exports.create = function(options = {}) {
     },
     _onChangeText(text) {
       this._request(text);
-      this.setState({text});
+      this.setState({
+        text: text,
+        listViewDisplayed: true,
+      });
     },
     _getRowLoader() {
       if (Platform.OS === 'android') {
@@ -266,8 +286,14 @@ exports.create = function(options = {}) {
       );
       /* jshint ignore:end */
     },
+    _onBlur() {
+      this.setState({listViewDisplayed: false});
+    },
+    _onFocus() {
+      this.setState({listViewDisplayed: true});
+    },
     _getListView() {
-      if (this.state.text !== '') {
+      if (this.state.text !== '' && this.state.listViewDisplayed === true) {
         /* jshint ignore:start */
         return (
           <ListView
@@ -296,11 +322,14 @@ exports.create = function(options = {}) {
         <View style={styles.container}>
           <View style={styles.textInputContainer}>
             <TextInput
+              ref='textInput'
               autoFocus={options.autoFocus}
               style={styles.textInput}
               onChangeText={this._onChangeText}
               value={this.state.text}
               placeholder={options.placeholder}
+              onBlur={options._onBlur}
+              onFocus={options._onFocus}
               clearButtonMode="while-editing"
             />
           </View>
