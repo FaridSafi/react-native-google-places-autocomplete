@@ -297,6 +297,7 @@ exports.create = function(options = {}) {
         /* jshint ignore:start */
         return (
           <ListView
+            keyboardShouldPersistTaps={true}
             style={styles.listView}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow}
@@ -328,8 +329,8 @@ exports.create = function(options = {}) {
               onChangeText={this._onChangeText}
               value={this.state.text}
               placeholder={options.placeholder}
-              onBlur={options._onBlur}
-              onFocus={options._onFocus}
+              onBlur={this._onBlur}
+              onFocus={this._onFocus}
               clearButtonMode="while-editing"
             />
           </View>
