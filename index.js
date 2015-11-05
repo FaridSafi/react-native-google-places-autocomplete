@@ -81,6 +81,7 @@ exports.create = function(options = {}) {
   var styles = StyleSheet.create(extend(defaultStyles, options.styles));
   
   var GooglePlacesAutocomplete = React.createClass({
+    
     getInitialState() {
       var ds = new ListView.DataSource({rowHasChanged: function(r1, r2) {
         if (typeof r1.isLoading !== 'undefined') {
@@ -220,7 +221,7 @@ exports.create = function(options = {}) {
               console.warn('google places autocomplete: '+responseJSON.error_message);
             }
           } else {
-            console.warn("google places autocomplete: request could not be completed or has been aborted");
+            // console.warn("google places autocomplete: request could not be completed or has been aborted");
           }
         };
         request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input='+encodeURI(text)+'&'+Qs.stringify(options.query));
@@ -258,6 +259,7 @@ exports.create = function(options = {}) {
         /* jshint ignore:end */
       }
     },
+
     _renderRow(rowData = {}) {
       rowData.description = rowData.description || 'Unknown';
       /* jshint ignore:start */
@@ -286,22 +288,26 @@ exports.create = function(options = {}) {
       );
       /* jshint ignore:end */
     },
-    _onBlur() {
-      this.setState({listViewDisplayed: false});
-    },
+
+    // _onBlur() {
+    //   this.setState({listViewDisplayed: false});
+    // },
+
     _onFocus() {
       this.setState({listViewDisplayed: true});
     },
+    
     _getListView() {
       if (this.state.text !== '' && this.state.listViewDisplayed === true) {
         /* jshint ignore:start */
         return (
           <ListView
             keyboardShouldPersistTaps={true}
+            keyboardDismissMode='none'
             style={styles.listView}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow}
-            automaticallyAdjustContentInsets={false}
+            automaticallyAdjustContentInsets={false}            
           />
         );
       } else {
@@ -329,7 +335,7 @@ exports.create = function(options = {}) {
               onChangeText={this._onChangeText}
               value={this.state.text}
               placeholder={options.placeholder}
-              onBlur={this._onBlur}
+              // onBlur={this._onBlur}
               onFocus={this._onFocus}
               clearButtonMode="while-editing"
             />
