@@ -316,7 +316,7 @@ exports.create = function(options = {}) {
             <Image
               style={styles.powered}
               resizeMode={Image.resizeMode.contain}
-              source={require('image!powered_by_google_on_white')}
+              source={require('./images/powered_by_google_on_white.png')}
             />
           </View>
         );
