@@ -3,8 +3,8 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 
 
 ### Changelog
-1.0.14 - Support of the new react-native asset system. This version is not compatible anymore with RN versions older than 0.14.0
-1.0.13 - RN 0.13.2 compatibility improvements
+- 1.0.14 : Support of the new react-native asset system. This version is not compatible anymore with RN versions older than 0.14.0
+- 1.0.13 : RN 0.13.2 compatibility improvements
 
 ### Example
 
