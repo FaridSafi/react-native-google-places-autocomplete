@@ -4,7 +4,6 @@
 var React = require('react-native');
 var {StyleSheet, TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} = React;
 var Qs = require('qs');
-var extend = require('extend');
 
 
 var defaultStyles = {
