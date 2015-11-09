@@ -3,6 +3,7 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 
 
 ### Changelog
+- 1.1.0 : The component is now using props
 - 1.0.14 : Support of the new react-native asset system. This version is not compatible anymore with RN versions older than 0.14.0
 - 1.0.13 : RN 0.13.2 compatibility improvements
 
@@ -11,35 +12,35 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
 ```js
-var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete').create({
-  placeholder: 'Search',
-  minLength: 2, // minimum length of text to search
-  autoFocus: true,
-  fetchDetails: true,
-  onPress(data, details = null) { // details is provided when fetchDetails = true
-    console.log(data);
-    console.log(details);
-  },
-  getDefaultValue() {
-    return ''; // text input default value
-  },
-  query: {
-    // available options: https://developers.google.com/places/web-service/autocomplete
-    key: 'YOUR API KEY',
-    language: 'en', // language of the results
-    types: '(cities)', // default: 'geocode'
-  },
-  styles: {
-    description: {
-      fontWeight: 'bold',
-    }
-  }
-});
+var {GooglePlacesAutocomplete} = require('react-native-google-places-autocomplete');
 
 var Example = React.createClass({
-  render: function() {
+  render() {
     return (
-      <GooglePlacesAutocomplete />
+      <GooglePlacesAutocomplete
+        placeholder='Search'
+        minLength={2} // minimum length of text to search
+        autoFocus={true}
+        fetchDetails={true}
+        onPress={(data, details = null) => { // details is provided when fetchDetails = true
+          console.log(data);
+          console.log(details);
+        }}
+        getDefaultValue={() => {
+          return ''; // text input default value
+        }}
+        query={{
+          // available options: https://developers.google.com/places/web-service/autocomplete
+          key: 'YOUR API KEY',
+          language: 'en', // language of the results
+          types: '(cities)', // default: 'geocode'
+        }}
+        styles={{
+          description: {
+            fontWeight: 'bold',
+          }
+        }}
+      />
     );
   }
 });
@@ -64,7 +65,7 @@ var Example = React.createClass({
 
 ### License
 
-[MIT](LICENSE.md)
+[MIT](LICENSE)
 
 Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi) !
 
