@@ -25,7 +25,7 @@ var Example = React.createClass({
         }}
         query={{
           // available options: https://developers.google.com/places/web-service/autocomplete
-          key: 'YOUR API KEY',
+          key: 'AIzaSyCAjO1AlJH6qgH-Nf0Ob2FaNOwwLk3pgg0',
           language: 'en', // language of the results
           types: '(cities)', // default: 'geocode'
         }}
