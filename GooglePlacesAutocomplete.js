@@ -68,6 +68,19 @@ var defaultStyles = {
 
 var GooglePlacesAutocomplete = React.createClass({
   
+  propTypes: {
+    placeholder: React.PropTypes.string,
+    onPress: React.PropTypes.func,
+    minLength: React.PropTypes.number,
+    fetchDetails: React.PropTypes.bool,
+    autoFocus: React.PropTypes.bool,
+    getDefaultValue: React.PropTypes.func,
+    timeout: React.PropTypes.number,
+    onTimeout: React.PropTypes.func,
+    query: React.PropTypes.object,
+    styles: React.PropTypes.object,
+  },
+  
   getDefaultProps() {
     return {
       placeholder: 'Search',
