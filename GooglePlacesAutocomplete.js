@@ -99,7 +99,15 @@ var GooglePlacesAutocomplete = React.createClass({
       },
     };
   },
-  
+
+  /**
+   * This method is exposed to parent components to focus on textInput manually.
+   * @public
+   */
+  triggerFocus: function() {
+    this.refs.textInput.focus();
+  },
+
   getInitialState() {
     var ds = new ListView.DataSource({rowHasChanged: function(r1, r2) {
       if (typeof r1.isLoading !== 'undefined') {
