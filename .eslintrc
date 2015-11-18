@@ -1,0 +1,11 @@
+// extending airbnb's eslint config
+// see: https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb
+{
+  "extends": "airbnb",
+
+  "rules": {
+    "no-console": 0,
+    "react/jsx-boolean-value": 0,
+    "react/no-multi-comp": 0,
+  }
+}
