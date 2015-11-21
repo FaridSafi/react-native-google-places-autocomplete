@@ -305,7 +305,6 @@ const GooglePlacesAutocomplete = React.createClass({
         </View>
       </TouchableHighlight>
     );
-    /* jshint ignore:end */
   },
 
   // _onBlur() {
@@ -365,7 +364,6 @@ const GooglePlacesAutocomplete = React.createClass({
         {this._getListView()}
       </View>
     );
-    /* jshint ignore:end */
   },
 });
 
