@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.1.3 : Keyboard is now dismissed by default when scrolling to be more usable with small height devices (eg: iPhone 4) + Props are now passed to the results ListView
 - 1.1.2 : Added eslint and linted the code - PR @halilb
 - 1.1.1 : New method ```triggerFocus()``` to focus on text input manually - PR @halilb
 - 1.1.0 : The component is now using props
