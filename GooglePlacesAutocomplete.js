@@ -71,6 +71,7 @@ const GooglePlacesAutocomplete = React.createClass({
     onTimeout: React.PropTypes.func,
     query: React.PropTypes.object,
     styles: React.PropTypes.object,
+    textInputProps: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -90,6 +91,8 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       styles: {
       },
+      textInputProps: {
+      }
     };
   },
 
@@ -325,7 +328,7 @@ const GooglePlacesAutocomplete = React.createClass({
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
           automaticallyAdjustContentInsets={false}
-          
+
           {...this.props}
         />
       );
@@ -361,6 +364,7 @@ const GooglePlacesAutocomplete = React.createClass({
             // onBlur={this._onBlur}
             onFocus={this._onFocus}
             clearButtonMode="while-editing"
+            { ...this.props.textInputProps }
           />
         </View>
         {this._getListView()}
