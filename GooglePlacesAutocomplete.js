@@ -123,7 +123,15 @@ const GooglePlacesAutocomplete = React.createClass({
    * @public
    */
   triggerFocus() {
-    this.refs.textInput.focus();
+    if (this.refs.textInput) this.refs.textInput.focus();
+  },
+
+  /**
+   * This method is exposed to parent components to blur textInput manually.
+   * @public
+   */
+  triggerBlur() {
+    if (this.refs.textInput) this.refs.textInput.blur();
   },
 
   _enableRowLoader(rowData) {
@@ -325,7 +333,7 @@ const GooglePlacesAutocomplete = React.createClass({
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
           automaticallyAdjustContentInsets={false}
-          
+
           {...this.props}
         />
       );
