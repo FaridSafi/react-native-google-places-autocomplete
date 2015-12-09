@@ -71,6 +71,7 @@ const GooglePlacesAutocomplete = React.createClass({
     onTimeout: React.PropTypes.func,
     query: React.PropTypes.object,
     styles: React.PropTypes.object,
+    textInputProps: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -90,6 +91,8 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       styles: {
       },
+      textInputProps: {
+      }
     };
   },
 
@@ -352,6 +355,7 @@ const GooglePlacesAutocomplete = React.createClass({
     );
   },
   render() {
+    let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
     return (
       <View
         style={[defaultStyles.container, this.props.styles.container]}
@@ -360,14 +364,19 @@ const GooglePlacesAutocomplete = React.createClass({
           style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
         >
           <TextInput
+            { ...userProps }
             ref="textInput"
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
-            onChangeText={this._onChangeText}
+            onChangeText={
+                onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText
+            }
             value={this.state.text}
             placeholder={this.props.placeholder}
             // onBlur={this._onBlur}
-            onFocus={this._onFocus}
+            onFocus={
+                onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus
+            }
             clearButtonMode="while-editing"
           />
         </View>
