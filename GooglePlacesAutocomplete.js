@@ -71,6 +71,7 @@ const GooglePlacesAutocomplete = React.createClass({
     onTimeout: React.PropTypes.func,
     query: React.PropTypes.object,
     styles: React.PropTypes.object,
+    textInputProps: React.PropTypes.object,
     enablePoweredByContainer: React.PropTypes.bool,
     specialItems: React.PropTypes.array,
   },
@@ -92,6 +93,7 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       styles: {
       },
+      textInputProps: {},
       enablePoweredByContainer: true,
       specialItems: [],
     };
@@ -131,8 +133,16 @@ const GooglePlacesAutocomplete = React.createClass({
    * @public
    */
   triggerFocus() {
-    this.refs.textInput.focus();
+    if (this.refs.textInput) this.refs.textInput.focus();
   },
+
+  /**   
+   * This method is exposed to parent components to blur textInput manually.   
+   * @public   
+   */    
+  triggerBlur() {    
+    if (this.refs.textInput) this.refs.textInput.blur();   
+  },   
 
   _enableRowLoader(rowData) {
     for (let i = 0; i < this._results.length; i++) {
@@ -362,6 +372,7 @@ const GooglePlacesAutocomplete = React.createClass({
     return null;
   },
   render() {
+    let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
     return (
       <View
         style={[defaultStyles.container, this.props.styles.container]}
@@ -370,14 +381,15 @@ const GooglePlacesAutocomplete = React.createClass({
           style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
         >
           <TextInput
+            { ...userProps }
             ref="textInput"
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
-            onChangeText={this._onChangeText}
+            onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}
             value={this.state.text}
             placeholder={this.props.placeholder}
             onBlur={this._onBlur}
-            onFocus={this._onFocus}
+            onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
           />
         </View>
