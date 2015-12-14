@@ -73,6 +73,7 @@ var Example = React.createClass({
 
 1. ```npm install react-native-google-places-autocomplete --save```
 2. Get your [Google Places API keys](https://developers.google.com/places/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console.
+3. Enable "Google Maps Geocoding API" if you want to use GoogleReverseGeocoding for Current Location
 
 
 ### Features
@@ -83,7 +84,9 @@ var Example = React.createClass({
 - [x] Customizable using the ```styles``` parameter
 - [x] XHR cancellations when typing fast
 - [x] Google Places terms compliant
-- [ ] Caching of results
+- [x] Current location
+- [x] Predefined places
+
 
 ### License
 
