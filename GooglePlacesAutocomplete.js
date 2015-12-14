@@ -1,5 +1,5 @@
 const React = require('react-native');
-const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, Platform, ActivityIndicatorIOS, ProgressBarAndroid} = React;
+const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid} = React;
 const Qs = require('qs');
 
 const defaultStyles = {
@@ -71,7 +71,9 @@ const GooglePlacesAutocomplete = React.createClass({
     onTimeout: React.PropTypes.func,
     query: React.PropTypes.object,
     styles: React.PropTypes.object,
-    textInputProps: React.PropTypes.object
+    textInputProps: React.PropTypes.object,
+    enablePoweredByContainer: React.PropTypes.bool,
+    specialItems: React.PropTypes.array,
   },
 
   getDefaultProps() {
@@ -91,8 +93,9 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       styles: {
       },
-      textInputProps: {
-      }
+      textInputProps: {},
+      enablePoweredByContainer: true,
+      specialItems: [],
     };
   },
 
@@ -105,9 +108,13 @@ const GooglePlacesAutocomplete = React.createClass({
     }});
     return {
       text: this.props.getDefaultValue(),
-      dataSource: ds.cloneWithRows([]),
+      dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
       listViewDisplayed: false,
     };
+  },
+
+  buildRowsFromResults(results) {
+    return [...this.props.specialItems, ...results];
   },
 
   componentWillUnmount() {
@@ -129,20 +136,20 @@ const GooglePlacesAutocomplete = React.createClass({
     if (this.refs.textInput) this.refs.textInput.focus();
   },
 
-  /**
-   * This method is exposed to parent components to blur textInput manually.
-   * @public
-   */
-  triggerBlur() {
-    if (this.refs.textInput) this.refs.textInput.blur();
-  },
+  /**   
+   * This method is exposed to parent components to blur textInput manually.   
+   * @public   
+   */    
+  triggerBlur() {    
+    if (this.refs.textInput) this.refs.textInput.blur();   
+  },   
 
   _enableRowLoader(rowData) {
     for (let i = 0; i < this._results.length; i++) {
       if (this._results[i].place_id === rowData.place_id) {
         this._results[i].isLoading = true;
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(this._results),
+          dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(this._results)),
         });
         break;
       }
@@ -156,12 +163,12 @@ const GooglePlacesAutocomplete = React.createClass({
         }
       }
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this._results),
+        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(this._results)),
       });
     }
   },
   _onPress(rowData) {
-    if (this.props.fetchDetails === true) {
+    if (this.props.specialItems.indexOf(rowData) === -1 && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
         return;
@@ -246,7 +253,7 @@ const GooglePlacesAutocomplete = React.createClass({
             if (this.isMounted()) {
               this._results = responseJSON.predictions;
               this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(responseJSON.predictions),
+                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
               });
             }
           }
@@ -262,7 +269,7 @@ const GooglePlacesAutocomplete = React.createClass({
     } else {
       this._results = [];
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows([]),
+        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
       });
     }
   },
@@ -293,6 +300,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
   _renderRow(rowData = {}) {
     rowData.description = rowData.description || 'Unknown';
+    var isSpecialItem = this.props.specialItems.indexOf(rowData) !== -1;
     return (
       <TouchableHighlight
         onPress={() =>
@@ -301,9 +309,9 @@ const GooglePlacesAutocomplete = React.createClass({
         underlayColor="#c8c7cc"
       >
         <View>
-          <View style={[defaultStyles.row, this.props.styles.row]}>
+          <View style={[defaultStyles.row, this.props.styles.row, isSpecialItem ? this.props.styles.specialItemRow : {}]}>
             <Text
-              style={[defaultStyles.description, this.props.styles.description]}
+              style={[defaultStyles.description, this.props.styles.description, isSpecialItem ? this.props.styles.specialItemDescription : {}]}
               numberOfLines={1}
             >{rowData.description}</Text>
             <View
@@ -318,41 +326,50 @@ const GooglePlacesAutocomplete = React.createClass({
     );
   },
 
-  // _onBlur() {
-  //   this.setState({listViewDisplayed: false});
-  // },
+   _onBlur() {
+     this.setState({listViewDisplayed: false});
+   },
 
   _onFocus() {
     this.setState({listViewDisplayed: true});
   },
 
   _getListView() {
-    if (this.state.text !== '' && this.state.listViewDisplayed === true) {
+    if ((this.state.text !== '' || this.props.specialItems.length) && this.state.listViewDisplayed === true) {
       return (
-        <ListView
-          keyboardShouldPersistTaps={true}
-          keyboardDismissMode="on-drag"
-          style={[defaultStyles.listView, this.props.styles.listView]}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          automaticallyAdjustContentInsets={false}
+        <View style={defaultStyles.listView}>
+          <ListView
+            keyboardShouldPersistTaps={true}
+            keyboardDismissMode="on-drag"
+            style={[this.props.styles.listView, {flex: 0}]}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow}
+            automaticallyAdjustContentInsets={false}
 
-          {...this.props}
-        />
+            {...this.props}
+          />
+          <TouchableWithoutFeedback onPress={() => { this.refs.textInput.blur(); this.props.onPress(null);} }>
+            <View style={{flex: 1, backgroundColor: 'transparent'}}></View>
+          </TouchableWithoutFeedback>
+        </View>
       );
     }
 
-    return (
-      <View
-        style={[defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
+    if(this.props.enablePoweredByContainer) {
+      return (
+        <View
+          style={[defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
         >
-        <Image
-          style={[defaultStyles.powered, this.props.styles.powered]}
-          resizeMode={Image.resizeMode.contain}
-          source={require('./images/powered_by_google_on_white.png')}
-        />
-      </View>
-    );
+          <Image
+            style={[defaultStyles.powered, this.props.styles.powered]}
+            resizeMode={Image.resizeMode.contain}
+            source={require('./images/powered_by_google_on_white.png')}
+          />
+        </View>
+      );
+    }
+
+    return null;
   },
   render() {
     let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
@@ -368,15 +385,11 @@ const GooglePlacesAutocomplete = React.createClass({
             ref="textInput"
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
-            onChangeText={
-                onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText
-            }
+            onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}
             value={this.state.text}
             placeholder={this.props.placeholder}
-            // onBlur={this._onBlur}
-            onFocus={
-                onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus
-            }
+            onBlur={this._onBlur}
+            onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
           />
         </View>
