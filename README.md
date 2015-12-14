@@ -4,11 +4,7 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 ### Changelog
 - 1.1.4 : Added 'Current Location' and predefinied places features - PRs @kevinstumpf @VonD
 - 1.1.3 : Keyboard is now dismissed by default when scrolling to be more usable with small height devices (eg: iPhone 4) + Props are now passed to the results ListView
-- 1.1.2 : Added eslint and linted the code - PR @halilb
-- 1.1.1 : New method ```triggerFocus()``` to focus on text input manually - PR @halilb
-- 1.1.0 : The component is now using props
-- 1.0.14 : Support of the new react-native asset system. This version is not compatible anymore with RN versions older than 0.14.0
-- 1.0.13 : RN 0.13.2 compatibility improvements
+
 
 ### Example
 
