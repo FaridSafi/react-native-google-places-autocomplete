@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.1.6 : currentLocationAPI renamed to nearbyPlacesAPI, added predefinedPlacesAlwaysVisible prop
 - 1.1.4 : Added 'Current Location' and predefinied places features - PRs @kevinstumpf @VonD
 - 1.1.3 : Keyboard is now dismissed by default when scrolling to be more usable with small height devices (eg: iPhone 4) + Props are now passed to the results ListView
 

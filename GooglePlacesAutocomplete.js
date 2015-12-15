@@ -79,8 +79,9 @@ const GooglePlacesAutocomplete = React.createClass({
     predefinedPlaces: React.PropTypes.array,
     currentLocation: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
-    currentLocationAPI: React.PropTypes.string,
+    nearbyPlacesAPI: React.PropTypes.string,
     filterReverseGeocodingByTypes: React.PropTypes.array,
+    predefinedPlacesAlwaysVisible: React.PropTypes.bool,
   },
 
   getDefaultProps() {
@@ -109,10 +110,11 @@ const GooglePlacesAutocomplete = React.createClass({
       textInputProps: {},
       enablePoweredByContainer: true,
       predefinedPlaces: [],
-      currentLocation: true,
+      currentLocation: false,
       currentLocationLabel: 'Current location',
-      currentLocationAPI: 'GooglePlacesSearch',
+      nearbyPlacesAPI: 'GooglePlacesSearch',
       filterReverseGeocodingByTypes: [],
+      predefinedPlacesAlwaysVisible: false,
     };
   },
 
@@ -133,7 +135,7 @@ const GooglePlacesAutocomplete = React.createClass({
   buildRowsFromResults(results) {
     var res = null;
     
-    if (results.length === 0) {
+    if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
       res = [...this.props.predefinedPlaces];
       if (this.props.currentLocation === true) {
         res.unshift({
@@ -294,12 +296,27 @@ const GooglePlacesAutocomplete = React.createClass({
       this._onBlur();
 
       delete rowData.isLoading;
-      // sending rowData as details for predefined places
-      this.props.onPress(rowData, rowData);
+      
+      let predefinedPlace = this._getPredefinedPlace(rowData);
+      
+      // sending predefinedPlace as details for predefined places
+      this.props.onPress(predefinedPlace, predefinedPlace);
     }
   },
   _results: [],
   _requests: [],
+  
+  _getPredefinedPlace(rowData) {
+    if (rowData.isPredefinedPlace !== true) {
+      return rowData;
+    }
+    for (let i = 0; i < this.props.predefinedPlaces.length; i++) {
+      if (this.props.predefinedPlaces[i].description === rowData.description) {
+        return this.props.predefinedPlaces[i];
+      }
+    }
+    return rowData;
+  },
   
   _filterResultsByTypes(responseJSON, types) {
     if (types.length === 0) return responseJSON.results;
@@ -340,7 +357,7 @@ const GooglePlacesAutocomplete = React.createClass({
           if (typeof responseJSON.results !== 'undefined') {
             if (this.isMounted()) {
               var results = [];
-              if (this.props.currentLocationAPI === 'GoogleReverseGeocoding') {
+              if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
                 results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
               } else {
                 results = responseJSON.results;
@@ -360,7 +377,7 @@ const GooglePlacesAutocomplete = React.createClass({
       };
       
       let url = '';
-      if (this.props.currentLocationAPI === 'GoogleReverseGeocoding') {
+      if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
         // your key must be allowed to use Google Maps Geocoding API
         url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
           latlng: latitude+','+longitude,
