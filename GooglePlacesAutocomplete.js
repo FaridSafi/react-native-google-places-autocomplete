@@ -1,5 +1,5 @@
 const React = require('react-native');
-const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid} = React;
+const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
 const Qs = require('qs');
 
 const defaultStyles = {
@@ -11,8 +11,8 @@ const defaultStyles = {
     height: 44,
     borderTopColor: '#7e7e7e',
     borderBottomColor: '#b5b5b5',
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
+    borderTopWidth: 1 / PixelRatio.get(),
+    borderBottomWidth: 1 / PixelRatio.get(),
   },
   textInput: {
     backgroundColor: '#FFFFFF',
