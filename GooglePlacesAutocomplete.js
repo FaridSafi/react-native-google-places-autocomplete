@@ -63,6 +63,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
   propTypes: {
     placeholder: React.PropTypes.string,
+    placeholderTextColor: React.PropTypes.string,
     onPress: React.PropTypes.func,
     minLength: React.PropTypes.number,
     fetchDetails: React.PropTypes.bool,
@@ -564,6 +565,7 @@ const GooglePlacesAutocomplete = React.createClass({
             onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}
             value={this.state.text}
             placeholder={this.props.placeholder}
+            placeholderTextColor={this.props.placeholderTextColor}
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
           />
