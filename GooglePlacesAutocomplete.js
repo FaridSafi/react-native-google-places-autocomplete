@@ -78,6 +78,7 @@ const GooglePlacesAutocomplete = React.createClass({
     enablePoweredByContainer: React.PropTypes.bool,
     predefinedPlaces: React.PropTypes.array,
     currentLocation: React.PropTypes.bool,
+    closeOnEndEditing: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
     nearbyPlacesAPI: React.PropTypes.string,
     filterReverseGeocodingByTypes: React.PropTypes.array,
@@ -111,6 +112,7 @@ const GooglePlacesAutocomplete = React.createClass({
       enablePoweredByContainer: true,
       predefinedPlaces: [],
       currentLocation: false,
+      closeOnEndEditing: false,
       currentLocationLabel: 'Current location',
       nearbyPlacesAPI: 'GooglePlacesSearch',
       filterReverseGeocodingByTypes: [],
@@ -515,6 +517,12 @@ const GooglePlacesAutocomplete = React.createClass({
     this.setState({listViewDisplayed: true});
   },
 
+  _onEndEditing() {
+    if (this.props.closeOnEndEditing) {
+        this.setState({listViewDisplayed: false});
+    }
+  },
+
   _getListView() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
@@ -566,12 +574,13 @@ const GooglePlacesAutocomplete = React.createClass({
             placeholder={this.props.placeholder}
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
+            onEndEditing={ () => {this._onEndEditing(); } }
           />
         </View>
         {this._getListView()}
       </View>
     );
-  },
+  }
 });
 
 
