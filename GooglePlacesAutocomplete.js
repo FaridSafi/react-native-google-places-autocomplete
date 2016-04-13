@@ -76,6 +76,7 @@ const GooglePlacesAutocomplete = React.createClass({
     styles: React.PropTypes.object,
     textInputProps: React.PropTypes.object,
     enablePoweredByContainer: React.PropTypes.bool,
+    poweredByColor: React.PropTypes.oneOf(['dark', 'light']),
     predefinedPlaces: React.PropTypes.array,
     currentLocation: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
@@ -109,6 +110,7 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       textInputProps: {},
       enablePoweredByContainer: true,
+      poweredByColor: 'dark',
       predefinedPlaces: [],
       currentLocation: false,
       currentLocationLabel: 'Current location',
@@ -532,6 +534,7 @@ const GooglePlacesAutocomplete = React.createClass({
     }
 
     if(this.props.enablePoweredByContainer) {
+      let imageSource = (this.props.poweredByColor == 'dark' ? require('./images/powered_by_google_on_white.png') : require('./images/powered_by_google_on_non_white.png'));
       return (
         <View
           style={[defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
@@ -539,7 +542,7 @@ const GooglePlacesAutocomplete = React.createClass({
           <Image
             style={[defaultStyles.powered, this.props.styles.powered]}
             resizeMode={Image.resizeMode.contain}
-            source={require('./images/powered_by_google_on_white.png')}
+            source={imageSource}
           />
         </View>
       );
