@@ -28,7 +28,7 @@ var Example = React.createClass({
         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
           console.log(data);
           console.log(details);
-        }},
+        }}
         closeOnEndEditing={false} // When true, the dropdown closes when leaving the input
         getDefaultValue={() => {
           return ''; // text input default value
