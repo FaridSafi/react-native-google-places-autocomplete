@@ -520,19 +520,26 @@ const GooglePlacesAutocomplete = React.createClass({
   _getListView() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
-        <ListView
-          keyboardShouldPersistTaps={true}
-          keyboardDismissMode="on-drag"
-          style={[defaultStyles.listView, this.props.styles.listView]}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          automaticallyAdjustContentInsets={false}
+        <View>
+          <ListView
+            keyboardShouldPersistTaps={true}
+            keyboardDismissMode="on-drag"
+            style={[defaultStyles.listView, this.props.styles.listView]}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow}
+            automaticallyAdjustContentInsets={false}
 
-          {...this.props}
-        />
+            {...this.props}
+          />
+          {this._renderGoogleLogo()}
+        </View>
       );
     }
 
+    return null;
+  },
+
+  _renderGoogleLogo: function() {
     if(this.props.enablePoweredByContainer) {
       let imageSource = (this.props.poweredByColor == 'dark' ? require('./images/powered_by_google_on_white.png') : require('./images/powered_by_google_on_non_white.png'));
       return (
@@ -547,9 +554,8 @@ const GooglePlacesAutocomplete = React.createClass({
         </View>
       );
     }
-
-    return null;
   },
+
   render() {
     let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
     return (
