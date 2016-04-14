@@ -25,6 +25,7 @@ var Example = React.createClass({
         minLength={2} // minimum length of text to search
         autoFocus={false}
         fetchDetails={true}
+        poweredByColor={'dark'}
         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
           console.log(data);
           console.log(details);
@@ -87,6 +88,7 @@ var Example = React.createClass({
 - [x] Google Places terms compliant
 - [x] Current location
 - [x] Predefined places
+- [x] Dark or Light Google logo color
 
 
 ### License

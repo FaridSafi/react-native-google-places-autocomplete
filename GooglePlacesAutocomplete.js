@@ -1,5 +1,5 @@
 const React = require('react-native');
-const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
+const {TextInput, View, ListView, Image, Text, Dimensions, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
 const Qs = require('qs');
 
 const defaultStyles = {
@@ -76,6 +76,7 @@ const GooglePlacesAutocomplete = React.createClass({
     styles: React.PropTypes.object,
     textInputProps: React.PropTypes.object,
     enablePoweredByContainer: React.PropTypes.bool,
+    poweredByColor: React.PropTypes.oneOf(['dark', 'light']),
     predefinedPlaces: React.PropTypes.array,
     currentLocation: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
@@ -109,6 +110,7 @@ const GooglePlacesAutocomplete = React.createClass({
       },
       textInputProps: {},
       enablePoweredByContainer: true,
+      poweredByColor: 'dark',
       predefinedPlaces: [],
       currentLocation: false,
       currentLocationLabel: 'Current location',
@@ -129,6 +131,7 @@ const GooglePlacesAutocomplete = React.createClass({
       text: this.props.getDefaultValue(),
       dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
       listViewDisplayed: false,
+      showClearButton: false
     };
   },
 
@@ -508,30 +511,38 @@ const GooglePlacesAutocomplete = React.createClass({
 
   _onBlur() {
     this.triggerBlur();
-    this.setState({listViewDisplayed: false});
+    this.setState({listViewDisplayed: false, showClearButton: false});
   },
 
   _onFocus() {
-    this.setState({listViewDisplayed: true});
+    this.setState({listViewDisplayed: true, showClearButton: true});
   },
 
   _getListView() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
-        <ListView
-          keyboardShouldPersistTaps={true}
-          keyboardDismissMode="on-drag"
-          style={[defaultStyles.listView, this.props.styles.listView]}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          automaticallyAdjustContentInsets={false}
+        <View>
+          <ListView
+            keyboardShouldPersistTaps={true}
+            keyboardDismissMode="on-drag"
+            style={[defaultStyles.listView, this.props.styles.listView]}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow}
+            automaticallyAdjustContentInsets={false}
 
-          {...this.props}
-        />
+            {...this.props}
+          />
+          {this._renderGoogleLogo()}
+        </View>
       );
     }
 
+    return null;
+  },
+
+  _renderGoogleLogo: function() {
     if(this.props.enablePoweredByContainer) {
+      let imageSource = (this.props.poweredByColor == 'dark' ? require('./images/powered_by_google_on_white.png') : require('./images/powered_by_google_on_non_white.png'));
       return (
         <View
           style={[defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
@@ -539,14 +550,36 @@ const GooglePlacesAutocomplete = React.createClass({
           <Image
             style={[defaultStyles.powered, this.props.styles.powered]}
             resizeMode={Image.resizeMode.contain}
-            source={require('./images/powered_by_google_on_white.png')}
+            source={imageSource}
           />
         </View>
       );
     }
-
-    return null;
   },
+
+  _renderClearButton: function() {
+    if(Platform.OS === 'android' && this.state.showClearButton) {
+      return (
+        <View style={{position: 'absolute', right:5, top:12, height:20}}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({text:''});
+              this.refs.textInput.focus();
+            }}
+          >
+            <Image
+              style={{height:20}}
+              resizeMode={Image.resizeMode.contain}
+              source={require('./images/clear.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  },
+
   render() {
     let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
     return (
@@ -567,6 +600,7 @@ const GooglePlacesAutocomplete = React.createClass({
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
           />
+          {this._renderClearButton()}
         </View>
         {this._getListView()}
       </View>
