@@ -1,5 +1,5 @@
 const React = require('react-native');
-const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
+const {TextInput, View, ListView, Image, Text, Dimensions, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
 const Qs = require('qs');
 
 const defaultStyles = {
@@ -131,6 +131,7 @@ const GooglePlacesAutocomplete = React.createClass({
       text: this.props.getDefaultValue(),
       dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
       listViewDisplayed: false,
+      showClearButton: false
     };
   },
 
@@ -510,11 +511,11 @@ const GooglePlacesAutocomplete = React.createClass({
 
   _onBlur() {
     this.triggerBlur();
-    this.setState({listViewDisplayed: false});
+    this.setState({listViewDisplayed: false, showClearButton: false});
   },
 
   _onFocus() {
-    this.setState({listViewDisplayed: true});
+    this.setState({listViewDisplayed: true, showClearButton: true});
   },
 
   _getListView() {
@@ -556,6 +557,29 @@ const GooglePlacesAutocomplete = React.createClass({
     }
   },
 
+  _renderClearButton: function() {
+    if(Platform.OS === 'android' && this.state.showClearButton) {
+      return (
+        <View style={{position: 'absolute', right:5, top:12, height:20}}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({text:''});
+              this.refs.textInput.focus();
+            }}
+          >
+            <Image
+              style={{height:20}}
+              resizeMode={Image.resizeMode.contain}
+              source={require('./images/clear.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  },
+
   render() {
     let { onChangeText, onFocus, ...userProps } = this.props.textInputProps;
     return (
@@ -576,6 +600,7 @@ const GooglePlacesAutocomplete = React.createClass({
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
           />
+          {this._renderClearButton()}
         </View>
         {this._getListView()}
       </View>
