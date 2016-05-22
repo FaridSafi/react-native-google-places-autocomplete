@@ -1,5 +1,19 @@
-const React = require('react-native');
-const {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio} = React;
+var React = require('react');
+const ReactNative = require('react-native');
+const {
+    TextInput, 
+    View, 
+    ListView, 
+    Image, 
+    Text, 
+    Dimensions, 
+    TouchableHighlight, 
+    TouchableWithoutFeedback, 
+    Platform, 
+    ActivityIndicatorIOS, 
+    ProgressBarAndroid
+} = ReactNative;
+
 const Qs = require('qs');
 
 const defaultStyles = {
