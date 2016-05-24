@@ -93,5 +93,8 @@ var Example = React.createClass({
 
 [MIT](LICENSE)
 
-Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi) !
+### Authors
+
+- [Farid Safi](https://www.twitter.com/FaridSafi)
+- [Maxim Yaskevich](https://www.twitter.com/mayaskme)
 
