@@ -134,6 +134,10 @@ const GooglePlacesAutocomplete = React.createClass({
       listViewDisplayed: false,
     };
   },
+  
+  setAddressText(address) {
+    this.setState({ text: address })
+  },
 
   buildRowsFromResults(results) {
     var res = null;
