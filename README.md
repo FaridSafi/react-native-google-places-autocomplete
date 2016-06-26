@@ -2,6 +2,8 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.1.8 : Ability to set address from outside of component
+- 1.1.7 : Support for RN v0.26
 - 1.1.6 : currentLocationAPI renamed to nearbyPlacesAPI, added predefinedPlacesAlwaysVisible prop
 - 1.1.4 : Added 'Current Location' and predefinied places features - PRs @kevinstumpf @VonD
 - 1.1.3 : Keyboard is now dismissed by default when scrolling to be more usable with small height devices (eg: iPhone 4) + Props are now passed to the results ListView
@@ -46,7 +48,7 @@ var Example = React.createClass({
             color: '#1faadb',
           },
         }}
-        
+
         currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
         currentLocationLabel="Current location"
         nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
@@ -58,10 +60,10 @@ var Example = React.createClass({
           rankby: 'distance',
           types: 'food',
         }}
-        
-        
+
+
         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-        
+
         predefinedPlaces={[homePlace, workPlace]}
       />
     );
@@ -97,4 +99,3 @@ var Example = React.createClass({
 
 - [Farid Safi](https://www.twitter.com/FaridSafi)
 - [Maxim Yaskevich](https://www.twitter.com/mayaskme)
-
