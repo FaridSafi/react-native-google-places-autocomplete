@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.1.9 : Added `setAddressText` method
 - 1.1.8 : Ability to set address from outside of component
 - 1.1.7 : Support for RN v0.26
 - 1.1.6 : currentLocationAPI renamed to nearbyPlacesAPI, added predefinedPlacesAlwaysVisible prop
