@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicatorIOS, ProgressBarAndroid, PixelRatio } from 'react-native';
+import { TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, ProgressBarAndroid, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
 const defaultStyles = {
@@ -133,7 +133,7 @@ const GooglePlacesAutocomplete = React.createClass({
       listViewDisplayed: false,
     };
   },
-  
+
   setAddressText(address) {
     this.setState({ text: address })
   },
@@ -466,7 +466,7 @@ const GooglePlacesAutocomplete = React.createClass({
       );
     }
     return (
-      <ActivityIndicatorIOS
+      <ActivityIndicator
         animating={true}
         size="small"
       />
