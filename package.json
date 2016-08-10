@@ -32,5 +32,8 @@
     "eslint": "^1.9.0",
     "eslint-config-airbnb": "^1.0.0",
     "eslint-plugin-react": "^3.9.0"
+  },
+  "peerDependencies": {
+    "react-native": ">= 0.28"
   }
 }
