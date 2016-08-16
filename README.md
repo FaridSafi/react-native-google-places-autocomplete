@@ -2,15 +2,12 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.2 : Added prop to change placeholder text color
 - 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
 - 1.2.0 : Using ActivityIndicator therefore removing deprecation warning. Requires react-native >= 0.28
 - 1.1.10 : Update to work with react-native > 0.24
 - 1.1.9 : Added `setAddressText` method
 - 1.1.8 : Ability to set address from outside of component
-- 1.1.7 : Support for RN v0.26
-- 1.1.6 : currentLocationAPI renamed to nearbyPlacesAPI, added predefinedPlacesAlwaysVisible prop
-- 1.1.4 : Added 'Current Location' and predefinied places features - PRs @kevinstumpf @VonD
-- 1.1.3 : Keyboard is now dismissed by default when scrolling to be more usable with small height devices (eg: iPhone 4) + Props are now passed to the results ListView
 
 
 ### Example
