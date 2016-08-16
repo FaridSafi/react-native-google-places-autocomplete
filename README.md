@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
 - 1.2.0 : Using ActivityIndicator therefore removing deprecation warning. Requires react-native >= 0.28
 - 1.1.10 : Update to work with react-native > 0.24
 - 1.1.9 : Added `setAddressText` method
