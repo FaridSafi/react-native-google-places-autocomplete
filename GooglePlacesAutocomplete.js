@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, ProgressBarAndroid, PixelRatio } from 'react-native';
+import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, ProgressBarAndroid, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
 const defaultStyles = {
@@ -488,17 +488,21 @@ const GooglePlacesAutocomplete = React.createClass({
     return null;
   },
 
-  _renderRow(rowData = {}) {
+  _renderRow(rowData = {}, sectionID, rowID) {
     rowData.description = rowData.description || rowData.formatted_address || rowData.name;
 
     return (
-      <TouchableHighlight
-        onPress={() =>
-          this._onPress(rowData)
-        }
-        underlayColor="#c8c7cc"
-      >
-        <View>
+      <ScrollView
+        keyboardShouldPersistTaps={true}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}>
+        <TouchableHighlight
+          onPress={() =>
+            this._onPress(rowData)
+          }
+          underlayColor="#c8c7cc"
+        >
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
             <Text
               style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
@@ -508,9 +512,16 @@ const GooglePlacesAutocomplete = React.createClass({
             </Text>
             {this._renderLoader(rowData)}
           </View>
-          <View style={[defaultStyles.separator, this.props.styles.separator]} />
-        </View>
-      </TouchableHighlight>
+        </TouchableHighlight>
+      </ScrollView>
+    );
+  },
+
+  _renderSeparator(sectionID, rowID) {
+    return (
+      <View
+        key={ `${sectionID}-${rowID}` }
+        style={[defaultStyles.separator, this.props.styles.separator]} />
     );
   },
 
@@ -532,6 +543,7 @@ const GooglePlacesAutocomplete = React.createClass({
           style={[defaultStyles.listView, this.props.styles.listView]}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
+          renderSeparator={this._renderSeparator}
           automaticallyAdjustContentInsets={false}
 
           {...this.props}
