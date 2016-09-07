@@ -83,7 +83,8 @@ const GooglePlacesAutocomplete = React.createClass({
     nearbyPlacesAPI: React.PropTypes.string,
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
-    enableEmptySections: React.PropTypes.bool
+    enableEmptySections: React.PropTypes.bool,
+    touchableHighlightProps: React.PropTypes.object,
   },
 
   getDefaultProps() {
@@ -118,7 +119,10 @@ const GooglePlacesAutocomplete = React.createClass({
       nearbyPlacesAPI: 'GooglePlacesSearch',
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
-      enableEmptySections: true
+      enableEmptySections: true,
+      touchableHighlightProps: {
+        underlayColor: '#c8c7cc'
+      }
     };
   },
 
@@ -482,13 +486,12 @@ const GooglePlacesAutocomplete = React.createClass({
 
   _renderRow(rowData = {}) {
     rowData.description = rowData.description || rowData.formatted_address || rowData.name;
-
     return (
       <TouchableHighlight
+        {...this.props.touchableHighlightProps}
         onPress={() =>
           this._onPress(rowData)
         }
-        underlayColor="#c8c7cc"
       >
         <View>
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
