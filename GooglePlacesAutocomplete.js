@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, ProgressBarAndroid, PixelRatio } from 'react-native';
+import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
 const WINDOW = Dimensions.get('window');
@@ -461,14 +461,6 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _getRowLoader() {
-    if (Platform.OS === 'android') {
-      return (
-        <ProgressBarAndroid
-          style={[defaultStyles.androidLoader, this.props.styles.androidLoader]}
-          styleAttr="Inverse"
-        />
-      );
-    }
     return (
       <ActivityIndicator
         animating={true}
