@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, ProgressBarAndroid, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
+const WINDOW = Dimensions.get('window');
+
 const defaultStyles = {
   container: {
     flex: 1,
@@ -493,11 +495,13 @@ const GooglePlacesAutocomplete = React.createClass({
 
     return (
       <ScrollView
+        style={{ flex: 1 }}
         keyboardShouldPersistTaps={true}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
         <TouchableHighlight
+          style={{ minWidth: WINDOW.width }}
           onPress={() =>
             this._onPress(rowData)
           }
