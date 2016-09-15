@@ -81,6 +81,55 @@ var Example = React.createClass({
 3. Enable "Google Maps Geocoding API" if you want to use GoogleReverseGeocoding for Current Location
 
 
+
+### Styling
+
+```GooglePlacesAutocomplete``` can be easily customized to meet styles of your  app. Pass styles props to ```GooglePlacesAutocomplete``` with style object for different elements (keys for style object are listed below)
+
+| key | type | 
+| ---- | ---- | 
+| container | object (View) |
+| description | object (Text style) |
+| textInputContainer | object (View style) | 
+| textInput | object (style) | 
+| loader | object (View style) | 
+| listView | object (ListView style) | 
+| predefinedPlacesDescription | object (Text style) | 
+| poweredContainer | object (View style) | 
+| powered | object (Image style) |
+
+
+#### Example
+
+
+```
+<GooglePlacesAutocomplete
+  placeholder='Enter Location'
+  minLength={2} 
+  autoFocus={false}
+  fetchDetails={true}
+  styles={{
+    textInputContainer: {
+      backgroundColor: 'rgba(0,0,0,0)',
+      borderTopWidth: 0,
+      borderBottomWidth:0
+    },
+    textInput: {
+      marginLeft: 0,
+      marginRight: 0,
+      height: 38,
+      color: '#5d5d5d',
+      fontSize: 16
+    },
+    predefinedPlacesDescription: {
+      color: '#1faadb'
+    },
+  }}
+  currentLocation={false}
+/>
+```
+
+
 ### Features
 
 - [x] Places autocompletion
