@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.4 : Added `listViewDisplayed` prop for controlling dropdown
 - 1.2.3 : Removed ProgressBarAndroid to remove warnings
 - 1.2.2 : Added prop to change placeholder text color
 - 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
@@ -28,6 +29,7 @@ var Example = React.createClass({
         placeholder='Search'
         minLength={2} // minimum length of text to search
         autoFocus={false}
+        listViewDisplayed='auto'    // true/false/undefined
         fetchDetails={true}
         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
           console.log(data);
@@ -86,16 +88,16 @@ var Example = React.createClass({
 
 ```GooglePlacesAutocomplete``` can be easily customized to meet styles of your  app. Pass styles props to ```GooglePlacesAutocomplete``` with style object for different elements (keys for style object are listed below)
 
-| key | type | 
-| ---- | ---- | 
+| key | type |
+| ---- | ---- |
 | container | object (View) |
 | description | object (Text style) |
-| textInputContainer | object (View style) | 
-| textInput | object (style) | 
-| loader | object (View style) | 
-| listView | object (ListView style) | 
-| predefinedPlacesDescription | object (Text style) | 
-| poweredContainer | object (View style) | 
+| textInputContainer | object (View style) |
+| textInput | object (style) |
+| loader | object (View style) |
+| listView | object (ListView style) |
+| predefinedPlacesDescription | object (Text style) |
+| poweredContainer | object (View style) |
 | powered | object (Image style) |
 
 
@@ -105,7 +107,7 @@ var Example = React.createClass({
 ```
 <GooglePlacesAutocomplete
   placeholder='Enter Location'
-  minLength={2} 
+  minLength={2}
   autoFocus={false}
   fetchDetails={true}
   styles={{

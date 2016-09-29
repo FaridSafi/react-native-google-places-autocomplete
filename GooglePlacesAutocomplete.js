@@ -120,7 +120,8 @@ const GooglePlacesAutocomplete = React.createClass({
       nearbyPlacesAPI: 'GooglePlacesSearch',
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
-      enableEmptySections: true
+      enableEmptySections: true,
+      listViewDisplayed: 'auto'
     };
   },
 
@@ -134,7 +135,7 @@ const GooglePlacesAutocomplete = React.createClass({
     return {
       text: this.props.getDefaultValue(),
       dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
-      listViewDisplayed: false,
+      listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
     };
   },
 
@@ -165,6 +166,14 @@ const GooglePlacesAutocomplete = React.createClass({
     });
 
     return [...res, ...results];
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.listViewDisplayed !== 'auto') {
+      this.setState({
+        listViewDisplayed: nextProps.listViewDisplayed,
+      });
+    }
   },
 
   componentWillUnmount() {
