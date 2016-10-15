@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.5 : Added `renderDescription` prop for rendering dropdown item text
 - 1.2.4 : Added `listViewDisplayed` prop for controlling dropdown
 - 1.2.3 : Removed ProgressBarAndroid to remove warnings
 - 1.2.2 : Added prop to change placeholder text color
@@ -31,6 +32,7 @@ var Example = React.createClass({
         autoFocus={false}
         listViewDisplayed='auto'    // true/false/undefined
         fetchDetails={true}
+        renderDescription={(row) => row.terms[0].value} // display street only
         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
           console.log(data);
           console.log(details);

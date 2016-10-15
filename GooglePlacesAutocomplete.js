@@ -85,7 +85,8 @@ const GooglePlacesAutocomplete = React.createClass({
     nearbyPlacesAPI: React.PropTypes.string,
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
-    enableEmptySections: React.PropTypes.bool
+    enableEmptySections: React.PropTypes.bool,
+    renderDescription: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -217,7 +218,6 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _enableRowLoader(rowData) {
-
     let rows = this.buildRowsFromResults(this._results);
     for (let i = 0; i < rows.length; i++) {
       if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
@@ -478,6 +478,14 @@ const GooglePlacesAutocomplete = React.createClass({
     );
   },
 
+  _renderDescription(rowData) {
+    if (this.props.renderDescription) {
+      return this.props.renderDescription(rowData);
+    }
+
+    return rowData.description || rowData.formatted_address || rowData.name;
+  },
+
   _renderLoader(rowData) {
     if (rowData.isLoading === true) {
       return (
@@ -492,8 +500,6 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _renderRow(rowData = {}, sectionID, rowID) {
-    rowData.description = rowData.description || rowData.formatted_address || rowData.name;
-
     return (
       <ScrollView
         style={{ flex: 1 }}
@@ -513,7 +519,7 @@ const GooglePlacesAutocomplete = React.createClass({
               style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
               numberOfLines={1}
             >
-              {rowData.description}
+              {this._renderDescription(rowData)}
             </Text>
             {this._renderLoader(rowData)}
           </View>
