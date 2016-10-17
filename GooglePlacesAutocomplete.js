@@ -86,7 +86,8 @@ const GooglePlacesAutocomplete = React.createClass({
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
     enableEmptySections: React.PropTypes.bool,
-    renderDescription: React.PropTypes.func
+    renderDescription: React.PropTypes.func,
+    renderRow: React.PropTypes.func,
   },
 
   getDefaultProps() {
@@ -478,6 +479,20 @@ const GooglePlacesAutocomplete = React.createClass({
     );
   },
 
+  _renderRowData(rowData) {
+    if (this.props.renderRow) {
+      return this.props.renderRow(rowData);
+    }
+
+    return (
+      <Text style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
+        numberOfLines={1}
+      >
+        {this._renderDescription(rowData)}
+      </Text>
+    );
+  },
+
   _renderDescription(rowData) {
     if (this.props.renderDescription) {
       return this.props.renderDescription(rowData);
@@ -509,18 +524,11 @@ const GooglePlacesAutocomplete = React.createClass({
         showsVerticalScrollIndicator={false}>
         <TouchableHighlight
           style={{ minWidth: WINDOW.width }}
-          onPress={() =>
-            this._onPress(rowData)
-          }
+          onPress={() => this._onPress(rowData)}
           underlayColor="#c8c7cc"
         >
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
-            <Text
-              style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
-              numberOfLines={1}
-            >
-              {this._renderDescription(rowData)}
-            </Text>
+            {this._renderRowData(rowData)}
             {this._renderLoader(rowData)}
           </View>
         </TouchableHighlight>
@@ -553,11 +561,10 @@ const GooglePlacesAutocomplete = React.createClass({
           keyboardDismissMode="on-drag"
           style={[defaultStyles.listView, this.props.styles.listView]}
           dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
           renderSeparator={this._renderSeparator}
           automaticallyAdjustContentInsets={false}
-
           {...this.props}
+          renderRow={this._renderRow}
         />
       );
     }

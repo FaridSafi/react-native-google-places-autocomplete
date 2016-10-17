@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.6 : Added `renderRow` prop.
 - 1.2.5 : Added `renderDescription` prop for rendering dropdown item text
 - 1.2.4 : Added `listViewDisplayed` prop for controlling dropdown
 - 1.2.3 : Removed ProgressBarAndroid to remove warnings
