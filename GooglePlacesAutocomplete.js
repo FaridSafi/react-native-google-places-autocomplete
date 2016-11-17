@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+https://github.com/FaridSafi/react-native-google-places-autocomplete.gitimport React, { PropTypes } from 'react';
 import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
@@ -206,6 +206,7 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   getCurrentLocation() {
+    let options = (Platform.OS === 'android') ? {enableHighAccuracy: true, timeout: 20000} : {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000};
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this._requestNearby(position.coords.latitude, position.coords.longitude);
@@ -214,7 +215,7 @@ const GooglePlacesAutocomplete = React.createClass({
         this._disableRowLoaders();
         alert(error.message);
       },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      options
     );
   },
 
