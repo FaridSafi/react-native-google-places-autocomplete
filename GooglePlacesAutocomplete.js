@@ -608,6 +608,7 @@ const GooglePlacesAutocomplete = React.createClass({
           />
         </View>
         {this._getListView()}
+        {this.props.children}
       </View>
     );
   },
