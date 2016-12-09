@@ -559,19 +559,19 @@ const GooglePlacesAutocomplete = React.createClass({
 
   _shouldShowPoweredLogo() {
 
-     if (this.state.dataSource.getRowCount() == 0) {
-       return false
-     }
+    if(!this.props.enablePoweredByContainer || this.state.dataSource.getRowCount() == 0) {
+      return false
+    }
 
-     for (let i=0;i<this.state.dataSource.getRowCount();i++) {
-        let row  = this.state.dataSource.getRowData(0, i);
+    for (let i = 0; i < this.state.dataSource.getRowCount(); i++) {
+      let row  = this.state.dataSource.getRowData(0, i);
 
-        if (!row.hasOwnProperty('isCurrentLocation') && !row.hasOwnProperty('isPredefinedPlace')) {
-          return true
-        }
-     }
+      if (!row.hasOwnProperty('isCurrentLocation') && !row.hasOwnProperty('isPredefinedPlace')) {
+        return true
+      }
+    }
 
-     return false
+    return false
   },
 
   _renderPoweredLogo() {
