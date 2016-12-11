@@ -1,5 +1,5 @@
-https://github.com/FaridSafi/react-native-google-places-autocomplete.gitimport React, { PropTypes } from 'react';
-import { TextInput, View, ListView, ScrollView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, PixelRatio } from 'react-native';
+import React, { PropTypes } from 'react';
+import { TextInput, View, ListView, ScrollView, Image, Text, StyleSheet, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, PixelRatio } from 'react-native';
 import Qs from 'qs';
 
 const WINDOW = Dimensions.get('window');
@@ -30,11 +30,11 @@ const defaultStyles = {
     fontSize: 15,
   },
   poweredContainer: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   powered: {
-    marginTop: 15,
   },
   listView: {
     // flex: 1,
@@ -45,7 +45,7 @@ const defaultStyles = {
     flexDirection: 'row',
   },
   separator: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: '#c8c7cc',
   },
   description: {
@@ -538,6 +538,10 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _renderSeparator(sectionID, rowID) {
+    if (rowID == this.state.dataSource.getRowCount() - 1) {
+      return null
+    }
+
     return (
       <View
         key={ `${sectionID}-${rowID}` }
@@ -554,6 +558,41 @@ const GooglePlacesAutocomplete = React.createClass({
     this.setState({listViewDisplayed: true});
   },
 
+  _shouldShowPoweredLogo() {
+
+    if(!this.props.enablePoweredByContainer || this.state.dataSource.getRowCount() == 0) {
+      return false
+    }
+
+    for (let i = 0; i < this.state.dataSource.getRowCount(); i++) {
+      let row  = this.state.dataSource.getRowData(0, i);
+
+      if (!row.hasOwnProperty('isCurrentLocation') && !row.hasOwnProperty('isPredefinedPlace')) {
+        return true
+      }
+    }
+
+    return false
+  },
+
+  _renderPoweredLogo() {
+      if (!this._shouldShowPoweredLogo()) {
+        return null
+      }
+
+      return (
+        <View
+          style={[defaultStyles.row, defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
+        >
+          <Image
+            style={[defaultStyles.powered, this.props.styles.powered]}
+            resizeMode={Image.resizeMode.contain}
+            source={require('./images/powered_by_google_on_white.png')}
+          />
+        </View>
+      );
+  },
+
   _getListView() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
@@ -566,21 +605,8 @@ const GooglePlacesAutocomplete = React.createClass({
           automaticallyAdjustContentInsets={false}
           {...this.props}
           renderRow={this._renderRow}
+          renderFooter={this._renderPoweredLogo}
         />
-      );
-    }
-
-    if(this.props.enablePoweredByContainer) {
-      return (
-        <View
-          style={[defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
-        >
-          <Image
-            style={[defaultStyles.powered, this.props.styles.powered]}
-            resizeMode={Image.resizeMode.contain}
-            source={require('./images/powered_by_google_on_white.png')}
-          />
-        </View>
       );
     }
 
@@ -609,6 +635,7 @@ const GooglePlacesAutocomplete = React.createClass({
           />
         </View>
         {this._getListView()}
+        {this.props.children}
       </View>
     );
   },
