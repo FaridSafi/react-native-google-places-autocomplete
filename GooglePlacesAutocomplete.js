@@ -288,14 +288,20 @@ const GooglePlacesAutocomplete = React.createClass({
               this.props.onPress(rowData, details);
             }
           } else {
-            this.props.onNotFound(responseJSON);
             this._disableRowLoaders();
-            console.warn('google places autocomplete: ' + responseJSON.status);
+            
+            if (!this.props.onNotFound)
+              console.warn('google places autocomplete: ' + responseJSON.status);
+            else
+              this.props.onNotFound(responseJSON);
           }
         } else {
-          this.props.onFail();
           this._disableRowLoaders();
-          console.warn('google places autocomplete: request could not be completed or has been aborted');
+          
+          if (!this.props.onFail)
+            console.warn('google places autocomplete: request could not be completed or has been aborted');
+          else
+            this.props.onFail();
         }
       };
       request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
