@@ -148,6 +148,10 @@ const GooglePlacesAutocomplete = React.createClass({
   setAddressText(address) {
     this.setState({ text: address })
   },
+  
+  getAddressText(){
+    return this.state.text
+  },
 
   buildRowsFromResults(results) {
     var res = null;
