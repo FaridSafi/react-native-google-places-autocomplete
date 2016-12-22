@@ -67,9 +67,12 @@ const GooglePlacesAutocomplete = React.createClass({
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
     onPress: React.PropTypes.func,
+    onNotFound: React.PropTypes.func,
+    onFail: React.PropTypes.func,
     minLength: React.PropTypes.number,
     fetchDetails: React.PropTypes.bool,
     autoFocus: React.PropTypes.bool,
+    autoFillOnNotFound: React.PropTypes.bool,
     getDefaultValue: React.PropTypes.func,
     timeout: React.PropTypes.number,
     onTimeout: React.PropTypes.func,
@@ -95,9 +98,12 @@ const GooglePlacesAutocomplete = React.createClass({
       placeholder: 'Search',
       placeholderTextColor: '#A8A8A8',
       onPress: () => {},
+      onNotFound: () => {},
+      onFail: () => {},
       minLength: 0,
       fetchDetails: false,
       autoFocus: false,
+      autoFillOnNotFound: false,
       getDefaultValue: () => '',
       timeout: 20000,
       onTimeout: () => console.warn('google places autocomplete: request timeout'),
@@ -143,6 +149,10 @@ const GooglePlacesAutocomplete = React.createClass({
 
   setAddressText(address) {
     this.setState({ text: address })
+  },
+  
+  getAddressText(){
+    return this.state.text
   },
 
   buildRowsFromResults(results) {
@@ -281,11 +291,27 @@ const GooglePlacesAutocomplete = React.createClass({
             }
           } else {
             this._disableRowLoaders();
-            console.warn('google places autocomplete: ' + responseJSON.status);
+            
+            if (this.props.autoFillOnNotFound) {
+              this.setState({
+                text: rowData.description,
+              });
+              delete rowData.isLoading;
+            }
+            
+            if (!this.props.onNotFound)
+              console.warn('google places autocomplete: ' + responseJSON.status);
+            else
+              this.props.onNotFound(responseJSON);
+            
           }
         } else {
           this._disableRowLoaders();
-          console.warn('google places autocomplete: request could not be completed or has been aborted');
+          
+          if (!this.props.onFail)
+            console.warn('google places autocomplete: request could not be completed or has been aborted');
+          else
+            this.props.onFail();
         }
       };
       request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
