@@ -67,6 +67,8 @@ const GooglePlacesAutocomplete = React.createClass({
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
     onPress: React.PropTypes.func,
+    onNotFound: React.PropTypes.func,
+    onFail: React.PropTypes.func,
     minLength: React.PropTypes.number,
     fetchDetails: React.PropTypes.bool,
     autoFocus: React.PropTypes.bool,
@@ -95,6 +97,8 @@ const GooglePlacesAutocomplete = React.createClass({
       placeholder: 'Search',
       placeholderTextColor: '#A8A8A8',
       onPress: () => {},
+      onNotFound: () => {},
+      onFail: () => {},
       minLength: 0,
       fetchDetails: false,
       autoFocus: false,
@@ -280,10 +284,12 @@ const GooglePlacesAutocomplete = React.createClass({
               this.props.onPress(rowData, details);
             }
           } else {
+            this.props.onNotFound(responseJSON);
             this._disableRowLoaders();
             console.warn('google places autocomplete: ' + responseJSON.status);
           }
         } else {
+          this.props.onFail();
           this._disableRowLoaders();
           console.warn('google places autocomplete: request could not be completed or has been aborted');
         }
