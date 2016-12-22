@@ -297,7 +297,7 @@ const GooglePlacesAutocomplete = React.createClass({
             else
               this.props.onNotFound(responseJSON);
             
-            if (this.props.autofillOnNotFound)
+            if (this.props.autoFillOnNotFound)
               this.setState({
                 text: rowData.description,
               });
