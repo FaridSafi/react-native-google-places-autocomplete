@@ -72,6 +72,7 @@ const GooglePlacesAutocomplete = React.createClass({
     minLength: React.PropTypes.number,
     fetchDetails: React.PropTypes.bool,
     autoFocus: React.PropTypes.bool,
+    autoFillOnNotFound: React.PropTypes.bool,
     getDefaultValue: React.PropTypes.func,
     timeout: React.PropTypes.number,
     onTimeout: React.PropTypes.func,
@@ -102,6 +103,7 @@ const GooglePlacesAutocomplete = React.createClass({
       minLength: 0,
       fetchDetails: false,
       autoFocus: false,
+      autoFillOnNotFound: false,
       getDefaultValue: () => '',
       timeout: 20000,
       onTimeout: () => console.warn('google places autocomplete: request timeout'),
@@ -294,6 +296,11 @@ const GooglePlacesAutocomplete = React.createClass({
               console.warn('google places autocomplete: ' + responseJSON.status);
             else
               this.props.onNotFound(responseJSON);
+            
+            if (this.props.autofillOnNotFound)
+              this.setState({
+                text: rowData.description,
+              });
           }
         } else {
           this._disableRowLoaders();
