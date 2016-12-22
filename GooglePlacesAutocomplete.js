@@ -292,15 +292,18 @@ const GooglePlacesAutocomplete = React.createClass({
           } else {
             this._disableRowLoaders();
             
+            if (this.props.autoFillOnNotFound) {
+              this.setState({
+                text: rowData.description,
+              });
+              delete rowData.isLoading;
+            }
+            
             if (!this.props.onNotFound)
               console.warn('google places autocomplete: ' + responseJSON.status);
             else
               this.props.onNotFound(responseJSON);
             
-            if (this.props.autoFillOnNotFound)
-              this.setState({
-                text: rowData.description,
-              });
           }
         } else {
           this._disableRowLoaders();
