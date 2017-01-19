@@ -104,6 +104,7 @@ const GooglePlacesAutocomplete = React.createClass({
       fetchDetails: false,
       autoFocus: false,
       autoFillOnNotFound: false,
+      keyboardShouldPersistTaps: 'always',
       getDefaultValue: () => '',
       timeout: 20000,
       onTimeout: () => console.warn('google places autocomplete: request timeout'),
@@ -545,7 +546,7 @@ const GooglePlacesAutocomplete = React.createClass({
     return (
       <ScrollView
         style={{ flex: 1 }}
-        keyboardShouldPersistTaps={true}
+        keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
