@@ -86,6 +86,7 @@ const GooglePlacesAutocomplete = React.createClass({
     currentLocation: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
     nearbyPlacesAPI: React.PropTypes.string,
+    enableHighAccuracyLocation: React.PropTypes.bool,
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
     enableEmptySections: React.PropTypes.bool,
@@ -127,6 +128,7 @@ const GooglePlacesAutocomplete = React.createClass({
       currentLocation: false,
       currentLocationLabel: 'Current location',
       nearbyPlacesAPI: 'GooglePlacesSearch',
+      enableHighAccuracyLocation: true,
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
       enableEmptySections: true,
@@ -217,10 +219,19 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   getCurrentLocation() {
-    let options = (Platform.OS === 'android') ? {enableHighAccuracy: true, timeout: 20000} : {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000};
+    let options = null;
+    if (this.props.enableHighAccuracyLocation)
+      options = (Platform.OS === 'android') ? {enableHighAccuracy: true, timeout: 20000} : {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000};
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this._requestNearby(position.coords.latitude, position.coords.longitude);
+        if (this.props.nearbyPlacesAPI === 'None') {
+            let currentLocation = { description: this.props.currentLocationLabel, geometry: { location: { lat: position.coords.latitude, lng: position.coords.longitude } } };
+            this._disableRowLoaders();
+            this.props.onPress(currentLocation, currentLocation);
+        }
+        else {
+          this._requestNearby(position.coords.latitude, position.coords.longitude);
+        }
       },
       (error) => {
         this._disableRowLoaders();
