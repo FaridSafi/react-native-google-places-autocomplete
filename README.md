@@ -34,7 +34,7 @@ var Example = React.createClass({
         autoFocus={false}
         listViewDisplayed='auto'    // true/false/undefined
         fetchDetails={true}
-        renderDescription={(row) => row.terms[0].value} // display street only
+        renderDescription={(row) => row.description} // custom description render
         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
           console.log(data);
           console.log(details);
