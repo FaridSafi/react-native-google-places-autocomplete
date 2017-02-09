@@ -31,6 +31,7 @@ const defaultStyles = {
     borderBottomColor: '#b5b5b5',
     borderTopWidth: 1 / PixelRatio.get(),
     borderBottomWidth: 1 / PixelRatio.get(),
+    flexDirection: 'row',
   },
   textInput: {
     backgroundColor: '#FFFFFF',
@@ -44,6 +45,7 @@ const defaultStyles = {
     marginLeft: 8,
     marginRight: 8,
     fontSize: 15,
+    flex: 1
   },
   poweredContainer: {
     justifyContent: 'flex-end',
@@ -646,6 +648,18 @@ const GooglePlacesAutocomplete = React.createClass({
     return false
   },
 
+  _renderLeftButton() {
+    if (this.props.renderLeftButton) {
+      return this.props.renderLeftButton()
+    }
+  },
+
+  _renderRightButton() {
+      if (this.props.renderRightButton) {
+        return this.props.renderRightButton()
+      }
+    },
+
   _renderPoweredLogo() {
     if (!this._shouldShowPoweredLogo()) {
       return null
@@ -696,6 +710,7 @@ const GooglePlacesAutocomplete = React.createClass({
         <View
           style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
         >
+          {this._renderLeftButton()}
           <TextInput
             { ...userProps }
             ref="textInput"
@@ -709,6 +724,7 @@ const GooglePlacesAutocomplete = React.createClass({
             clearButtonMode="while-editing"
             underlineColorAndroid="transparent"
           />
+          {this._renderRightButton()}
         </View>
         {this._getListView()}
         {this.props.children}
