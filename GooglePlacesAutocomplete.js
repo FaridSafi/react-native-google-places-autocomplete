@@ -108,6 +108,8 @@ const GooglePlacesAutocomplete = React.createClass({
     enableEmptySections: React.PropTypes.bool,
     renderDescription: React.PropTypes.func,
     renderRow: React.PropTypes.func,
+    renderLeftButton: React.PropTypes.func,
+    renderRightButton: React.PropTypes.func,
   },
 
   getDefaultProps() {
