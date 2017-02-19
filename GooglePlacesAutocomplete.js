@@ -83,6 +83,7 @@ const GooglePlacesAutocomplete = React.createClass({
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
     selectionColor: React.PropTypes.string,
+    underlineColorAndroid: React.PropTypes.string,
     onPress: React.PropTypes.func,
     onNotFound: React.PropTypes.func,
     onFail: React.PropTypes.func,
@@ -118,6 +119,7 @@ const GooglePlacesAutocomplete = React.createClass({
       placeholder: 'Search',
       placeholderTextColor: '#A8A8A8',
       selectionColor: '#0076FF',
+      underlineColorAndroid: 'transparent',
       onPress: () => {},
       onNotFound: () => {},
       onFail: () => {},
@@ -727,7 +729,7 @@ const GooglePlacesAutocomplete = React.createClass({
             selectionColor={this.props.selectionColor}
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
-            underlineColorAndroid="transparent"
+            underlineColorAndroid={this.props.underlineColorAndroid}
           />
           {this._renderRightButton()}
         </View>
