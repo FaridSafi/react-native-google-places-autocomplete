@@ -597,7 +597,7 @@ const GooglePlacesAutocomplete = React.createClass({
         <TouchableHighlight
           style={{ minWidth: WINDOW.width }}
           onPress={() => this._onPress(rowData)}
-          underlayColor="#c8c7cc"
+          underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
         >
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
             {this._renderRowData(rowData)}
