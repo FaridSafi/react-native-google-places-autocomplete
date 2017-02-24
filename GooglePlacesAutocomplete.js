@@ -110,6 +110,7 @@ const GooglePlacesAutocomplete = React.createClass({
     renderRow: React.PropTypes.func,
     renderLeftButton: React.PropTypes.func,
     renderRightButton: React.PropTypes.func,
+    listUnderlayColor: React.PropTypes.string
   },
 
   getDefaultProps() {
