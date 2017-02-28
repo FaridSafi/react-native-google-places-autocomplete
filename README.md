@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.8 : Added `underlineColorAndroid`, `listUnderlayColor`, `renderLeftButton`, `renderRightButton` props. Added `nearbyPlacesAPI` option `None`.
 - 1.2.7 : Use `children` prop to pass children elements directly into `GooglePlacesAutocomplete`.
 - 1.2.6 : Added `renderRow` prop.
 - 1.2.5 : Added `renderDescription` prop for rendering dropdown item text
