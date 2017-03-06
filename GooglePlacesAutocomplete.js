@@ -17,6 +17,7 @@ import {
   PixelRatio
 } from 'react-native';
 import Qs from 'qs';
+import debounce from 'lodash.debounce';
 
 const WINDOW = Dimensions.get('window');
 
@@ -111,7 +112,8 @@ const GooglePlacesAutocomplete = React.createClass({
     renderRow: React.PropTypes.func,
     renderLeftButton: React.PropTypes.func,
     renderRightButton: React.PropTypes.func,
-    listUnderlayColor: React.PropTypes.string
+    listUnderlayColor: React.PropTypes.string,
+    debounce: React.PropTypes.number
   },
 
   getDefaultProps() {
@@ -151,7 +153,8 @@ const GooglePlacesAutocomplete = React.createClass({
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
       enableEmptySections: true,
-      listViewDisplayed: 'auto'
+      listViewDisplayed: 'auto',
+      debounce: 200
     };
   },
 
@@ -205,6 +208,12 @@ const GooglePlacesAutocomplete = React.createClass({
 
     return [...res, ...results];
   },
+
+  componentWillMount() {
+    this._debouncedChangeText = this.props.debounce
+      ? debounce(this._onChangeText, this.props.debounce)
+      : this._onChangeText;
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.listViewDisplayed !== 'auto') {
@@ -433,7 +442,6 @@ const GooglePlacesAutocomplete = React.createClass({
     return results;
   },
 
-
   _requestNearby(latitude, longitude) {
     this._abortRequests();
     if (latitude !== undefined && longitude !== undefined && latitude !== null && longitude !== null) {
@@ -498,8 +506,6 @@ const GooglePlacesAutocomplete = React.createClass({
     }
   },
 
-
-
   _request(text) {
     this._abortRequests();
     if (text.length >= this.props.minLength) {
@@ -537,6 +543,7 @@ const GooglePlacesAutocomplete = React.createClass({
       });
     }
   },
+
   _onChangeText(text) {
     this._request(text);
     this.setState({
@@ -544,6 +551,16 @@ const GooglePlacesAutocomplete = React.createClass({
       listViewDisplayed: true,
     });
   },
+
+  _handleChangeText(text) {
+    this._debouncedChangeText(text);
+    const onChangeText = this.props
+      && this.props.textInputProps
+      && this.props.textInputProps.onChangeText;
+    if (onChangeText) {
+      onChangeText(text);
+    }
+  }
 
   _getRowLoader() {
     return (
@@ -704,7 +721,6 @@ const GooglePlacesAutocomplete = React.createClass({
   },
   render() {
     let {
-      onChangeText,
       onFocus,
       ...userProps
     } = this.props.textInputProps;
@@ -721,7 +737,7 @@ const GooglePlacesAutocomplete = React.createClass({
             ref="textInput"
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
-            onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}
+            onChangeText={this._handleChangeText}
             value={this.state.text}
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.placeholderTextColor}
