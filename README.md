@@ -74,6 +74,8 @@ var Example = React.createClass({
         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
 
         predefinedPlaces={[homePlace, workPlace]}
+
+        debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 200ms.
       />
     );
   }
