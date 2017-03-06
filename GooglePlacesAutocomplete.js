@@ -104,6 +104,7 @@ const GooglePlacesAutocomplete = React.createClass({
     currentLocationLabel: React.PropTypes.string,
     nearbyPlacesAPI: React.PropTypes.string,
     enableHighAccuracyLocation: React.PropTypes.bool,
+    getCurrentPosition: React.PropTypes.func,
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
     enableEmptySections: React.PropTypes.bool,
@@ -148,6 +149,7 @@ const GooglePlacesAutocomplete = React.createClass({
       currentLocationLabel: 'Current location',
       nearbyPlacesAPI: 'GooglePlacesSearch',
       enableHighAccuracyLocation: true,
+      getCurrentPosition: null,
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
       enableEmptySections: true,
@@ -252,7 +254,9 @@ const GooglePlacesAutocomplete = React.createClass({
         timeout: 20000,
         maximumAge: 1000
       };
-    navigator.geolocation.getCurrentPosition(
+    let getCurrentPosition = this.props.getCurrentPosition ||
+                             navigator.geolocation.getCurrentPosition;
+    getCurrentPosition(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
           let currentLocation = {
