@@ -113,13 +113,15 @@ const GooglePlacesAutocomplete = React.createClass({
     renderLeftButton: React.PropTypes.func,
     renderRightButton: React.PropTypes.func,
     listUnderlayColor: React.PropTypes.string,
-    debounce: React.PropTypes.number
+    debounce: React.PropTypes.number,
+    isRowScrollable: React.PropTypes.bool
   },
 
   getDefaultProps() {
     return {
       placeholder: 'Search',
       placeholderTextColor: '#A8A8A8',
+      isRowScrollable: true,
       underlineColorAndroid: 'transparent',
       onPress: () => {},
       onNotFound: () => {},
@@ -213,7 +215,7 @@ const GooglePlacesAutocomplete = React.createClass({
     this._debouncedChangeText = this.props.debounce
       ? debounce(this._onChangeText, this.props.debounce)
       : this._onChangeText;
-  }
+  },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.listViewDisplayed !== 'auto') {
@@ -560,7 +562,7 @@ const GooglePlacesAutocomplete = React.createClass({
     if (onChangeText) {
       onChangeText(text);
     }
-  }
+  },
 
   _getRowLoader() {
     return (
@@ -610,6 +612,7 @@ const GooglePlacesAutocomplete = React.createClass({
     return (
       <ScrollView
         style={{ flex: 1 }}
+        scrollEnabled={this.props.isRowScrollable}
         keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
