@@ -254,7 +254,8 @@ const GooglePlacesAutocomplete = React.createClass({
 
   getCurrentLocation() {
     let options = null;
-    if (this.props.enableHighAccuracyLocation)
+
+    if (this.props.enableHighAccuracyLocation) {
       options = (Platform.OS === 'android') ? {
         enableHighAccuracy: true,
         timeout: 20000
@@ -263,6 +264,8 @@ const GooglePlacesAutocomplete = React.createClass({
         timeout: 20000,
         maximumAge: 1000
       };
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
@@ -385,7 +388,6 @@ const GooglePlacesAutocomplete = React.createClass({
       // display loader
       this._enableRowLoader(rowData);
 
-
       this.setState({
         text: rowData.description,
       });
@@ -397,7 +399,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
     } else {
       this.setState({
-        text: rowData.description,
+        text: rowData.description || rowData.formatted_address || rowData.vicinity,
       });
 
       this._onBlur();
