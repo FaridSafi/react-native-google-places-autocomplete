@@ -156,7 +156,7 @@ const GooglePlacesAutocomplete = React.createClass({
       predefinedPlacesAlwaysVisible: false,
       enableEmptySections: true,
       listViewDisplayed: 'auto',
-      debounce: 200
+      debounce: 0
     };
   },
 
@@ -212,9 +212,9 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   componentWillMount() {
-    this._debouncedChangeText = this.props.debounce
-      ? debounce(this._onChangeText, this.props.debounce)
-      : this._onChangeText;
+    this._request = this.props.debounce
+      ? debounce(this._request, this.props.debounce)
+      : this._request;
   },
 
   componentWillReceiveProps(nextProps) {
@@ -555,7 +555,7 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _handleChangeText(text) {
-    this._debouncedChangeText(text);
+    this._onChangeText(text);
     const onChangeText = this.props
       && this.props.textInputProps
       && this.props.textInputProps.onChangeText;

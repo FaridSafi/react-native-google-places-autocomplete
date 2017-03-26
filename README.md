@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.10 : Set default `debounce` to `0`. Fixed debounce typing lag.
 - 1.2.9 : Added `isRowScrollable` prop.
 - 1.2.8 : Added `underlineColorAndroid`, `listUnderlayColor`, `renderLeftButton`, `renderRightButton` props. Added `nearbyPlacesAPI` option `None`.
 - 1.2.7 : Use `children` prop to pass children elements directly into `GooglePlacesAutocomplete`.
@@ -75,7 +76,7 @@ var Example = React.createClass({
 
         predefinedPlaces={[homePlace, workPlace]}
 
-        debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 200ms.
+        debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
       />
     );
   }
