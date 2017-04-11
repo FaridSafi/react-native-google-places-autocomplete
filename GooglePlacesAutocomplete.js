@@ -346,7 +346,7 @@ const GooglePlacesAutocomplete = React.createClass({
               this._onBlur();
 
               this.setState({
-                text: rowData.description,
+                text: this._renderDescription( rowData ),
               });
 
               delete rowData.isLoading;
@@ -357,7 +357,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
             if (this.props.autoFillOnNotFound) {
               this.setState({
-                text: rowData.description,
+                text: this._renderDescription( rowData ),
               });
               delete rowData.isLoading;
             }
@@ -389,7 +389,7 @@ const GooglePlacesAutocomplete = React.createClass({
       this._enableRowLoader(rowData);
 
       this.setState({
-        text: rowData.description,
+        text: this._renderDescription( rowData ),
       });
       this.triggerBlur(); // hide keyboard but not the results
 
@@ -399,7 +399,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
     } else {
       this.setState({
-        text: rowData.description || rowData.formatted_address || rowData.vicinity,
+        text: this._renderDescription( rowData ),
       });
 
       this._onBlur();
