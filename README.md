@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.2.12 : Fixed render description + docs.
 - 1.2.11 : Fixed current location result `onPress` event.
 - 1.2.10 : Set default `debounce` to `0`. Fixed debounce typing lag.
 - 1.2.9 : Added `isRowScrollable` prop.
@@ -13,7 +14,6 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 - 1.2.3 : Removed ProgressBarAndroid to remove warnings
 - 1.2.2 : Added prop to change placeholder text color
 - 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
-- 1.2.0 : Using ActivityIndicator therefore removing deprecation warning. Requires react-native >= 0.28
 
 
 ### Example
