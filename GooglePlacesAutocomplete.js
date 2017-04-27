@@ -503,10 +503,7 @@ const GooglePlacesAutocomplete = React.createClass({
       request.open('GET', url);
       request.send();
     } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
-      });
+      this.clearDataSource();
     }
   },
 
