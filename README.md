@@ -108,6 +108,7 @@ var Example = React.createClass({
 | predefinedPlacesDescription | object (Text style) |
 | poweredContainer | object (View style) |
 | powered | object (Image style) |
+| separator | object (View style) |
 
 
 #### Example
