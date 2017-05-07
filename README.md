@@ -33,6 +33,7 @@ var Example = React.createClass({
         placeholder='Search'
         minLength={2} // minimum length of text to search
         autoFocus={false}
+        returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
         listViewDisplayed='auto'    // true/false/undefined
         fetchDetails={true}
         renderDescription={(row) => row.description} // custom description render
@@ -118,6 +119,7 @@ var Example = React.createClass({
   placeholder='Enter Location'
   minLength={2}
   autoFocus={false}
+  returnKeyType={'default'}
   fetchDetails={true}
   styles={{
     textInputContainer: {
