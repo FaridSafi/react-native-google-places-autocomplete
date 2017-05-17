@@ -218,6 +218,8 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   componentDidMount() {
+    // This will load the default value's search results after the view has
+    // been rendered
     this._onChangeText(this.state.text);
   },
 
