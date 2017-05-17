@@ -217,6 +217,10 @@ const GooglePlacesAutocomplete = React.createClass({
       : this._request;
   },
 
+  componentDidMount() {
+    this._onChangeText(this.state.text);
+  },
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.listViewDisplayed !== 'auto') {
       this.setState({
