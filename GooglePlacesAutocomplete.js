@@ -84,6 +84,7 @@ const GooglePlacesAutocomplete = React.createClass({
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
     underlineColorAndroid: React.PropTypes.string,
+    selectionColor: React.PropTypes.string,
     onPress: React.PropTypes.func,
     onNotFound: React.PropTypes.func,
     onFail: React.PropTypes.func,
@@ -123,6 +124,7 @@ const GooglePlacesAutocomplete = React.createClass({
       placeholderTextColor: '#A8A8A8',
       isRowScrollable: true,
       underlineColorAndroid: 'transparent',
+      selectionColor: '#000000',
       onPress: () => {},
       onNotFound: () => {},
       onFail: () => {},
@@ -709,7 +711,8 @@ const GooglePlacesAutocomplete = React.createClass({
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <ListView
-          keyboardShouldPersistTaps={true}
+          ref="listView"
+          keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
           keyboardDismissMode="on-drag"
           style={[defaultStyles.listView, this.props.styles.listView]}
           dataSource={this.state.dataSource}
@@ -749,6 +752,7 @@ const GooglePlacesAutocomplete = React.createClass({
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
             underlineColorAndroid={this.props.underlineColorAndroid}
+            selectionColor={this.props.selectionColor}
           />
           {this._renderRightButton()}
         </View>
