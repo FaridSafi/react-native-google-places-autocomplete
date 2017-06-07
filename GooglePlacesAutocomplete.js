@@ -484,7 +484,12 @@ export default class GooglePlacesAutocomplete extends Component {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
         }
       };
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+      if (this.props.autocompleteAPI === 'GooglePlacesTextSearch') {
+        var path = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=' + this.props.query.key + '&query=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query);
+      } else {
+        var path = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query);
+      }
+      request.open('GET', path);
       request.send();
     } else {
       this._results = [];
