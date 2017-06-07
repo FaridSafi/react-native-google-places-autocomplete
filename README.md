@@ -61,6 +61,7 @@ var Example = React.createClass({
         currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
         currentLocationLabel="Current location"
         nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+        autocompleteAPI='GooglePlacesAutoComplete' // Which API to use for the text field GooglePlacesAutoComplete or GooglePlacesTextSearch (https://developers.google.com/places/web-service/search#TextSearchRequests)
         GoogleReverseGeocodingQuery={{
           // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
         }}
