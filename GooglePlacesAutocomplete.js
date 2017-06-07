@@ -505,10 +505,7 @@ const GooglePlacesAutocomplete = React.createClass({
       request.open('GET', url);
       request.send();
     } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
-      });
+      this.clearDataSource();
     }
   },
 
@@ -543,11 +540,17 @@ const GooglePlacesAutocomplete = React.createClass({
       request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
       request.send();
     } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
-      });
+      this.clearDataSource();
     }
+  },
+  
+  clearDataSource() {
+    this._results = [];
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(
+        this.buildRowsFromResults([]),
+      ),
+    });
   },
 
   _onChangeText(text) {
@@ -740,13 +743,13 @@ const GooglePlacesAutocomplete = React.createClass({
         >
           {this._renderLeftButton()}
           <TextInput
+            value={this.state.text}
             { ...userProps }
             ref="textInput"
             returnKeyType={this.props.returnKeyType}
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
             onChangeText={this._handleChangeText}
-            value={this.state.text}
             placeholder={this.props.placeholder}
 
             placeholderTextColor={this.props.placeholderTextColor}
