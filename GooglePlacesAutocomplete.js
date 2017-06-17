@@ -115,7 +115,8 @@ const GooglePlacesAutocomplete = React.createClass({
     renderRightButton: React.PropTypes.func,
     listUnderlayColor: React.PropTypes.string,
     debounce: React.PropTypes.number,
-    isRowScrollable: React.PropTypes.bool
+    isRowScrollable: React.PropTypes.bool,
+    keyboardAppearance: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -158,7 +159,8 @@ const GooglePlacesAutocomplete = React.createClass({
       predefinedPlacesAlwaysVisible: false,
       enableEmptySections: true,
       listViewDisplayed: 'auto',
-      debounce: 0
+      debounce: 0,
+      keyboardAppearance: ['default']
     };
   },
 
@@ -753,6 +755,7 @@ const GooglePlacesAutocomplete = React.createClass({
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
             underlineColorAndroid={this.props.underlineColorAndroid}
+            keyboardAppearance={this.props.keyboardAppearance}
           />
           {this._renderRightButton()}
         </View>
