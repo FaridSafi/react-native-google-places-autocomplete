@@ -674,6 +674,7 @@ class GooglePlacesAutocomplete extends React.Component {
           <TextInput
             { ...userProps }
             ref="textInput"
+            returnKeyType={this.props.returnKeyType}
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
             onChangeText={this._handleChangeText}
