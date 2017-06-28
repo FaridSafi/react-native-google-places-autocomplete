@@ -117,7 +117,6 @@ class GooglePlacesAutocomplete extends React.Component {
     var res = null;
 
     if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
-      console.log('GOOGLE PLACES PROPS:',JSON.stringify(this.props));
       res = [...(this.props.predefinedPlaces || [])];
       if (this.props.currentLocation === true) {
         res.unshift({
@@ -160,7 +159,6 @@ class GooglePlacesAutocomplete extends React.Component {
   componentWillUnmount() {
     this._abortRequests();
     this.setState({isMounted:false});
-    console.log('GOOGLE PLACES AUTO COMPLETE componentWillUnmount')
   }
 
   _abortRequests = () => {
