@@ -80,6 +80,11 @@ const defaultStyles = {
 
 const GooglePlacesAutocomplete = React.createClass({
 
+  constructor(props) {
+    super(props);
+    this.mounted = false;
+  },
+
   propTypes: {
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
@@ -218,6 +223,10 @@ const GooglePlacesAutocomplete = React.createClass({
       ? debounce(this._request, this.props.debounce)
       : this._request;
   },
+  
+  componentDidMount() {
+    this.mounted = true;
+  },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.listViewDisplayed !== 'auto') {
@@ -229,6 +238,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
   componentWillUnmount() {
     this._abortRequests();
+    this.mounted = false;
   },
 
   _abortRequests() {
@@ -307,7 +317,7 @@ const GooglePlacesAutocomplete = React.createClass({
     }
   },
   _disableRowLoaders() {
-    if (this.isMounted()) {
+    if (this.mounted) {
       for (let i = 0; i < this._results.length; i++) {
         if (this._results[i].isLoading === true) {
           this._results[i].isLoading = false;
@@ -342,7 +352,7 @@ const GooglePlacesAutocomplete = React.createClass({
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (responseJSON.status === 'OK') {
-            if (this.isMounted()) {
+            if (this.mounted) {
               const details = responseJSON.result;
               this._disableRowLoaders();
               this._onBlur();
@@ -465,7 +475,7 @@ const GooglePlacesAutocomplete = React.createClass({
           this._disableRowLoaders();
 
           if (typeof responseJSON.results !== 'undefined') {
-            if (this.isMounted()) {
+            if (this.mounted) {
               var results = [];
               if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
                 results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
@@ -526,7 +536,7 @@ const GooglePlacesAutocomplete = React.createClass({
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
-            if (this.isMounted()) {
+            if (this.mounted) {
               this._results = responseJSON.predictions;
               this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
