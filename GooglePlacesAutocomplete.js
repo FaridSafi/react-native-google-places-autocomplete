@@ -80,11 +80,6 @@ const defaultStyles = {
 
 const GooglePlacesAutocomplete = React.createClass({
 
-  constructor(props) {
-    super(props);
-    this.mounted = false;
-  },
-
   propTypes: {
     placeholder: React.PropTypes.string,
     placeholderTextColor: React.PropTypes.string,
