@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TextInput,
   View,
-  ListView,
+  FlatList,
   ScrollView,
   Image,
   Text,
@@ -113,21 +113,12 @@ export default class GooglePlacesAutocomplete extends Component {
     this._shouldShowPoweredLogo = this._shouldShowPoweredLogo.bind(this);
     this._renderLeftButton = this._renderLeftButton.bind(this);
     this._renderRightButton = this._renderRightButton.bind(this);
-    this._getListView = this._getListView.bind(this);
-    this._getListView = this._getListView.bind(this);
+    this._getFlatList = this._getFlatList.bind(this);
   }
   getInitialState() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: function rowHasChanged(r1, r2) {
-        if (typeof r1.isLoading !== 'undefined') {
-          return true;
-        }
-        return r1 !== r2;
-      }
-    });
     return {
       text: this.props.getDefaultValue(),
-      dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
+      dataSource: this.buildRowsFromResults([]),
       listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
     };
   }
@@ -657,19 +648,18 @@ export default class GooglePlacesAutocomplete extends Component {
     }
   }
 
-  _getListView() {
+  _getFlatList() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
-        <ListView
-          keyboardShouldPersistTaps={true}
-          keyboardDismissMode="on-drag"
+        <FlatList
           style={[defaultStyles.listView, this.props.styles.listView]}
-          dataSource={this.state.dataSource}
-          renderSeparator={this._renderSeparator}
-          automaticallyAdjustContentInsets={false}
+          data={this.state.dataSource}
+          keyExtractor={(item) => item.placeId}
+          extraData={[this.state.dataSource, this.props]}
+          ItemSeparatorComponent={this._renderSeparator}
+          renderItem={({ item }) => this._renderRow(item)}
+          ListFooterComponent={this._renderPoweredLogo}
           {...this.props}
-          renderRow={this._renderRow}
-          renderFooter={this._renderPoweredLogo}
         />
       );
     }
