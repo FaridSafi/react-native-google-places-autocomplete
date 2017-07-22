@@ -77,12 +77,12 @@ const defaultStyles = {
 };
 
 export default class GooglePlacesAutocomplete extends Component {
-  _isMounted = false;
-  _results = [];
-  _requests = [];
-
   constructor (props) {
     super(props);
+
+    this._isMounted = false;
+    this._results = [];
+    this._requests = [];
 
     this.state = this.getInitialState.call(this);
 
