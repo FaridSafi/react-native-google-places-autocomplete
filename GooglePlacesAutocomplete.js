@@ -12,7 +12,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   Platform,
   ActivityIndicator,
   PixelRatio
