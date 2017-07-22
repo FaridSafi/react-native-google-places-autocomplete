@@ -27,6 +27,7 @@
   "homepage": "https://github.com/FaridSafi/react-native-google-places-autocomplete#readme",
   "dependencies": {
     "lodash.debounce": "^4.0.8",
+    "prop-types": "^15.5.10",
     "qs": "^5.2.0"
   },
   "devDependencies": {
