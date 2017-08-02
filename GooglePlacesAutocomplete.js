@@ -105,6 +105,7 @@ const GooglePlacesAutocomplete = React.createClass({
     currentLocation: React.PropTypes.bool,
     currentLocationLabel: React.PropTypes.string,
     nearbyPlacesAPI: React.PropTypes.string,
+    autocompleteAPI: React.PropTypes.string,
     enableHighAccuracyLocation: React.PropTypes.bool,
     filterReverseGeocodingByTypes: React.PropTypes.array,
     predefinedPlacesAlwaysVisible: React.PropTypes.bool,
@@ -153,6 +154,7 @@ const GooglePlacesAutocomplete = React.createClass({
       currentLocation: false,
       currentLocationLabel: 'Current location',
       nearbyPlacesAPI: 'GooglePlacesSearch',
+      autocompleteAPI: 'GooglePlacesAutoComplete',
       enableHighAccuracyLocation: true,
       filterReverseGeocodingByTypes: [],
       predefinedPlacesAlwaysVisible: false,
@@ -525,11 +527,11 @@ const GooglePlacesAutocomplete = React.createClass({
         }
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
-          if (typeof responseJSON.predictions !== 'undefined') {
+          if (typeof responseJSON.predictions !== 'undefined' || typeof responseJSON.results !== 'undefined') {
             if (this.isMounted()) {
-              this._results = responseJSON.predictions;
+              this._results = responseJSON.predictions || responseJSON.results;
               this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
+                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions || responseJSON.results)),
               });
             }
           }
@@ -540,7 +542,12 @@ const GooglePlacesAutocomplete = React.createClass({
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
         }
       };
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+      if (this.props.autocompleteAPI === 'GooglePlacesTextSearch') {
+        var path = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=' + this.props.query.key + '&query=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query);
+      } else {
+        var path = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query);
+      }
+      request.open('GET', path);
       request.send();
     } else {
       this._results = [];
