@@ -693,18 +693,6 @@ const GooglePlacesAutocomplete = React.createClass({
     if (!this._shouldShowPoweredLogo()) {
       return null
     }
-
-    return (
-      <View
-          style={[defaultStyles.row, defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
-        >
-          <Image
-            style={[defaultStyles.powered, this.props.styles.powered]}
-            resizeMode={Image.resizeMode.contain}
-            source={require('./images/powered_by_google_on_white.png')}
-          />
-        </View>
-    );
   },
 
   _getListView() {
