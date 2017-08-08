@@ -742,8 +742,11 @@ const GooglePlacesAutocomplete = React.createClass({
             clearButtonMode="while-editing"
             underlineColorAndroid={this.props.underlineColorAndroid}
           />
+
           {this._renderRightButton()}
         </View>
+        <View
+          style={[defaultStyles.separator, this.props.styles.firstSeparator]} />
         {this._getListView()}
         {this.props.children}
       </View>
