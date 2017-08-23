@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TextInput,
   View,
-  ListView,
+  FlatList,
   ScrollView,
   Image,
   Text,
@@ -113,21 +113,12 @@ export default class GooglePlacesAutocomplete extends Component {
     this._shouldShowPoweredLogo = this._shouldShowPoweredLogo.bind(this);
     this._renderLeftButton = this._renderLeftButton.bind(this);
     this._renderRightButton = this._renderRightButton.bind(this);
-    this._getListView = this._getListView.bind(this);
-    this._getListView = this._getListView.bind(this);
+    this._getFlatList = this._getFlatList.bind(this);
   }
   getInitialState() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: function rowHasChanged(r1, r2) {
-        if (typeof r1.isLoading !== 'undefined') {
-          return true;
-        }
-        return r1 !== r2;
-      }
-    });
     return {
       text: this.props.getDefaultValue(),
-      dataSource: ds.cloneWithRows(this.buildRowsFromResults([])),
+      dataSource: this.buildRowsFromResults([]),
       listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
     };
   }
@@ -351,7 +342,7 @@ export default class GooglePlacesAutocomplete extends Component {
       if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
         rows[i].isLoading = true;
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(rows),
+          dataSource: rows,
         });
         break;
       }
@@ -365,7 +356,7 @@ export default class GooglePlacesAutocomplete extends Component {
         }
       }
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(this._results)),
+        dataSource: this.buildRowsFromResults(this._results),
       });
     }
   }
@@ -427,7 +418,7 @@ export default class GooglePlacesAutocomplete extends Component {
               }
 
               this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(results)),
+                dataSource: this.buildRowsFromResults(results),
               });
             }
           }
@@ -460,7 +451,7 @@ export default class GooglePlacesAutocomplete extends Component {
     } else {
       this._results = [];
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
+        dataSource: this.buildRowsFromResults([]),
       });
     }
   }
@@ -482,7 +473,7 @@ export default class GooglePlacesAutocomplete extends Component {
             if (this._isMounted === true) {
               this._results = responseJSON.predictions;
               this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
+                dataSource: this.buildRowsFromResults(responseJSON.predictions),
               });
             }
           }
@@ -498,7 +489,7 @@ export default class GooglePlacesAutocomplete extends Component {
     } else {
       this._results = [];
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults([])),
+        dataSource: this.buildRowsFromResults([]),
       });
     }
   }
@@ -589,7 +580,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _renderSeparator(sectionID, rowID) {
-    if (rowID == this.state.dataSource.getRowCount() - 1) {
+    if (rowID == this.state.dataSource.length - 1) {
       return null
     }
 
@@ -631,12 +622,12 @@ export default class GooglePlacesAutocomplete extends Component {
     );
   }
   _shouldShowPoweredLogo() {
-    if (!this.props.enablePoweredByContainer || this.state.dataSource.getRowCount() == 0) {
+    if (!this.props.enablePoweredByContainer || this.state.dataSource.length == 0) {
       return false
     }
 
-    for (let i = 0; i < this.state.dataSource.getRowCount(); i++) {
-      let row = this.state.dataSource.getRowData(0, i);
+    for (let i = 0; i < this.state.dataSource.length; i++) {
+      let row = this.state.dataSource[i];
 
       if (!row.hasOwnProperty('isCurrentLocation') && !row.hasOwnProperty('isPredefinedPlace')) {
         return true
@@ -657,19 +648,18 @@ export default class GooglePlacesAutocomplete extends Component {
     }
   }
 
-  _getListView() {
+  _getFlatList() {
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
-        <ListView
-          keyboardShouldPersistTaps={true}
-          keyboardDismissMode="on-drag"
+        <FlatList
           style={[defaultStyles.listView, this.props.styles.listView]}
-          dataSource={this.state.dataSource}
-          renderSeparator={this._renderSeparator}
-          automaticallyAdjustContentInsets={false}
+          data={this.state.dataSource}
+          keyExtractor={(item) => item.description}
+          extraData={[this.state.dataSource, this.props]}
+          ItemSeparatorComponent={this._renderSeparator}
+          renderItem={({ item }) => this._renderRow(item)}
+          ListFooterComponent={this._renderPoweredLogo}
           {...this.props}
-          renderRow={this._renderRow}
-          renderFooter={this._renderPoweredLogo}
         />
       );
     }
@@ -706,7 +696,7 @@ export default class GooglePlacesAutocomplete extends Component {
           />
           {this._renderRightButton()}
         </View>
-        {this._getListView()}
+        {this._getFlatList()}
         {this.props.children}
       </View>
     );
@@ -797,7 +787,8 @@ const create = function create(options = {}) {
   return React.createClass({
     render() {
       return (
-        <GooglePlacesAutocomplete ref="GooglePlacesAutocomplete"
+        <GooglePlacesAutocomplete
+          ref="GooglePlacesAutocomplete"
           {...options}
         />
       );
