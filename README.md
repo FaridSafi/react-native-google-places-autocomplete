@@ -2,6 +2,8 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.3.0 : Added support for React 16 (isMounted() and propTypes bugfix), support for restricted API key and moving from `ListView` to `Flatlist`.
+- 1.2.12 : Fixed render description + docs.
 - 1.2.11 : Fixed current location result `onPress` event.
 - 1.2.10 : Set default `debounce` to `0`. Fixed debounce typing lag.
 - 1.2.9 : Added `isRowScrollable` prop.
@@ -13,14 +15,13 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 - 1.2.3 : Removed ProgressBarAndroid to remove warnings
 - 1.2.2 : Added prop to change placeholder text color
 - 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
-- 1.2.0 : Using ActivityIndicator therefore removing deprecation warning. Requires react-native >= 0.28
 
 
 ### Example
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
-```js
+```jsx
 var {GooglePlacesAutocomplete} = require('react-native-google-places-autocomplete');
 
 const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
@@ -33,6 +34,7 @@ var Example = React.createClass({
         placeholder='Search'
         minLength={2} // minimum length of text to search
         autoFocus={false}
+        returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
         listViewDisplayed='auto'    // true/false/undefined
         fetchDetails={true}
         renderDescription={(row) => row.description} // custom description render
@@ -76,6 +78,8 @@ var Example = React.createClass({
         predefinedPlaces={[homePlace, workPlace]}
 
         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+        renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
+        renderRightButton={() => <Text>Custom text after the inputg</Text>}
       />
     );
   }
@@ -106,16 +110,18 @@ var Example = React.createClass({
 | predefinedPlacesDescription | object (Text style) |
 | poweredContainer | object (View style) |
 | powered | object (Image style) |
+| separator | object (View style) |
 
 
 #### Example
 
 
-```
+```jsx
 <GooglePlacesAutocomplete
   placeholder='Enter Location'
   minLength={2}
   autoFocus={false}
+  returnKeyType={'default'}
   fetchDetails={true}
   styles={{
     textInputContainer: {
