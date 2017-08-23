@@ -306,6 +306,9 @@ export default class GooglePlacesAutocomplete extends Component {
         placeid: rowData.place_id,
         language: this.props.query.language,
       }));
+      if (this.props.query.origin !== null) {
+         request.setRequestHeader('Referer', this.props.query.origin)
+      }
       request.send();
     } else if (rowData.isCurrentLocation === true) {
 
@@ -447,6 +450,9 @@ export default class GooglePlacesAutocomplete extends Component {
       }
 
       request.open('GET', url);
+      if (this.props.query.origin !== null) {
+         request.setRequestHeader('Referer', this.props.query.origin)
+      }
       request.send();
     } else {
       this._results = [];
@@ -485,6 +491,9 @@ export default class GooglePlacesAutocomplete extends Component {
         }
       };
       request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+      if (this.props.query.origin !== null) {
+         request.setRequestHeader('Referer', this.props.query.origin)
+      }
       request.send();
     } else {
       this._results = [];
