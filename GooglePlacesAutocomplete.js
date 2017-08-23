@@ -689,7 +689,6 @@ export default class GooglePlacesAutocomplete extends Component {
         >
           {this._renderLeftButton()}
           <TextInput
-            { ...userProps }
             ref="textInput"
             returnKeyType={this.props.returnKeyType}
             autoFocus={this.props.autoFocus}
@@ -702,6 +701,7 @@ export default class GooglePlacesAutocomplete extends Component {
             onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
             clearButtonMode="while-editing"
             underlineColorAndroid={this.props.underlineColorAndroid}
+            { ...userProps }
           />
           {this._renderRightButton()}
         </View>
