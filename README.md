@@ -20,7 +20,7 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
-```js
+```jsx
 var {GooglePlacesAutocomplete} = require('react-native-google-places-autocomplete');
 
 const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
@@ -115,7 +115,7 @@ var Example = React.createClass({
 #### Example
 
 
-```
+```jsx
 <GooglePlacesAutocomplete
   placeholder='Enter Location'
   minLength={2}
