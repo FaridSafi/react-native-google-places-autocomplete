@@ -79,7 +79,7 @@ const defaultStyles = {
 export default class GooglePlacesAutocomplete extends Component {
   constructor (props) {
     super(props);
-
+    
     this._isMounted = false;
     this._results = [];
     this._requests = [];
@@ -115,6 +115,49 @@ export default class GooglePlacesAutocomplete extends Component {
     this._renderRightButton = this._renderRightButton.bind(this);
     this._getFlatList = this._getFlatList.bind(this);
   }
+  
+  getDefaultProps() {
+    return {
+      placeholder: 'Search',
+      placeholderTextColor: '#A8A8A8',
+      isRowScrollable: true,
+      underlineColorAndroid: 'transparent',
+      onPress: () => {},
+      onNotFound: () => {},
+      onFail: () => {},
+      minLength: 0,
+      fetchDetails: false,
+      autoFocus: false,
+      autoFillOnNotFound: false,
+      keyboardShouldPersistTaps: 'always',
+      getDefaultValue: () => '',
+      timeout: 20000,
+      onTimeout: () => console.warn('google places autocomplete: request timeout'),
+      query: {
+        key: 'missing api key',
+        language: 'en',
+      },
+      GoogleReverseGeocodingQuery: {},
+      GooglePlacesSearchQuery: {
+        rankby: 'distance',
+        types: 'food',
+      },
+      styles: {},
+      textInputProps: {},
+      enablePoweredByContainer: true,
+      predefinedPlaces: [],
+      currentLocation: false,
+      currentLocationLabel: 'Current location',
+      nearbyPlacesAPI: 'GooglePlacesSearch',
+      enableHighAccuracyLocation: true,
+      filterReverseGeocodingByTypes: [],
+      predefinedPlacesAlwaysVisible: false,
+      enableEmptySections: true,
+      listViewDisplayed: 'auto',
+      debounce: 0
+    };
+  }
+  
   getInitialState() {
     return {
       text: this.props.getDefaultValue(),
