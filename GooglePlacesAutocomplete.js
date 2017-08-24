@@ -406,6 +406,9 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.readyState !== 4) {
           return;
         }
+        this.setState({
+          loading: false
+        });
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -453,6 +456,9 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.query.origin !== null) {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
+      this.setState({
+        loading: true
+      });
       request.send();
     } else {
       this._results = [];
@@ -473,6 +479,9 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.readyState !== 4) {
           return;
         }
+        this.setState({
+          loading: false
+        });
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -494,6 +503,9 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.query.origin !== null) {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
+      this.setState({
+        loading: true
+      });
       request.send();
     } else {
       this._results = [];
@@ -658,6 +670,15 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getFlatList() {
+    if (this.state.loading) {
+      return (
+        <ActivityIndicator
+          style={{paddingTop:10}}
+          animating={true}
+        />
+      );
+    }
+
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <FlatList
