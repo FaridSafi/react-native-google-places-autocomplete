@@ -2,6 +2,9 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.3.2 : Added small feature which makes the request on `componentDidMount()` when you
+  already have the default value set.
+- 1.3.1 : Update `react-native` peerDependecy. (> 0.46)
 - 1.3.0 : Added support for React 16 (isMounted() and propTypes bugfix), support for restricted API key and moving from `ListView` to `Flatlist`.
 - 1.2.12 : Fixed render description + docs.
 - 1.2.11 : Fixed current location result `onPress` event.
