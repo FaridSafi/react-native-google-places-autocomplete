@@ -671,12 +671,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _getFlatList() {
     if (this.state.loading) {
-      return (
-        <ActivityIndicator
-          style={{paddingTop:10}}
-          animating={true}
-        />
-      );
+      return this.props.loadingComponent;
     }
 
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
@@ -733,6 +728,16 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 }
 
+// Loading screen used while searching current text input
+function getDefaultLoadingScreen() {
+  return (
+    <ActivityIndicator
+      style={{paddingTop:10}}
+      animating={true}
+    />
+  );
+}
+
 GooglePlacesAutocomplete.propTypes = {
   placeholder: PropTypes.string,
   placeholderTextColor: PropTypes.string,
@@ -768,7 +773,8 @@ GooglePlacesAutocomplete.propTypes = {
   renderRightButton: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   debounce: PropTypes.number,
-  isRowScrollable: PropTypes.bool
+  isRowScrollable: PropTypes.bool,
+  loadingComponent: PropTypes.element
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -809,7 +815,8 @@ GooglePlacesAutocomplete.defaultProps = {
   predefinedPlacesAlwaysVisible: false,
   enableEmptySections: true,
   listViewDisplayed: 'auto',
-  debounce: 0
+  debounce: 0,
+  loadingComponent: getDefaultLoadingScreen()
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
