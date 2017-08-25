@@ -140,6 +140,7 @@ export default class GooglePlacesAutocomplete extends Component {
       res = [...this.props.predefinedPlaces];
       if (this.props.currentLocation === true) {
         res.unshift({
+          id: 'currentLocationID',
           description: this.props.currentLocationLabel,
           isCurrentLocation: true,
         });
@@ -223,6 +224,7 @@ export default class GooglePlacesAutocomplete extends Component {
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
           let currentLocation = {
+            id: 'currentLocationID',
             description: this.props.currentLocationLabel,
             geometry: {
               location: {
@@ -668,7 +670,7 @@ export default class GooglePlacesAutocomplete extends Component {
         <FlatList
           style={[defaultStyles.listView, this.props.styles.listView]}
           data={this.state.dataSource}
-          keyExtractor={(item) => item.description}
+          keyExtractor={(item) => item.id}
           extraData={[this.state.dataSource, this.props]}
           ItemSeparatorComponent={this._renderSeparator}
           renderItem={({ item }) => this._renderRow(item)}
