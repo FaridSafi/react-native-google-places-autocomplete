@@ -413,6 +413,9 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.readyState !== 4) {
           return;
         }
+        this.setState({
+          loading: false
+        });
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -460,6 +463,9 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.query.origin !== null) {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
+      this.setState({
+        loading: true
+      });
       request.send();
     } else {
       this._results = [];
@@ -480,6 +486,9 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.readyState !== 4) {
           return;
         }
+        this.setState({
+          loading: false
+        });
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -501,6 +510,9 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.query.origin !== null) {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
+      this.setState({
+        loading: true
+      });
       request.send();
     } else {
       this._results = [];
@@ -665,6 +677,10 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getFlatList() {
+    if (this.state.loading) {
+      return this.props.loadingComponent;
+    }
+
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <FlatList
@@ -719,6 +735,16 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 }
 
+// Loading screen used while searching current text input
+function getDefaultLoadingScreen() {
+  return (
+    <ActivityIndicator
+      style={{paddingTop:10}}
+      animating={true}
+    />
+  );
+}
+
 GooglePlacesAutocomplete.propTypes = {
   placeholder: PropTypes.string,
   placeholderTextColor: PropTypes.string,
@@ -754,7 +780,8 @@ GooglePlacesAutocomplete.propTypes = {
   renderRightButton: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   debounce: PropTypes.number,
-  isRowScrollable: PropTypes.bool
+  isRowScrollable: PropTypes.bool,
+  loadingComponent: PropTypes.element
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -795,7 +822,8 @@ GooglePlacesAutocomplete.defaultProps = {
   predefinedPlacesAlwaysVisible: false,
   enableEmptySections: true,
   listViewDisplayed: 'auto',
-  debounce: 0
+  debounce: 0,
+  loadingComponent: getDefaultLoadingScreen()
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
