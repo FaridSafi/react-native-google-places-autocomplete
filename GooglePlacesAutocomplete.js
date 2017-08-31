@@ -683,7 +683,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getFlatList() {
-    if (this.state.loading) {
+    if (this.state.loading && this.props.loadingComponent) {
       return this.props.loadingComponent;
     }
 
