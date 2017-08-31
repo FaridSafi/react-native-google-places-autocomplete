@@ -178,7 +178,13 @@ export default class GooglePlacesAutocomplete extends Component {
         listViewDisplayed: nextProps.listViewDisplayed,
       });
     }
+    if(this.state.text !== nextProps.text) {
+      this.setState({
+        listViewDisplayed:true
+      }, this._handleChangeText(nextProps.text));
+    }
   }
+
   componentWillUnmount() {
     this._abortRequests();
     this._isMounted = false;
@@ -707,27 +713,29 @@ export default class GooglePlacesAutocomplete extends Component {
       <View
         style={[defaultStyles.container, this.props.styles.container]}
       >
-        <View
-          style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
-        >
-          {this._renderLeftButton()}
-          <TextInput
-            ref="textInput"
-            returnKeyType={this.props.returnKeyType}
-            autoFocus={this.props.autoFocus}
-            style={[defaultStyles.textInput, this.props.styles.textInput]}
-            onChangeText={this._handleChangeText}
-            value={this.state.text}
-            placeholder={this.props.placeholder}
+        {!this.props.textInputHide &&
+          <View
+            style={[defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
+          >
+            {this._renderLeftButton()}
+            <TextInput
+              ref="textInput"
+              returnKeyType={this.props.returnKeyType}
+              autoFocus={this.props.autoFocus}
+              style={[defaultStyles.textInput, this.props.styles.textInput]}
+              onChangeText={this._handleChangeText}
+              value={this.state.text}
+              placeholder={this.props.placeholder}
 
-            placeholderTextColor={this.props.placeholderTextColor}
-            onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-            clearButtonMode="while-editing"
-            underlineColorAndroid={this.props.underlineColorAndroid}
-            { ...userProps }
-          />
-          {this._renderRightButton()}
-        </View>
+              placeholderTextColor={this.props.placeholderTextColor}
+              onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
+              clearButtonMode="while-editing"
+              underlineColorAndroid={this.props.underlineColorAndroid}
+              { ...userProps }
+            />
+            {this._renderRightButton()}
+          </View>
+        }
         {this._getFlatList()}
         {this.props.children}
       </View>
@@ -781,7 +789,9 @@ GooglePlacesAutocomplete.propTypes = {
   listUnderlayColor: PropTypes.string,
   debounce: PropTypes.number,
   isRowScrollable: PropTypes.bool,
-  loadingComponent: PropTypes.element
+  loadingComponent: PropTypes.element,
+  text: PropTypes.string,
+  textInputHide: PropTypes.bool
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -823,7 +833,9 @@ GooglePlacesAutocomplete.defaultProps = {
   enableEmptySections: true,
   listViewDisplayed: 'auto',
   debounce: 0,
-  loadingComponent: getDefaultLoadingScreen()
+  loadingComponent: getDefaultLoadingScreen(),
+  text: '',
+  textInputHide: false
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
