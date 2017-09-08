@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.3.3 : Fixed `key prop` warning  and added loading indicator.
 - 1.3.2 : Added small feature which makes the request on `componentDidMount()` when you
   already have the default value set.
 - 1.3.1 : Update `react-native` peerDependecy. (> 0.46)
