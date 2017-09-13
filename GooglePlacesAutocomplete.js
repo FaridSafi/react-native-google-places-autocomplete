@@ -166,6 +166,7 @@ const GooglePlacesAutocomplete = React.createClass({
       enableEmptySections: true,
       listViewDisplayed: 'auto',
       debounce: 0,
+      onResponse: () => {},
     };
   },
 
@@ -565,6 +566,7 @@ const GooglePlacesAutocomplete = React.createClass({
       request.timeout = this.props.timeout;
       request.ontimeout = this.props.onTimeout;
       request.onreadystatechange = () => {
+        this.props.onResponse();
         if (request.readyState !== 4) {
           return;
         }
