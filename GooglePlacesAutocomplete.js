@@ -138,7 +138,7 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
 
-    if(this.state.text !== nextProps.text) {
+    if(typeof(nextProps.text) !== "undefined" && this.state.text !== nextProps.text) {
       this.setState({
         listViewDisplayed:true
       }, this._handleChangeText(nextProps.text));
@@ -685,7 +685,6 @@ export default class GooglePlacesAutocomplete extends Component {
               returnKeyType={this.props.returnKeyType}
               autoFocus={this.props.autoFocus}
               style={[defaultStyles.textInput, this.props.styles.textInput]}
-              onChangeText={this._handleChangeText}
               value={this.state.text}
               placeholder={this.props.placeholder}
 
@@ -694,6 +693,7 @@ export default class GooglePlacesAutocomplete extends Component {
               clearButtonMode="while-editing"
               underlineColorAndroid={this.props.underlineColorAndroid}
               { ...userProps }
+              onChangeText={this._handleChangeText}
             />
             {this._renderRightButton()}
           </View>
@@ -784,7 +784,6 @@ GooglePlacesAutocomplete.defaultProps = {
   enableEmptySections: true,
   listViewDisplayed: 'auto',
   debounce: 0,
-  text: '',
   textInputHide: false
 }
 
