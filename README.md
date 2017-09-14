@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.3.5 : Fixed bug where input was being cleared.
 - 1.3.4 : Fixed bug where loading was breaking the component.
 - 1.3.3 : Fixed `key prop` warning  and added loading indicator.
 - 1.3.2 : Added small feature which makes the request on `componentDidMount()` when you
@@ -13,13 +14,6 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 - 1.2.10 : Set default `debounce` to `0`. Fixed debounce typing lag.
 - 1.2.9 : Added `isRowScrollable` prop.
 - 1.2.8 : Added `underlineColorAndroid`, `listUnderlayColor`, `renderLeftButton`, `renderRightButton` props. Added `nearbyPlacesAPI` option `None`.
-- 1.2.7 : Use `children` prop to pass children elements directly into `GooglePlacesAutocomplete`.
-- 1.2.6 : Added `renderRow` prop.
-- 1.2.5 : Added `renderDescription` prop for rendering dropdown item text
-- 1.2.4 : Added `listViewDisplayed` prop for controlling dropdown
-- 1.2.3 : Removed ProgressBarAndroid to remove warnings
-- 1.2.2 : Added prop to change placeholder text color
-- 1.2.1 : Fixed special request characters issue + ensure react-native@0.28 peer dependency.
 
 
 ### Example
