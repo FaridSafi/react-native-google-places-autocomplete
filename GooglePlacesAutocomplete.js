@@ -138,7 +138,7 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
 
-    if(this.state.text !== nextProps.text) {
+    if(typeof(nextProps.text) !== "undefined" && this.state.text !== nextProps.text) {
       this.setState({
         listViewDisplayed:true
       }, this._handleChangeText(nextProps.text));
@@ -784,7 +784,6 @@ GooglePlacesAutocomplete.defaultProps = {
   enableEmptySections: true,
   listViewDisplayed: 'auto',
   debounce: 0,
-  text: '',
   textInputHide: false
 }
 
