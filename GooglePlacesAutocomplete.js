@@ -685,7 +685,6 @@ export default class GooglePlacesAutocomplete extends Component {
               returnKeyType={this.props.returnKeyType}
               autoFocus={this.props.autoFocus}
               style={[defaultStyles.textInput, this.props.styles.textInput]}
-              onChangeText={this._handleChangeText}
               value={this.state.text}
               placeholder={this.props.placeholder}
 
@@ -694,6 +693,7 @@ export default class GooglePlacesAutocomplete extends Component {
               clearButtonMode="while-editing"
               underlineColorAndroid={this.props.underlineColorAndroid}
               { ...userProps }
+              onChangeText={this._handleChangeText}
             />
             {this._renderRightButton()}
           </View>
