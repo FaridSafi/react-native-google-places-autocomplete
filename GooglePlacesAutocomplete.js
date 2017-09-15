@@ -682,7 +682,7 @@ const GooglePlacesAutocomplete = React.createClass({
         showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <TouchableOpacity
-            style={{ flex: 0.95 }}
+            style={{ flex: 1}}
             onPress={() => this._onPress(rowData)}
             underlayColor={this.props.listUnderlayColor || '#c8c7cc'}>
             <View
@@ -734,7 +734,7 @@ const GooglePlacesAutocomplete = React.createClass({
   _renderSelectIcon(rowData) {
 
     return(
-    <TouchableOpacity onPress={() => this._onPress(rowData)} style={{ flex: 0.1, paddingLeft: 20, justifyContent: 'flex-end'}}>
+    <TouchableOpacity onPress={() => this._onPress(rowData)} style={{ justifyContent: 'flex-end'}}>
       {this.props.selectIcon}
     </TouchableOpacity>);
   },
