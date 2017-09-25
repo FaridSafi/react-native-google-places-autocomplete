@@ -173,7 +173,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   getCurrentLocation = () => {
     let options = {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 20000,
       maximumAge: 1000
     };
