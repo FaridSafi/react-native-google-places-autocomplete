@@ -2,6 +2,7 @@
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
 ### Changelog
+- 1.3.6 : Fixed accuracy issue.
 - 1.3.5 : Fixed bug where input was being cleared.
 - 1.3.4 : Fixed bug where loading was breaking the component.
 - 1.3.3 : Fixed `key prop` warning  and added loading indicator.
