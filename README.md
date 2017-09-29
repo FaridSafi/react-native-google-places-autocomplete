@@ -73,7 +73,7 @@ const GooglePlacesInput = () => {
 
       debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
       renderLeftButton={()  => <Image source={require('path/custom/left-icon')} />}
-      renderRightButton={() => <Text>Custom text after the inputg</Text>}
+      renderRightButton={() => <Text>Custom text after the input</Text>}
     />
   );
 }
