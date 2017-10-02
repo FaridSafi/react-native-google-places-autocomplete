@@ -697,6 +697,7 @@ const GooglePlacesAutocomplete = React.createClass({
               {this._renderRowData(rowData)}
               {this._renderSelectIcon(rowData)}
             </View>
+            <Text numberOfLines={1} style={{ color: "#999999", fontSize: 12, fontFamily: "Lato-Regular", lineHeight: 16.0}}>{secondaryText}</Text>
           </TouchableOpacity>
 
         </View>
