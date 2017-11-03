@@ -355,22 +355,22 @@ export default class GooglePlacesAutocomplete extends Component {
     return rowData;
   }
 
-  _filterResultsByTypes = (responseJSON, types) => {
-    if (types.length === 0) return responseJSON.results;
+  _filterResultsByTypes = (unfilteredResults, types) => {
+    if (types.length === 0) return unfilteredResults;
 
-    var results = [];
-    for (let i = 0; i < responseJSON.results.length; i++) {
+    const results = [];
+    for (let i = 0; i < unfilteredResults.length; i++) {
       let found = false;
 
       for (let j = 0; j < types.length; j++) {
-        if (responseJSON.results[i].types.indexOf(types[j]) !== -1) {
+        if (unfilteredResults[i].types.indexOf(types[j]) !== -1) {
           found = true;
           break;
         }
       }
 
       if (found === true) {
-        results.push(responseJSON.results[i]);
+        results.push(unfilteredResults[i]);
       }
     }
     return results;
@@ -398,7 +398,7 @@ export default class GooglePlacesAutocomplete extends Component {
             if (this._isMounted === true) {
               var results = [];
               if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-                results = this._filterResultsByTypes(responseJSON, this.props.filterReverseGeocodingByTypes);
+                results = this._filterResultsByTypes(responseJSON.results, this.props.filterReverseGeocodingByTypes);
               } else {
                 results = responseJSON.results;
               }
@@ -462,9 +462,13 @@ export default class GooglePlacesAutocomplete extends Component {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
             if (this._isMounted === true) {
-              this._results = responseJSON.predictions;
+              const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
+                ? this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes)
+                : responseJSON.predictions;
+
+              this._results = results;
               this.setState({
-                dataSource: this.buildRowsFromResults(responseJSON.predictions),
+                dataSource: this.buildRowsFromResults(results),
               });
             }
           }
