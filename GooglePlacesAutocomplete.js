@@ -674,6 +674,7 @@ export default class GooglePlacesAutocomplete extends Component {
     return (
       <View
         style={[defaultStyles.container, this.props.styles.container]}
+        pointerEvents="box-none"
       >
         {!this.props.textInputHide &&
           <View
