@@ -44,7 +44,7 @@ const GooglePlacesInput = () => {
         types: '(cities)' // default: 'geocode'
       }}
       
-      styles={{
+      customStyles={{
         textInputContainer: {
           width: '100%'
         },
@@ -82,7 +82,7 @@ const GooglePlacesInput = () => {
 
 ### Styling
 
-```GooglePlacesAutocomplete``` can be easily customized to meet styles of your  app. Pass styles props to ```GooglePlacesAutocomplete``` with style object for different elements (keys for style object are listed below)
+```GooglePlacesAutocomplete``` can be easily customized to meet styles of your  app. Pass customStyles props to ```GooglePlacesAutocomplete``` with style object for different elements (keys for style object are listed below)
 
 | key | type |
 | ---- | ---- |
@@ -108,7 +108,7 @@ const GooglePlacesInput = () => {
   autoFocus={false}
   returnKeyType={'default'}
   fetchDetails={true}
-  styles={{
+  customStyles={{
     textInputContainer: {
       backgroundColor: 'rgba(0,0,0,0)',
       borderTopWidth: 0,
@@ -135,7 +135,7 @@ const GooglePlacesInput = () => {
 - [x] Places autocompletion
 - [x] iOS and Android compatibility
 - [x] Places details fetching + ActivityIndicatorIOS/ProgressBarAndroid loaders
-- [x] Customizable using the ```styles``` parameter
+- [x] Customizable using the ```customStyles``` parameter
 - [x] XHR cancellations when typing fast
 - [x] Google Places terms compliant
 - [x] Current location
