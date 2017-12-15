@@ -31,7 +31,7 @@ var GooglePlacesAutocomplete = require('react-native-google-places-autocomplete'
     language: 'en', // language of the results
     types: '(cities)', // default: 'geocode'
   },
-  styles: {
+  customStyles: {
     description: {
       fontWeight: 'bold',
     }
