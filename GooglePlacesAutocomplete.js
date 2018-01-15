@@ -16,6 +16,9 @@ import {
 } from 'react-native'
 import Qs from 'qs'
 import debounce from 'lodash.debounce'
+import * as Animatable from 'react-native-animatable'
+
+const AnimatableFlatList = Animatable.createAnimatableComponent(FlatList)
 
 const WINDOW = Dimensions.get('window')
 
@@ -726,7 +729,7 @@ export default class GooglePlacesAutocomplete extends Component {
 			this.state.listViewDisplayed === true
 		) {
 			return (
-				<FlatList
+				<AnimatableFlatList
 					style={[defaultStyles.listView, this.props.styles.listView]}
 					data={this.state.dataSource}
 					keyExtractor={keyGenerator}
