@@ -129,6 +129,7 @@ export default class GooglePlacesAutocomplete extends Component {
     // been rendered
     this._isMounted = true;
     this._onChangeText(this.state.text);
+    this._onBlur()
   }
 
   componentWillReceiveProps(nextProps) {
