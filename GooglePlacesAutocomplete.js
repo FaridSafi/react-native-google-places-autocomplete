@@ -91,6 +91,7 @@ export default class GooglePlacesAutocomplete extends Component {
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
     error: false,
+    pressedId: '',
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -214,6 +215,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _onPress = (rowData) => {
+    this.setState({ pressedId: rowData.place_id });
     if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
@@ -527,7 +529,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _renderRowData = (rowData) => {
     if (this.props.renderRow) {
-      return this.props.renderRow(rowData);
+      return this.props.renderRow(rowData, this.state.pressedId === rowData.place_id);
     }
 
     return (
@@ -563,7 +565,7 @@ export default class GooglePlacesAutocomplete extends Component {
     return (
       <ScrollView
         style={{ flex: 1 }}
-        scrollEnabled={this.props.isRowScrollable}
+        scrollEnabled={false}
         keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -571,11 +573,12 @@ export default class GooglePlacesAutocomplete extends Component {
         <TouchableHighlight
           style={{ width: WINDOW.width }}
           onPress={() => this._onPress(rowData)}
-          underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
+          underlayColor={this.props.listUnderlayColor || "#FFF"}
+          onShowUnderlay={() => this.setState({ pressedId: rowData.place_id })}
+          onHideUnderlay={() => this.setState({ pressedId: '' })}
         >
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
             {this._renderRowData(rowData)}
-            {this._renderLoader(rowData)}
           </View>
         </TouchableHighlight>
       </ScrollView>
