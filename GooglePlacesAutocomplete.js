@@ -127,8 +127,8 @@ export default class GooglePlacesAutocomplete extends Component {
   componentDidMount() {
     // This will load the default value's search results after the view has
     // been rendered
-    this._isMounted = true;
     this._onChangeText(this.state.text);
+    this._isMounted = true;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -494,7 +494,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
     this.setState({
       text: text,
-      listViewDisplayed: true,
+      listViewDisplayed: this._isMounted,
     });
   }
 
