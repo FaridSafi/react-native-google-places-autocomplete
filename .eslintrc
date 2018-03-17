@@ -2,7 +2,7 @@
 // see: https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb
 {
   "extends": "airbnb",
-
+  "parser": "babel-eslint",
   "rules": {
     "no-console": 0,
     "react/jsx-boolean-value": 0,
