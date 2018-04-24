@@ -124,7 +124,7 @@ export default class GooglePlacesAutocomplete extends Component {
   componentDidMount() {
     // This will load the default value's search results after the view has
     // been rendered
-    this._onChangeText(this.state.text);
+    this._handleChangeText(this.state.text);
     this._isMounted = true;
   }
 
