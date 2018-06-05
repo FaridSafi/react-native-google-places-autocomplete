@@ -527,7 +527,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
     return (
       <Text style={[{flex: 1}, this.props.suppressDefaultStyles ? {} : defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
-        numberOfLines={1}
+        numberOfLines={this.props.numberOfLines}
       >
         {this._renderDescription(rowData)}
       </Text>
@@ -745,7 +745,8 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   text: PropTypes.string,
   textInputHide: PropTypes.bool,
-  suppressDefaultStyles: PropTypes.bool
+  suppressDefaultStyles: PropTypes.bool,
+  numberOfLines: PropTypes.number
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -788,7 +789,8 @@ GooglePlacesAutocomplete.defaultProps = {
   listViewDisplayed: 'auto',
   debounce: 0,
   textInputHide: false,
-  suppressDefaultStyles: false
+  suppressDefaultStyles: false,
+  numberOfLines: 1
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
