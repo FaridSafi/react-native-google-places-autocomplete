@@ -689,6 +689,7 @@ export default class GooglePlacesAutocomplete extends Component {
             {this._renderLeftButton()}
             <TextInput
               ref="textInput"
+              editable={this.props.editable}
               returnKeyType={this.props.returnKeyType}
               autoFocus={this.props.autoFocus}
               style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInput, this.props.styles.textInput]}
@@ -752,7 +753,8 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
-  onSubmitEditing: PropTypes.func
+  onSubmitEditing: PropTypes.func,
+  editable: PropTypes.bool
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -797,7 +799,8 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   suppressDefaultStyles: false,
   numberOfLines: 1,
-  onSubmitEditing: () => {}
+  onSubmitEditing: () => {},
+  editable: true
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
