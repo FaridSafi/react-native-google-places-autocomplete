@@ -665,7 +665,6 @@ export default class GooglePlacesAutocomplete extends Component {
           ItemSeparatorComponent={this._renderSeparator}
           renderItem={({ item }) => this._renderRow(item)}
           ListFooterComponent={this._renderPoweredLogo}
-          {...this.props}
         />
       );
     }
