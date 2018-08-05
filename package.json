@@ -28,6 +28,7 @@
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.5.10",
+    "react-native-vector-icons": "^4.6.0",
     "qs": "^5.2.0"
   },
   "devDependencies": {
