@@ -10,12 +10,14 @@ import {
   StyleSheet,
   Dimensions,
   TouchableHighlight,
+  TouchableOpacity
   Platform,
   ActivityIndicator,
   PixelRatio
 } from 'react-native';
 import Qs from 'qs';
 import debounce from 'lodash.debounce';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const WINDOW = Dimensions.get('window');
 
@@ -71,6 +73,11 @@ const defaultStyles = {
   androidLoader: {
     marginRight: -15,
   },
+  clearButton:{
+    backgroundColor: 'rgba(0,0,0,0)',
+    justifyContent: 'center',
+    paddingRight: WINDOW.width / 30
+  }
 };
 
 export default class GooglePlacesAutocomplete extends Component {
@@ -703,6 +710,18 @@ export default class GooglePlacesAutocomplete extends Component {
               { ...userProps }
               onChangeText={this._handleChangeText}
             />
+			<TouchableOpacity
+				style={defaultStyles.clearButton}
+				onPress={() => {
+					this.setState({ text: '' });
+				}}
+			>
+				<Icon
+					name="remove"
+					size={15}
+					style={{ color: 'black' }}
+				/>
+			</TouchableOpacity>
             {this._renderRightButton()}
           </View>
         }
