@@ -274,7 +274,7 @@ export default class GooglePlacesAutocomplete extends Component {
               'google places autocomplete: request could not be completed or has been aborted'
             );
           } else {
-            this.props.onFail();
+            this.props.onFail('request could not be completed or has been aborted');
           }
         }
       };
@@ -411,7 +411,11 @@ export default class GooglePlacesAutocomplete extends Component {
             }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            console.warn('google places autocomplete: ' + responseJSON.error_message);
+              if(!this.props.onFail)
+                console.warn('google places autocomplete: ' + responseJSON.error_message);
+              else{
+                this.props.onFail(responseJSON.error_message)
+              }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -475,7 +479,11 @@ export default class GooglePlacesAutocomplete extends Component {
             }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            console.warn('google places autocomplete: ' + responseJSON.error_message);
+            if(!this.props.onFail)
+              console.warn('google places autocomplete: ' + responseJSON.error_message);
+            else{
+              this.props.onFail(responseJSON.error_message)
+            }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
