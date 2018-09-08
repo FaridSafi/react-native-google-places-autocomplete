@@ -371,6 +371,8 @@ const GooglePlacesAutocomplete = React.createClass({
         key: this.props.query.key,
         placeid: rowData.place_id,
         language: this.props.query.language,
+        fields: this.props.query.fields,
+        sessiontoken: this.props.query.sessiontoken,
       }));
       request.send();
     } else if (rowData.isCurrentLocation === true) {
