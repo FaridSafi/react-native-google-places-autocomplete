@@ -96,6 +96,7 @@ const GooglePlacesInput = () => {
 | poweredContainer | object (View style) |
 | powered | object (Image style) |
 | separator | object (View style) |
+| row | object (View style) |
 
 
 #### Example
