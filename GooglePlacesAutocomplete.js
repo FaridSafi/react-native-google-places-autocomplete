@@ -255,7 +255,7 @@ const GooglePlacesAutocomplete = React.createClass({
         maximumAge: 1000
       };
     let getCurrentPosition = this.props.getCurrentPosition ||
-                             navigator.geolocation.getCurrentPosition;
+      navigator.geolocation.getCurrentPosition;
     getCurrentPosition(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
@@ -567,7 +567,7 @@ const GooglePlacesAutocomplete = React.createClass({
 
     return (
       <Text style={[{flex: 1}, defaultStyles.description, this.props.styles.description, rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {}]}
-        numberOfLines={1}
+            numberOfLines={1}
       >
         {this._renderDescription(rowData)}
       </Text>
@@ -666,10 +666,10 @@ const GooglePlacesAutocomplete = React.createClass({
   },
 
   _renderRightButton() {
-      if (this.props.renderRightButton) {
-        return this.props.renderRightButton()
-      }
-    },
+    if (this.props.renderRightButton) {
+      return this.props.renderRightButton()
+    }
+  },
 
   _renderPoweredLogo() {
     if (!this._shouldShowPoweredLogo()) {
@@ -678,14 +678,14 @@ const GooglePlacesAutocomplete = React.createClass({
 
     return (
       <View
-          style={[defaultStyles.row, defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
-        >
-          <Image
-            style={[defaultStyles.powered, this.props.styles.powered]}
-            resizeMode={Image.resizeMode.contain}
-            source={require('./images/powered_by_google_on_white.png')}
-          />
-        </View>
+        style={[defaultStyles.row, defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
+      >
+        <Image
+          style={[defaultStyles.powered, this.props.styles.powered]}
+          resizeMode={Image.resizeMode.contain}
+          source={require('./images/powered_by_google_on_white.png')}
+        />
+      </View>
     );
   },
 
@@ -751,7 +751,7 @@ const create = function create(options = {}) {
     render() {
       return (
         <GooglePlacesAutocomplete ref="GooglePlacesAutocomplete"
-          {...options}
+                                  {...options}
         />
       );
     },
