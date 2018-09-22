@@ -318,63 +318,87 @@ const GooglePlacesAutocomplete = React.createClass({
       // display loader
       this._enableRowLoader(rowData);
 
-      // fetch details
-      const request = new XMLHttpRequest();
-      this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
-      request.onreadystatechange = () => {
-        if (request.readyState !== 4) {
-          return;
+      if (this.props.autocompleteSearch) {
+        if (this.isMounted()) {
+          const details = {
+            name: rowData.name,
+            description: rowData.description,
+            geometry: {
+              location: {
+                lat: rowData.location.latitude,
+                lng: rowData.location.longitude,
+              },
+            }
+          };
+          this._disableRowLoaders();
+          this._onBlur();
+
+          this.setState({
+            text: rowData.description,
+          });
+
+          delete rowData.isLoading;
+          this.props.onPress(rowData, details);
         }
-        if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
-          if (responseJSON.status === 'OK') {
-            if (this.isMounted()) {
-              const details = responseJSON.result;
+      }
+      else {
+        // fetch details
+        const request = new XMLHttpRequest();
+        this._requests.push(request);
+        request.timeout = this.props.timeout;
+        request.ontimeout = this.props.onTimeout;
+        request.onreadystatechange = () => {
+          if (request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 200) {
+            const responseJSON = JSON.parse(request.responseText);
+            if (responseJSON.status === 'OK') {
+              if (this.isMounted()) {
+                const details = responseJSON.result;
+                this._disableRowLoaders();
+                this._onBlur();
+
+                this.setState({
+                  text: rowData.description,
+                });
+
+                delete rowData.isLoading;
+                this.props.onPress(rowData, details);
+              }
+            } else {
               this._disableRowLoaders();
-              this._onBlur();
 
-              this.setState({
-                text: rowData.description,
-              });
+              if (this.props.autoFillOnNotFound) {
+                this.setState({
+                  text: rowData.description,
+                });
+                delete rowData.isLoading;
+              }
 
-              delete rowData.isLoading;
-              this.props.onPress(rowData, details);
+              if (!this.props.onNotFound)
+                console.warn('google places autocomplete: ' + responseJSON.status);
+              else
+                this.props.onNotFound(responseJSON);
             }
           } else {
             this._disableRowLoaders();
 
-            if (this.props.autoFillOnNotFound) {
-              this.setState({
-                text: rowData.description,
-              });
-              delete rowData.isLoading;
-            }
-
-            if (!this.props.onNotFound)
-              console.warn('google places autocomplete: ' + responseJSON.status);
+            if (!this.props.onFail)
+              console.warn('google places autocomplete: request could not be completed or has been aborted');
             else
-              this.props.onNotFound(responseJSON);
-
+              this.props.onFail();
           }
-        } else {
-          this._disableRowLoaders();
-
-          if (!this.props.onFail)
-            console.warn('google places autocomplete: request could not be completed or has been aborted');
-          else
-            this.props.onFail();
-        }
-      };
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
-        key: this.props.query.key,
-        placeid: rowData.place_id,
-        language: this.props.query.language,
-        fields: this.props.query.fields,
-        sessiontoken: this.props.query.sessiontoken,
-      }));
-      request.send();
+        };
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
+          key: this.props.query.key,
+          placeid: rowData.place_id,
+          language: this.props.query.language,
+          fields: this.props.query.fields,
+          sessiontoken: this.props.query.sessiontoken,
+        }));
+        request.send();
+      }
     } else if (rowData.isCurrentLocation === true) {
 
       // display loader
@@ -509,33 +533,50 @@ const GooglePlacesAutocomplete = React.createClass({
   _request(text) {
     this._abortRequests();
     if (text.length >= this.props.minLength) {
-      const request = new XMLHttpRequest();
-      this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
-      request.onreadystatechange = () => {
-        if (request.readyState !== 4) {
-          return;
-        }
-        if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
-          if (typeof responseJSON.predictions !== 'undefined') {
-            if (this.isMounted()) {
-              this._results = responseJSON.predictions;
-              this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
-              });
+
+      if (this.props.autocompleteSearch){
+        this.props.autocompleteSearch(text)
+          .then((result) => {
+              if (typeof result!== 'undefined') {
+                if (this.isMounted()) {
+                  this._results = result;
+                  this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(result),
+                  });
+                }
+              }
             }
+          )
+      }
+      else {
+        const request = new XMLHttpRequest();
+        this._requests.push(request);
+        request.timeout = this.props.timeout;
+        request.ontimeout = this.props.onTimeout;
+        request.onreadystatechange = () => {
+          if (request.readyState !== 4) {
+            return;
           }
-          if (typeof responseJSON.error_message !== 'undefined') {
-            console.warn('google places autocomplete: ' + responseJSON.error_message);
+          if (request.status === 200) {
+            const responseJSON = JSON.parse(request.responseText);
+            if (typeof responseJSON.predictions !== 'undefined') {
+              if (this.isMounted()) {
+                this._results = responseJSON.predictions;
+                this.setState({
+                  dataSource: this.state.dataSource.cloneWithRows(this.buildRowsFromResults(responseJSON.predictions)),
+                });
+              }
+            }
+            if (typeof responseJSON.error_message !== 'undefined') {
+              console.warn('google places autocomplete: ' + responseJSON.error_message);
+            }
+          } else {
+            // console.warn("google places autocomplete: request could not be completed or has been aborted");
           }
-        } else {
-          // console.warn("google places autocomplete: request could not be completed or has been aborted");
-        }
-      };
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
-      request.send();
+        };
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+        request.send();
+      }
     } else {
       this._results = [];
       this.setState({
