@@ -683,6 +683,7 @@ export default class GooglePlacesAutocomplete extends Component {
   render() {
     let {
       onFocus,
+      clearButtonMode,
       ...userProps
     } = this.props.textInputProps;
     return (
@@ -706,8 +707,10 @@ export default class GooglePlacesAutocomplete extends Component {
               onSubmitEditing={this.props.onSubmitEditing}
               placeholderTextColor={this.props.placeholderTextColor}
               onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-              clearButtonMode="while-editing"
               underlineColorAndroid={this.props.underlineColorAndroid}
+              clearButtonMode={
+                clearButtonMode ? clearButtonMode : "while-editing"
+              }
               { ...userProps }
               onChangeText={this._handleChangeText}
             />
