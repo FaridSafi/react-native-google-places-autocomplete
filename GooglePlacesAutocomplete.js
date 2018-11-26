@@ -187,7 +187,7 @@ export default class GooglePlacesAutocomplete extends Component {
       }
     }
 
-    navigator.geolocation.getCurrentPosition(
+    this.props.getCurrentLocation(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
           let currentLocation = {
@@ -747,6 +747,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputProps: PropTypes.object,
   enablePoweredByContainer: PropTypes.bool,
   predefinedPlaces: PropTypes.array,
+  getCurrentLocation: PropTypes.func,
   currentLocation: PropTypes.bool,
   currentLocationLabel: PropTypes.string,
   nearbyPlacesAPI: PropTypes.string,
@@ -799,6 +800,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputProps: {},
   enablePoweredByContainer: true,
   predefinedPlaces: [],
+  getCurrentLocation: navigator.geolocation.getCurrentPosition,
   currentLocation: false,
   currentLocationLabel: 'Current location',
   nearbyPlacesAPI: 'GooglePlacesSearch',
