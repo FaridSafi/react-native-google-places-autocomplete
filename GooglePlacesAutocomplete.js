@@ -709,6 +709,7 @@ export default class GooglePlacesAutocomplete extends Component {
               onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
               onBlur={this._onBlur}
               underlineColorAndroid={this.props.underlineColorAndroid}
+              inputAccessoryViewID={this.props.inputAccessoryViewID}
               clearButtonMode={
                 clearButtonMode ? clearButtonMode : "while-editing"
               }
@@ -766,6 +767,7 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
+  inputAccessoryViewID: PropTypes.string,
   editable: PropTypes.bool
 }
 GooglePlacesAutocomplete.defaultProps = {
@@ -812,6 +814,7 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
+  inputAccessoryViewID: null,
   editable: true
 }
 
