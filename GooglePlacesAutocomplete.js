@@ -241,7 +241,7 @@ export default class GooglePlacesAutocomplete extends Component {
             if (this._isMounted === true) {
               const details = responseJSON.result;
               this._disableRowLoaders();
-
+              this._onBlur();
 
               this.setState({
                 text: this._renderDescription( rowData ),
@@ -249,7 +249,6 @@ export default class GooglePlacesAutocomplete extends Component {
 
               delete rowData.isLoading;
               this.props.onPress(rowData, details);
-              this._onBlur();
             }
           } else {
             this._disableRowLoaders();
@@ -275,7 +274,7 @@ export default class GooglePlacesAutocomplete extends Component {
               'google places autocomplete: request could not be completed or has been aborted'
             );
           } else {
-            this.props.onFail();
+            this.props.onFail('request could not be completed or has been aborted');
           }
         }
       };
@@ -308,14 +307,12 @@ export default class GooglePlacesAutocomplete extends Component {
         text: this._renderDescription( rowData ),
       });
 
-
+      this._onBlur();
       delete rowData.isLoading;
       let predefinedPlace = this._getPredefinedPlace(rowData);
 
       // sending predefinedPlace as details for predefined places
       this.props.onPress(predefinedPlace, predefinedPlace);
-
-      this._onBlur();
     }
   }
 
@@ -414,7 +411,11 @@ export default class GooglePlacesAutocomplete extends Component {
             }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            console.warn('google places autocomplete: ' + responseJSON.error_message);
+            if (!this.props.onFail) {
+              console.warn('google places autocomplete: ' + responseJSON.error_message);
+            } else {
+              this.props.onFail(responseJSON.error_message)
+            }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -478,7 +479,11 @@ export default class GooglePlacesAutocomplete extends Component {
             }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            console.warn('google places autocomplete: ' + responseJSON.error_message);
+            if(!this.props.onFail) {
+              console.warn('google places autocomplete: ' + responseJSON.error_message);
+            } else {
+              this.props.onFail(responseJSON.error_message)
+            }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -688,6 +693,7 @@ export default class GooglePlacesAutocomplete extends Component {
   render() {
     let {
       onFocus,
+      clearButtonMode,
       ...userProps
     } = this.props.textInputProps;
     return (
@@ -711,7 +717,9 @@ export default class GooglePlacesAutocomplete extends Component {
               onSubmitEditing={this.props.onSubmitEditing}
               placeholderTextColor={this.props.placeholderTextColor}
               onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-              clearButtonMode="while-editing"
+              clearButtonMode={
+                clearButtonMode ? clearButtonMode : "while-editing"
+              }
               underlineColorAndroid={this.props.underlineColorAndroid}
               { ...userProps }
               onChangeText={this._handleChangeText}
