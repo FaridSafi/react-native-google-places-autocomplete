@@ -605,8 +605,9 @@ export default class GooglePlacesAutocomplete extends Component {
   _onBlur = () => {
     this.triggerBlur();
 
-    if (this.props && this.props.onBlur) {
-      this.props.onBlur();
+    if (this.props && this.props.textInputProps
+      && this.props.textInputProps.onBlur) {
+      this.props.textInputProps.onBlur();
     }
 
     this.setState({
@@ -615,8 +616,9 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _onFocus = () => {
-    if (this.props && this.props.onFocus) {
-      this.props.onFocus();
+    if (this.props && this.props.textInputProps
+       && this.props.textInputProps.onFocus) {
+      this.props.textInputProps.onFocus();
     }
 
     this.setState({ listViewDisplayed: true });
@@ -692,9 +694,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
   render() {
     let {
-      onFocus,
       clearButtonMode,
-      ...userProps
     } = this.props.textInputProps;
     return (
       <View
@@ -716,12 +716,11 @@ export default class GooglePlacesAutocomplete extends Component {
               placeholder={this.props.placeholder}
               onSubmitEditing={this.props.onSubmitEditing}
               placeholderTextColor={this.props.placeholderTextColor}
-              onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
+              onFocus={this._onFocus}
               clearButtonMode={
                 clearButtonMode ? clearButtonMode : "while-editing"
               }
               underlineColorAndroid={this.props.underlineColorAndroid}
-              { ...userProps }
               onChangeText={this._handleChangeText}
             />
             {this._renderRightButton()}
