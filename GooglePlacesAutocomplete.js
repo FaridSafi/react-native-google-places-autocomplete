@@ -502,6 +502,12 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
   }
+  
+  clearText(){
+    this.setState({
+      text: ""
+    })
+  }
 
   _onChangeText = (text) => {
     this._request(text);
