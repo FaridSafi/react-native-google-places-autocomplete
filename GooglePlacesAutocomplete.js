@@ -793,7 +793,7 @@ GooglePlacesAutocomplete.defaultProps = {
   GoogleReverseGeocodingQuery: {},
   GooglePlacesSearchQuery: {
     rankby: 'distance',
-    type: 'food',
+    type: 'restaurant'
   },
   styles: {},
   textInputProps: {},
