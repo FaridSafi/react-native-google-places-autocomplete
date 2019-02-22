@@ -34,16 +34,16 @@ const GooglePlacesInput = () => {
       onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
         console.log(data, details);
       }}
-      
+
       getDefaultValue={() => ''}
-      
+
       query={{
         // available options: https://developers.google.com/places/web-service/autocomplete
         key: 'YOUR API KEY',
         language: 'en', // language of the results
         types: '(cities)' // default: 'geocode'
       }}
-      
+
       styles={{
         textInputContainer: {
           width: '100%'
@@ -55,7 +55,7 @@ const GooglePlacesInput = () => {
           color: '#1faadb'
         }
       }}
-      
+
       currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
       currentLocationLabel="Current location"
       nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
@@ -65,7 +65,7 @@ const GooglePlacesInput = () => {
       GooglePlacesSearchQuery={{
         // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
         rankby: 'distance',
-        types: 'food'
+        type: 'food'
       }}
 
       filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
