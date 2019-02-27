@@ -700,6 +700,7 @@ export default class GooglePlacesAutocomplete extends Component {
               ref="textInput"
               editable={this.props.editable}
               returnKeyType={this.props.returnKeyType}
+              keyboardAppearance={this.props.keyboardAppearance}
               autoFocus={this.props.autoFocus}
               style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInput, this.props.styles.textInput]}
               value={this.state.text}
@@ -730,6 +731,7 @@ GooglePlacesAutocomplete.propTypes = {
   placeholderTextColor: PropTypes.string,
   underlineColorAndroid: PropTypes.string,
   returnKeyType: PropTypes.string,
+  keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
   onPress: PropTypes.func,
   onNotFound: PropTypes.func,
   onFail: PropTypes.func,
@@ -774,6 +776,7 @@ GooglePlacesAutocomplete.defaultProps = {
   isRowScrollable: true,
   underlineColorAndroid: 'transparent',
   returnKeyType: 'default',
+  keyboardAppearance: 'default',
   onPress: () => {},
   onNotFound: () => {},
   onFail: () => {},
