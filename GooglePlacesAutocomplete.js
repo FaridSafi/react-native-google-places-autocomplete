@@ -12,7 +12,8 @@ import {
   TouchableHighlight,
   Platform,
   ActivityIndicator,
-  PixelRatio
+  PixelRatio,
+  Keyboard
 } from 'react-native';
 import Qs from 'qs';
 import debounce from 'lodash.debounce';
@@ -220,6 +221,8 @@ export default class GooglePlacesAutocomplete extends Component {
         // already requesting
         return;
       }
+
+      Keyboard.dismiss();
 
       this._abortRequests();
 
@@ -505,6 +508,12 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
   }
+  
+  clearText(){
+    this.setState({
+      text: ""
+    })
+  }
 
   _onChangeText = (text) => {
     this._request(text);
@@ -585,8 +594,8 @@ export default class GooglePlacesAutocomplete extends Component {
           underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
         >
           <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
-            {this._renderRowData(rowData)}
             {this._renderLoader(rowData)}
+            {this._renderRowData(rowData)}
           </View>
         </TouchableHighlight>
       </ScrollView>
