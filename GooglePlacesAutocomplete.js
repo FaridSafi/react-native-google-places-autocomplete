@@ -87,7 +87,9 @@ export default class GooglePlacesAutocomplete extends Component {
   getInitialState = () => ({
     text: this.props.getDefaultValue(),
     dataSource: this.buildRowsFromResults([]),
+    hasResults: false,
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
+    autoSelected: false
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -327,6 +329,7 @@ export default class GooglePlacesAutocomplete extends Component {
         rows[i].isLoading = true;
         this.setState({
           dataSource: rows,
+          hasResults: (rows.length > 0)
         });
         break;
       }
@@ -343,6 +346,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
       this.setState({
         dataSource: this.buildRowsFromResults(this._results),
+        hasResults: (this._results.length > 0)
       });
     }
   }
@@ -411,6 +415,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
               this.setState({
                 dataSource: this.buildRowsFromResults(results),
+                hasResults: (results.length > 0)
               });
             }
           }
@@ -419,10 +424,16 @@ export default class GooglePlacesAutocomplete extends Component {
                 console.warn('google places autocomplete: ' + responseJSON.error_message);
               else{
                 this.props.onFail(responseJSON.error_message)
+                this.setState({
+                  hasResults: false
+                });
               }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
+          this.setState({
+            hasResults: false
+          });
         }
       };
 
@@ -452,6 +463,7 @@ export default class GooglePlacesAutocomplete extends Component {
       this._results = [];
       this.setState({
         dataSource: this.buildRowsFromResults([]),
+        hasResults: false
       });
     }
   }
@@ -479,6 +491,7 @@ export default class GooglePlacesAutocomplete extends Component {
               this._results = results;
               this.setState({
                 dataSource: this.buildRowsFromResults(results),
+                hasResults: (results.length > 0)
               });
             }
           }
@@ -506,6 +519,7 @@ export default class GooglePlacesAutocomplete extends Component {
       this._results = [];
       this.setState({
         dataSource: this.buildRowsFromResults([]),
+        hasResults: false
       });
     }
   }
@@ -521,6 +535,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
     this.setState({
       text: text,
+      autoSelected: false,
       listViewDisplayed: this._isMounted || this.props.autoFocus,
     });
   }
@@ -618,9 +633,12 @@ export default class GooglePlacesAutocomplete extends Component {
   _onBlur = () => {
     this.triggerBlur();
 
-    this.setState({
-      listViewDisplayed: false
-    });
+    if (!this.state.autoSelected && this.props.autoSelectFirstResult && this.state.hasResults && this.state.dataSource[0]) {
+      this.setState({
+        autoSelected: true,
+        listViewDisplayed: false
+      }, () => this._onPress(this.state.dataSource[0]));
+    }    
   }
 
   _onFocus = () => this.setState({ listViewDisplayed: true })
