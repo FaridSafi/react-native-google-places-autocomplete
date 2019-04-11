@@ -63,6 +63,7 @@ var Example = React.createClass({
         predefinedPlaces={[homePlace, workPlace]}
 
         predefinedPlacesAlwaysVisible={true}
+        autoSelectFirstResult={true}
       />
     );
   }
