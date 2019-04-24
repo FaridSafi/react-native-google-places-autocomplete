@@ -312,24 +312,24 @@ interface Place {
 }
 
 interface GooglePlacesAutocompleteProps extends TextInputProps {
+  query: Query
   minLength?: number // minimum length of text to search
   listViewDisplayed?: 'auto' | boolean
   fetchDetails?: boolean
   renderDescription?: (description: DescriptionRow) => string
   onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void
-  query: Query
   getDefaultValue?: () => string
   styles?: Partial<Styles>
 
   // Will add a 'Current location' button at the top of the predefined places list
   currentLocation?: boolean
-  currentLocationLabel: string
+  currentLocationLabel?: string
 
   // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-  nearbyPlacesAPI: 'GoogleReverseGeocoding' | 'GooglePlacesSearch'
+  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch'
 
   // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-  GoogleReverseGeocodingQuery: {
+  GoogleReverseGeocodingQuery?: {
     bounds?: number
     language?: Language
     region?: string
