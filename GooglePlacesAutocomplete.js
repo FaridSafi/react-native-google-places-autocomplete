@@ -699,7 +699,7 @@ export default class GooglePlacesAutocomplete extends Component {
     let {
       onFocus,
       clearButtonMode,
-      InputComp
+      InputComp,
       ...userProps
     } = this.props.textInputProps;
     const TextInputComp = !!InputComp ? InputComp : TextInput;
