@@ -94,6 +94,15 @@ export default class GooglePlacesAutocomplete extends Component {
 
   getAddressText = () => this.state.text
 
+  // for manual control on hide/show results
+  showListView = () => {
+    this.setState({ listViewDisplayed: true });
+  }
+  
+  hideListView = () => {
+    this.setState({ listViewDisplayed: false });
+  }
+
   buildRowsFromResults = (results) => {
     let res = [];
 
