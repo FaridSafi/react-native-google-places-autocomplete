@@ -88,6 +88,7 @@ export default class GooglePlacesAutocomplete extends Component {
     text: this.props.getDefaultValue(),
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
+    loadingRequest: false
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -327,6 +328,7 @@ export default class GooglePlacesAutocomplete extends Component {
         rows[i].isLoading = true;
         this.setState({
           dataSource: rows,
+          loadingRequest: false
         });
         break;
       }
@@ -343,6 +345,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
       this.setState({
         dataSource: this.buildRowsFromResults(this._results),
+        loadingRequest: false
       });
     }
   }
@@ -411,6 +414,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
               this.setState({
                 dataSource: this.buildRowsFromResults(results),
+                loadingRequest: false
               });
             }
           }
@@ -452,6 +456,7 @@ export default class GooglePlacesAutocomplete extends Component {
       this._results = [];
       this.setState({
         dataSource: this.buildRowsFromResults([]),
+        loadingRequest: false
       });
     }
   }
@@ -479,6 +484,7 @@ export default class GooglePlacesAutocomplete extends Component {
               this._results = results;
               this.setState({
                 dataSource: this.buildRowsFromResults(results),
+                loadingRequest: false
               });
             }
           }
@@ -506,6 +512,7 @@ export default class GooglePlacesAutocomplete extends Component {
       this._results = [];
       this.setState({
         dataSource: this.buildRowsFromResults([]),
+        loadingRequest: false
       });
     }
   }
@@ -522,6 +529,7 @@ export default class GooglePlacesAutocomplete extends Component {
     this.setState({
       text: text,
       listViewDisplayed: this._isMounted || this.props.autoFocus,
+      loadingRequest: true
     });
   }
 
@@ -673,6 +681,10 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getFlatList = () => {
+  	if (this.state.loadingRequest) {
+      return this._getRowLoader();
+    }
+
     const keyGenerator = () => (
       Math.random().toString(36).substr(2, 10)
     );
