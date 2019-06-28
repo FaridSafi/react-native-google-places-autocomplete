@@ -96,8 +96,6 @@ export default class GooglePlacesAutocomplete extends Component {
 
   buildRowsFromResults = (results) => {
     let res = [];
-    let { text } = this.state;
-    let { minLength } = this.props;
 
     if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
       res = [...this.props.predefinedPlaces];
@@ -115,7 +113,7 @@ export default class GooglePlacesAutocomplete extends Component {
       isPredefinedPlace: true
     }));
 
-    if (results.length === 0 && this.text.length >= minLength && this.props.emptyListLabel) {
+    if (results.length === 0 && this.state && this.state.text.length >= this.props.minLength && this.props.emptyListLabel) {
       res.unshift({
         description: this.props.emptyListLabel,
         isEmptyListLabel: true,
