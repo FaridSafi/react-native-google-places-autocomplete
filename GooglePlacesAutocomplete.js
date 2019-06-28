@@ -224,6 +224,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _onPress = (rowData) => {
     if (rowData.isEmptyListLabel && this.props.onEmptyListPress) {
+      this.triggerBlur(); // hide keyboard but not the results
       this.props.onEmptyListPress();
     } else if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
