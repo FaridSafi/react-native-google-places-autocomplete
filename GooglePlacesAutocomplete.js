@@ -113,8 +113,17 @@ export default class GooglePlacesAutocomplete extends Component {
       isPredefinedPlace: true
     }));
 
-    return [...res, ...results];
-  }
+    res = [...res, ...results];
+
+    if (res.length === 0 && this.props.emptyListLabel) {
+      res.unshift({
+        description: this.props.emptyListLabel,
+        isEmptyListLabel: true,
+      });
+    }
+
+    return res;
+  };
 
   componentWillMount() {
     this._request = this.props.debounce
@@ -216,7 +225,9 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _onPress = (rowData) => {
-    if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
+    if (rowData.isEmptyListLabel && this.props.onEmptyListPress) {
+      this.props.onEmptyListPress();
+    } else if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
         return;
@@ -509,7 +520,7 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
   }
-  
+
   clearText(){
     this.setState({
       text: ""
@@ -784,7 +795,9 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  emptyListLabel: PropTypes.string,
+  onEmptyListPress: PropTypes.func,
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -832,7 +845,9 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
-  editable: true
+  editable: true,
+  emptyListLabel: undefined,
+  onEmptyListPress: () => {},
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
