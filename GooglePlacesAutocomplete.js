@@ -286,6 +286,7 @@ export default class GooglePlacesAutocomplete extends Component {
         key: this.props.query.key,
         placeid: rowData.place_id,
         language: this.props.query.language,
+        fields: this.props.query.fields,
         ...this.props.GooglePlacesDetailsQuery,
       }));
 
@@ -827,7 +828,7 @@ GooglePlacesAutocomplete.defaultProps = {
   predefinedPlacesAlwaysVisible: false,
   enableEmptySections: true,
   listViewDisplayed: 'auto',
-  debounce: 0,
+  debounce: 600,
   textInputHide: false,
   suppressDefaultStyles: false,
   numberOfLines: 1,
