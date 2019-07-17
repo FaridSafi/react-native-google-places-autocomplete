@@ -320,6 +320,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void
   getDefaultValue?: () => string
   styles?: Partial<Styles>
+  suppressDefaultStyles?: boolean
 
   // Will add a 'Current location' button at the top of the predefined places list
   currentLocation?: boolean
