@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/FaridSafi/react-native-google-places-autocomplete#readme",
   "dependencies": {
+    "@react-native-community/geolocation": "^1.4.2",
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.5.10",
     "qs": "^5.2.0"

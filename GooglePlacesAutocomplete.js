@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import Qs from 'qs';
 import debounce from 'lodash.debounce';
+import Geolocation from "@react-native-community/geolocation";
 
 const WINDOW = Dimensions.get('window');
 
@@ -188,7 +189,7 @@ export default class GooglePlacesAutocomplete extends Component {
       }
     }
 
-    navigator.geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
           let currentLocation = {
