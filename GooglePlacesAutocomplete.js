@@ -836,7 +836,7 @@ GooglePlacesAutocomplete.defaultProps = {
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
-export const create = function create(options = {}) {
+const create = function create(options = {}) {
   return React.createClass({
     render() {
       return (
@@ -849,3 +849,7 @@ export const create = function create(options = {}) {
   });
 };
 
+export {
+  GooglePlacesAutocomplete,
+  create
+};
