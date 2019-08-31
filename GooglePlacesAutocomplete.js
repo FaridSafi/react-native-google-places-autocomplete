@@ -458,6 +458,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _request = (text) => {
     this._abortRequests();
+    if (!text) { return }
     if (text.length >= this.props.minLength) {
       const request = new XMLHttpRequest();
       this._requests.push(request);
@@ -509,7 +510,7 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
   }
-  
+
   clearText(){
     this.setState({
       text: ""
