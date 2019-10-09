@@ -138,8 +138,8 @@ export default class GooglePlacesAutocomplete extends Component {
 
     if (typeof (nextProps.text) !== "undefined" && this.state.text !== nextProps.text) {
       this.setState({
-          listViewDisplayed: listViewDisplayed
-        },
+        listViewDisplayed: listViewDisplayed
+      },
         this._handleChangeText(nextProps.text));
     } else {
       this.setState({
@@ -415,11 +415,11 @@ export default class GooglePlacesAutocomplete extends Component {
             }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-              if(!this.props.onFail)
-                console.warn('google places autocomplete: ' + responseJSON.error_message);
-              else{
-                this.props.onFail(responseJSON.error_message)
-              }
+            if(!this.props.onFail)
+              console.warn('google places autocomplete: ' + responseJSON.error_message);
+            else{
+              this.props.onFail(responseJSON.error_message)
+            }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -444,7 +444,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
       request.open('GET', url);
       if (this.props.query.origin !== null) {
-         request.setRequestHeader('Referer', this.props.query.origin)
+        request.setRequestHeader('Referer', this.props.query.origin)
       }
 
       request.send();
@@ -480,7 +480,12 @@ export default class GooglePlacesAutocomplete extends Component {
               this.setState({
                 dataSource: this.buildRowsFromResults(results),
               });
-            }
+            } 
+          }else if (this.props.searchFor) {
+            this._results = responseJSON.results;
+            this.setState({
+              dataSource: this.buildRowsFromResults(this._results),
+            });
           }
           if (typeof responseJSON.error_message !== 'undefined') {
             if(!this.props.onFail)
@@ -496,9 +501,20 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.preProcess) {
         text = this.props.preProcess(text);
       }
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+      if (this.props.searchFor) {
+        //https://developers.google.com/places/supported_types
+        let queries = 'https://maps.googleapis.com/maps/api/place/textsearch/json?' + Qs.stringify({
+          key: this.props.query.key,
+          types: this.props.searchFor,
+          query: text
+        });
+        request.open('GET', queries);
+      } else {
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+
+      }
       if (this.props.query.origin !== null) {
-         request.setRequestHeader('Referer', this.props.query.origin)
+        request.setRequestHeader('Referer', this.props.query.origin)
       }
 
       request.send();
@@ -509,7 +525,7 @@ export default class GooglePlacesAutocomplete extends Component {
       });
     }
   }
-  
+
   clearText(){
     this.setState({
       text: ""
@@ -784,7 +800,8 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  searchFor: PropTypes.string
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -832,7 +849,8 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
-  editable: true
+  editable: true,
+  searchFor: null,
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0

@@ -35,7 +35,7 @@ const GooglePlacesInput = () => {
       onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
         console.log(data, details);
       }}
-
+      searchFor="school" // https://developers.google.com/places/supported_types
       getDefaultValue={() => ''}
 
       query={{
@@ -147,6 +147,7 @@ const GooglePlacesInput = () => {
 - [x] Google Places terms compliant
 - [x] Current location
 - [x] Predefined places
+- [x] Search for specific type like school, cafe
 
 ### Changelog
 - 1.3.9 : Multiple bugfixes + fixed breaking change in React Native.
