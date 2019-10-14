@@ -41,7 +41,7 @@ var Example = React.createClass({
             color: '#1faadb',
           },
         }}
-        
+
         currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
         currentLocationLabel="Current location"
         nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
@@ -53,12 +53,15 @@ var Example = React.createClass({
           rankby: 'distance',
           types: 'food',
         }}
-        
-        
+        GooglePlacesDetailsQuery={{
+            // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
+            fields: 'formatted_address',
+        }}
+
         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-        
+
         predefinedPlaces={[homePlace, workPlace]}
-        
+
         predefinedPlacesAlwaysVisible={true}
       />
     );
