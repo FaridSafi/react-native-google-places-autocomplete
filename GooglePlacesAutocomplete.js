@@ -18,7 +18,7 @@ import Qs from 'qs';
 import debounce from 'lodash.debounce';
 
 const BASICFIELDS =
-  'address_component, adr_address, formatted_address, geometry, icon, name, permanently_closed, photo, place_id, plus_code, type, url, utc_offset, vicinity';
+  'address_component,adr_address,formatted_address,geometry,icon,name,permanently_closed,photo,place_id,plus_code,type,url,utc_offset,vicinity';
 
 const WINDOW = Dimensions.get('window');
 
