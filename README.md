@@ -28,6 +28,7 @@ const GooglePlacesInput = () => {
       minLength={2} // minimum length of text to search
       autoFocus={false}
       returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
+      autocompleteFields={'address_component,geometry,url'} // Specific fields being requested https://developers.google.com/places/web-service/details#fields
       keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
       listViewDisplayed='auto'    // true/false/undefined
       fetchDetails={true}
