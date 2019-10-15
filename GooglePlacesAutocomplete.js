@@ -786,7 +786,7 @@ GooglePlacesAutocomplete.propTypes = {
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
   editable: PropTypes.bool,
-  autocompleteFields: PropTypes.string.isRequired,
+  autocompleteFields: PropTypes.string,
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
