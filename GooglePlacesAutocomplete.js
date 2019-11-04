@@ -687,7 +687,6 @@ export default class GooglePlacesAutocomplete extends Component {
           ItemSeparatorComponent={this._renderSeparator}
           renderItem={({ item }) => this._renderRow(item)}
           ListHeaderComponent={this.props.renderHeaderComponent && this.props.renderHeaderComponent(this.state.text)}
-          ListFooterComponent={this._renderPoweredLogo}
           {...this.props}
         />
       );
@@ -731,6 +730,13 @@ export default class GooglePlacesAutocomplete extends Component {
               { ...userProps }
               onChangeText={this._handleChangeText}
             />
+            <TouchableHighlight
+                style={{ backgroundColor: 'black' }}
+                onPress={this.clearText.bind(this)}>
+                <Image
+                    style={{ width: 16, height: 16, margin: 12 }}
+                    source={require('./images/close.png')} />
+            </TouchableHighlight>
             {this._renderRightButton()}
           </View>
         }
