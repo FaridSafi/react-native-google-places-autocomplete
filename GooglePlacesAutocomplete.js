@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  TextInput,
   View,
   FlatList,
   ScrollView,
@@ -17,6 +16,7 @@ import {
 } from 'react-native';
 import Qs from 'qs';
 import debounce from 'lodash.debounce';
+import { TextInput } from "react-native-paper"
 
 const WINDOW = Dimensions.get('window');
 
@@ -35,15 +35,6 @@ const defaultStyles = {
   },
   textInput: {
     backgroundColor: '#FFFFFF',
-    height: 28,
-    borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 7.5,
-    marginLeft: 8,
-    marginRight: 8,
     fontSize: 15,
     flex: 1
   },
