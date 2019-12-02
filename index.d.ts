@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ImageStyle, StyleProp, TextStyle, ViewStyle } from "react-native"
-import { TextInputProps } from "react-native-paper"
+import { TextInputProps, PaperTextInput } from "react-native-paper"
 
 // @see https://developers.google.com/maps/faq#languagesupport
 type Language =
@@ -327,6 +327,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
     getDefaultValue?: () => string
     styles?: Partial<Styles>
     suppressDefaultStyles?: boolean
+    blurOnSubmit?: boolean
+    forwardRef?: Ref<PaperTextInput>
 
     // Will add a 'Current location' button at the top of the predefined places list
     currentLocation?: boolean
