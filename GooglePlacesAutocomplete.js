@@ -156,6 +156,7 @@ export default class GooglePlacesAutocomplete extends Component {
   _abortRequests = () => {
     this._requests.map(i => i.abort());
     this._requests = [];
+    this.setState({ requestComplete: false })
   }
 
   /**
@@ -478,6 +479,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
               this._results = results;
               this.setState({
+                requestComplete: true,
                 dataSource: this.buildRowsFromResults(results),
               });
             }
@@ -672,17 +674,13 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getFlatList = () => {
-    const keyGenerator = () => (
-      Math.random().toString(36).substr(2, 10)
-    );
-
     if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <FlatList
           scrollEnabled={!this.props.disableScroll}
           style={[this.props.suppressDefaultStyles ? {} : defaultStyles.listView, this.props.styles.listView]}
           data={this.state.dataSource}
-          keyExtractor={keyGenerator}
+          keyExtractor={item => item.id}
           extraData={[this.state.dataSource, this.props]}
           ItemSeparatorComponent={this._renderSeparator}
           renderItem={({ item }) => this._renderRow(item)}
@@ -695,6 +693,17 @@ export default class GooglePlacesAutocomplete extends Component {
 
     return null;
   }
+
+  _renderBody = () => {
+    const dataExistsForFlatList = this.state.dataSource.length > 0
+
+    if (dataExistsForFlatList) return this._getFlatList()
+
+    if (this.state.requestComplete && this.props.renderNoResults) return this.props.renderNoResults()
+
+    return null
+  }
+
   render() {
     let {
       onFocus,
@@ -736,7 +745,7 @@ export default class GooglePlacesAutocomplete extends Component {
             {this._renderRightButton()}
           </View>
         }
-        {this._getFlatList()}
+        {this._renderBody()}
         {this.props.children}
       </View>
     );
@@ -786,6 +795,7 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
+  renderNoResults: PropTypes.func,
   editable: PropTypes.bool
 }
 GooglePlacesAutocomplete.defaultProps = {
