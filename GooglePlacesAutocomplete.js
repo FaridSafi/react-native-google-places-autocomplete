@@ -116,7 +116,7 @@ export default class GooglePlacesAutocomplete extends Component {
     return [...res, ...results];
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this._request = this.props.debounce
       ? debounce(this._request, this.props.debounce)
       : this._request;
