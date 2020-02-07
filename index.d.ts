@@ -285,10 +285,7 @@ interface Query<T = AutocompleteRequestType> {
     key: string
     sessiontoken?: string
     offset?: number
-    location?: {
-        latitude: number
-        longitude: number
-    }
+    location?: string
     radius?: number
     language?: Language
     components?: string
