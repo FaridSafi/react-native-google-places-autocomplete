@@ -851,7 +851,7 @@ const create = function create(options = {}) {
   });
 };
 
-module.exports = {
+exports {
   GooglePlacesAutocomplete,
   create
 };
