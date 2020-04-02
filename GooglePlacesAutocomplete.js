@@ -89,7 +89,10 @@ export default class GooglePlacesAutocomplete extends Component {
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
   })
-
+  handleEnter = ()=> {
+    // console.log(this.props.location.description !== this.state.text)
+    this.props.location.description === this.state.text ? this.setState({listViewDisplayed: false}) : null
+}
   setAddressText = address => this.setState({ text: address })
 
   getAddressText = () => this.state.text
@@ -130,18 +133,23 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    let listViewDisplayed = true;
+    let listViewDisplayed = nextProps === this.props.location;
 
     if (nextProps.listViewDisplayed !== 'auto') {
       listViewDisplayed = nextProps.listViewDisplayed;
     }
 
-    if (typeof (nextProps.text) !== "undefined" && this.state.text !== nextProps.text) {
+    if (typeof (nextProps.text) !== "undefined" && this.state.text !== nextProps.text && this.state.text !== this.props.location ) {
       this.setState({
           listViewDisplayed: listViewDisplayed
         },
         this._handleChangeText(nextProps.text));
-    } else {
+    } else if(this.state.text === this.props.location) {
+      this.setState({
+        listViewDisplayed: false
+      })
+    }
+    else {
       this.setState({
         listViewDisplayed: listViewDisplayed
       });
@@ -216,6 +224,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _onPress = (rowData) => {
+    
     if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
@@ -244,10 +253,11 @@ export default class GooglePlacesAutocomplete extends Component {
             if (this._isMounted === true) {
               const details = responseJSON.result;
               this._disableRowLoaders();
-              this._onBlur();
+              // this._onBlur();
 
               this.setState({
                 text: this._renderDescription( rowData ),
+                listViewDisplayed: false
               });
 
               delete rowData.isLoading;
@@ -258,7 +268,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
             if (this.props.autoFillOnNotFound) {
               this.setState({
-                text: this._renderDescription(rowData)
+                text: this._renderDescription(rowData),listViewDisplayed: false
               });
               delete rowData.isLoading;
             }
@@ -299,7 +309,7 @@ export default class GooglePlacesAutocomplete extends Component {
       this._enableRowLoader(rowData);
 
       this.setState({
-        text: this._renderDescription( rowData ),
+        text: this._renderDescription( rowData ),listViewDisplayed: false
       });
 
       this.triggerBlur(); // hide keyboard but not the results
@@ -309,9 +319,10 @@ export default class GooglePlacesAutocomplete extends Component {
     } else {
       this.setState({
         text: this._renderDescription( rowData ),
+        listViewDisplayed: false
       });
 
-      this._onBlur();
+      // this._onBlur();
       delete rowData.isLoading;
       let predefinedPlace = this._getPredefinedPlace(rowData);
 
@@ -521,7 +532,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
     this.setState({
       text: text,
-      listViewDisplayed: this._isMounted || this.props.autoFocus,
+      // listViewDisplayed: this._isMounted || this.props.autoFocus && this.props.location !== this.state.text,
     });
   }
 
@@ -591,13 +602,17 @@ export default class GooglePlacesAutocomplete extends Component {
         showsVerticalScrollIndicator={false}>
         <TouchableHighlight
           style={{ width: WINDOW.width }}
-          onPress={() => this._onPress(rowData)}
+          onPress={() => {this._onPress(rowData)
+        }}
           underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
-        >
+        ><View style={{
+          flexDirection: 'row', alignItems:"center", marginRight:30
+        }}>
           <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
-            {this._renderLoader(rowData)}
             {this._renderRowData(rowData)}
           </View>
+          {this._renderLoader(rowData)}
+        </View>
         </TouchableHighlight>
       </ScrollView>
     );
@@ -715,6 +730,7 @@ export default class GooglePlacesAutocomplete extends Component {
             {this._renderLeftButton()}
             <TextInputComp
               ref="textInput"
+              selectionColor={"#1DC161"}
               editable={this.props.editable}
               returnKeyType={this.props.returnKeyType}
               keyboardAppearance={this.props.keyboardAppearance}
@@ -722,10 +738,13 @@ export default class GooglePlacesAutocomplete extends Component {
               style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInput, this.props.styles.textInput]}
               value={this.state.text}
               placeholder={this.props.placeholder}
-              onSubmitEditing={this.props.onSubmitEditing}
+              // onSubmitEditing={this.props.onSubmitEditing}
+              // onSubmitEditing={()=> console.log("submit editing")}
+              onSubmitEditing={this.handleEnter}
+              // onKeyPress={this.handleEnter}
               placeholderTextColor={this.props.placeholderTextColor}
               onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-              onBlur={this._onBlur}
+              // onBlur={this._onBlur}
               underlineColorAndroid={this.props.underlineColorAndroid}
               clearButtonMode={
                 clearButtonMode ? clearButtonMode : "while-editing"
@@ -806,6 +825,7 @@ GooglePlacesAutocomplete.defaultProps = {
   getDefaultValue: () => '',
   timeout: 20000,
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
+  onSubmitEditing: () => {},
   query: {
     key: 'missing api key',
     language: 'en',
@@ -833,7 +853,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   suppressDefaultStyles: false,
   numberOfLines: 1,
-  onSubmitEditing: () => {},
+  
   editable: true
 }
 
