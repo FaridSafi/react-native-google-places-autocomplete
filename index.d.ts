@@ -8,6 +8,10 @@ export interface QueryProp {
     sessionToken?: string
 }
 
+export interface TextInputProps {
+    onChangeText?: any,
+}
+
 export interface GooglePlacesAutocompleteProps {
     listViewDisplayed?: string | boolean | undefined,
     placeholder?: string,
@@ -25,7 +29,7 @@ export interface GooglePlacesAutocompleteProps {
     GooglePlacesSearchQuery?: object,
     GooglePlacesDetailsQuery?: object,
     styles?: object,
-    textInputProps?: object,
+    textInputProps?: TextInputProps,
     enablePoweredByContainer?: boolean,
     currentLocation?: boolean,
     currentLocationLabel?: string,
