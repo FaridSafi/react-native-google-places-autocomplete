@@ -209,7 +209,11 @@ export default class GooglePlacesAutocomplete extends Component {
       },
       (error) => {
         this._disableRowLoaders();
-        alert(error.message);
+        if(!this.props.onGetCurrentPositionFail) {
+          console.log(error.message);
+        } else {
+          this.props.onGetCurrentPositionFail(error.message);
+        }
       },
       options
     );
@@ -786,7 +790,8 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  onGetCurrentPositionFail: PropTypes.func
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -834,7 +839,8 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
-  editable: true
+  editable: true,
+  onGetCurrentPositionFail: () => {}
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
