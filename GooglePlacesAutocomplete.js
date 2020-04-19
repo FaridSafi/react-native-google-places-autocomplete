@@ -88,6 +88,7 @@ export default class GooglePlacesAutocomplete extends Component {
     text: this.props.getDefaultValue(),
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
+    url: this.props.query.url ? this.props.query.url : 'https://maps.googleapis.com/maps/api'
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -282,7 +283,7 @@ export default class GooglePlacesAutocomplete extends Component {
         }
       };
 
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
+      request.open('GET', `${this.state.url}/place/details/json?` + Qs.stringify({
         key: this.props.query.key,
         placeid: rowData.place_id,
         language: this.props.query.language,
@@ -429,13 +430,13 @@ export default class GooglePlacesAutocomplete extends Component {
       let url = '';
       if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
         // your key must be allowed to use Google Maps Geocoding API
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
+        url =  `${this.state.url}/geocode/json?` + Qs.stringify({
           latlng: latitude + ',' + longitude,
           key: this.props.query.key,
           ...this.props.GoogleReverseGeocodingQuery,
         });
       } else {
-        url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + Qs.stringify({
+        url = `${this.state.url}/place/nearbysearch/json?` + Qs.stringify({
           location: latitude + ',' + longitude,
           key: this.props.query.key,
           ...this.props.GooglePlacesSearchQuery,
@@ -496,7 +497,7 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.preProcess) {
         text = this.props.preProcess(text);
       }
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+      request.open('GET', `${this.state.url}/place/autocomplete/json?&input=` + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
       if (this.props.query.origin !== null) {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
@@ -810,6 +811,7 @@ GooglePlacesAutocomplete.defaultProps = {
     key: 'missing api key',
     language: 'en',
     types: 'geocode',
+    url: 'https://maps.googleapis.com/maps/api',
   },
   GoogleReverseGeocodingQuery: {},
   GooglePlacesDetailsQuery: {},
