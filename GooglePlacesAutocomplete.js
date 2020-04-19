@@ -88,7 +88,7 @@ export default class GooglePlacesAutocomplete extends Component {
     text: this.props.getDefaultValue(),
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
-    url: this.props.query.url ? this.props.query.url : 'https://maps.googleapis.com/maps/api'
+    url: this.props.url ? this.props.url : 'https://maps.googleapis.com/maps/api'
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -294,6 +294,7 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.query.origin)
       }
 
+      request.withCredentials = true;
       request.send();
     } else if (rowData.isCurrentLocation === true) {
       // display loader
@@ -448,6 +449,7 @@ export default class GooglePlacesAutocomplete extends Component {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
 
+      request.withCredentials = true;
       request.send();
     } else {
       this._results = [];
@@ -502,6 +504,7 @@ export default class GooglePlacesAutocomplete extends Component {
          request.setRequestHeader('Referer', this.props.query.origin)
       }
 
+      request.withCredentials = true;
       request.send();
     } else {
       this._results = [];
@@ -811,7 +814,6 @@ GooglePlacesAutocomplete.defaultProps = {
     key: 'missing api key',
     language: 'en',
     types: 'geocode',
-    url: 'https://maps.googleapis.com/maps/api',
   },
   GoogleReverseGeocodingQuery: {},
   GooglePlacesDetailsQuery: {},
@@ -836,7 +838,8 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
-  editable: true
+  editable: true,
+  url: 'https://maps.googleapis.com/maps/api'
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
