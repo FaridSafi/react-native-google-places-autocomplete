@@ -289,8 +289,8 @@ export default class GooglePlacesAutocomplete extends Component {
         ...this.props.GooglePlacesDetailsQuery,
       }));
 
-      if (this.props.query.origin !== null) {
-        request.setRequestHeader('Referer', this.props.query.origin)
+      if (this.props.referer !== null) {
+        request.setRequestHeader('Referer', this.props.referer)
       }
 
       request.send();
@@ -443,8 +443,8 @@ export default class GooglePlacesAutocomplete extends Component {
       }
 
       request.open('GET', url);
-      if (this.props.query.origin !== null) {
-         request.setRequestHeader('Referer', this.props.query.origin)
+      if (this.props.referer !== null) {
+         request.setRequestHeader('Referer', this.props.referer)
       }
 
       request.send();
@@ -497,8 +497,8 @@ export default class GooglePlacesAutocomplete extends Component {
         text = this.props.preProcess(text);
       }
       request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
-      if (this.props.query.origin !== null) {
-         request.setRequestHeader('Referer', this.props.query.origin)
+      if (this.props.referer !== null) {
+         request.setRequestHeader('Referer', this.props.referer)
       }
 
       request.send();
@@ -786,7 +786,8 @@ GooglePlacesAutocomplete.propTypes = {
   suppressDefaultStyles: PropTypes.bool,
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  referer: PropTypes.string
 }
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -834,7 +835,8 @@ GooglePlacesAutocomplete.defaultProps = {
   suppressDefaultStyles: false,
   numberOfLines: 1,
   onSubmitEditing: () => {},
-  editable: true
+  editable: true,
+  referer: null
 }
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
