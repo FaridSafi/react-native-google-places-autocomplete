@@ -148,6 +148,12 @@ export default class GooglePlacesAutocomplete extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.predefinedPlaces !== this.props.predefinedPlaces) {
+      this.setState({ dataSource: this.buildRowsFromResults(this._results) })
+    }
+  }
+
   componentWillUnmount() {
     this._abortRequests();
     this._isMounted = false;
