@@ -354,7 +354,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   _getPredefinedPlace = (rowData) => {
-    if (rowData.isPredefinedPlace !== true) {
+    if (rowData.isPredefinedPlace !== true || rowData.description == null) {
       return rowData;
     }
 
