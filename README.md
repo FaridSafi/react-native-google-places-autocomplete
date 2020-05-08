@@ -147,7 +147,7 @@ const GooglePlacesInput = () => {
 - [x] Google Places terms compliant
 - [x] Predefined places
 - [x] typescript types
-- [] Current location
+- [ ] Current location
 
 ### Changelog
 - 1.4.2 : Added Typescript types + update dependencies.
