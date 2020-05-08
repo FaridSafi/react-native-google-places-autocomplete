@@ -150,7 +150,7 @@ const GooglePlacesInput = () => {
 - [ ] Current location
 
 ### Changelog
-- 1.4.2 : Added Typescript types + update dependencies.
+- 1.4.2 : Added Typescript types + referer prop for restricted api key + update dependencies.
 - 1.3.9 : Multiple bugfixes + fixed breaking change in React Native.
 - 1.3.6 : Fixed accuracy issue.
 - 1.3.5 : Fixed bug where input was being cleared.
