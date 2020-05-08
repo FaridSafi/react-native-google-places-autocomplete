@@ -34,7 +34,7 @@
     "@react-native-community/eslint-config": "^1.1.0",
     "eslint": "^6.0.0",
     "typescript": "^3.8.3",
-    "prettier": "^2.0.5"
+    "prettier": "2.0.5"
   },
   "peerDependencies": {
     "react-native": ">= 0.46"
