@@ -1,5 +1,11 @@
-import * as React from 'react'
-import { ImageStyle, StyleProp, TextInputProps, TextStyle, ViewStyle } from 'react-native'
+import * as React from 'react';
+import {
+  ImageStyle,
+  StyleProp,
+  TextInputProps,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 // @see https://developers.google.com/maps/faq#languagesupport
 type Language =
@@ -63,7 +69,7 @@ type Language =
   | 'uz'
   | 'vi'
   | 'zh-CN'
-  | 'zh-TW'
+  | 'zh-TW';
 
 type SearchType =
   | 'accounting'
@@ -155,7 +161,7 @@ type SearchType =
   | 'transit_station'
   | 'travel_agency'
   | 'veterinary_care'
-  | 'zoo'
+  | 'zoo';
 
 type PlaceType =
   | 'administrative_area_level_1'
@@ -195,163 +201,170 @@ type PlaceType =
   | 'sublocality_level_3'
   | 'sublocality_level_2'
   | 'sublocality_level_1'
-  | 'subpremise'
+  | 'subpremise';
 
-type AutocompleteRequestType = '(regions)' | '(cities)' | 'geocode' | 'address' | 'establishment'
+type AutocompleteRequestType =
+  | '(regions)'
+  | '(cities)'
+  | 'geocode'
+  | 'address'
+  | 'establishment';
 
 interface DescriptionRow {
-  description: string
-  id: string
-  matched_substrings: MatchedSubString[]
-  place_id: string
-  reference: string
-  structured_formatting: StructuredFormatting
-  terms: Term[]
-  types: PlaceType[]
+  description: string;
+  id: string;
+  matched_substrings: MatchedSubString[];
+  place_id: string;
+  reference: string;
+  structured_formatting: StructuredFormatting;
+  terms: Term[];
+  types: PlaceType[];
 }
 
 interface MatchedSubString {
-  length: number
-  offset: number
+  length: number;
+  offset: number;
 }
 
 interface Term {
-  offset: number
-  value: string
+  offset: number;
+  value: string;
 }
 
 interface StructuredFormatting {
-  main_text: string
-  main_text_matched_substrings: Object[][]
-  secondary_text: string
-  secondary_text_matched_substrings: Object[][]
-  terms: Term[]
-  types: PlaceType[]
+  main_text: string;
+  main_text_matched_substrings: Object[][];
+  secondary_text: string;
+  secondary_text_matched_substrings: Object[][];
+  terms: Term[];
+  types: PlaceType[];
 }
 
 interface GooglePlaceData {
-  description: string
-  id: string
-  matched_substrings: MatchedSubString[]
-  place_id: string
-  reference: string
-  structured_formatting: StructuredFormatting
+  description: string;
+  id: string;
+  matched_substrings: MatchedSubString[];
+  place_id: string;
+  reference: string;
+  structured_formatting: StructuredFormatting;
 }
 
 interface Point {
-  lat: number
-  lng: number
+  lat: number;
+  lng: number;
 }
 
 interface AddressComponent {
-  long_name: string
-  short_name: string
-  types: PlaceType[]
+  long_name: string;
+  short_name: string;
+  types: PlaceType[];
 }
 
 interface Geometry {
-  location: Point
+  location: Point;
   viewport: {
-    northeast: Point
-    southwest: Point
-  }
+    northeast: Point;
+    southwest: Point;
+  };
 }
 
 interface GooglePlaceDetail {
-  address_components: AddressComponent[]
-  adr_address: string
-  formatted_address: string
-  geometry: Geometry
-  icon: string
-  id: string
-  name: string
-  place_id: string
-  reference: string
-  scope: 'GOOGLE'
-  types: PlaceType
-  url: string
-  utc_offset: number
-  vicinity: string
+  address_components: AddressComponent[];
+  adr_address: string;
+  formatted_address: string;
+  geometry: Geometry;
+  icon: string;
+  id: string;
+  name: string;
+  place_id: string;
+  reference: string;
+  scope: 'GOOGLE';
+  types: PlaceType;
+  url: string;
+  utc_offset: number;
+  vicinity: string;
 }
 
 // @see https://developers.google.com/places/web-service/autocomplete
 interface Query<T = AutocompleteRequestType> {
-  key: string
-  sessiontoken?: string
-  offset?: number
+  key: string;
+  sessiontoken?: string;
+  offset?: number;
   location?: {
-    latitude: number
-    longitude: number
-  }
-  radius?: number
-  language?: Language
-  components?: string
-  rankby?: string
-  type?: T
+    latitude: number;
+    longitude: number;
+  };
+  radius?: number;
+  language?: Language;
+  components?: string;
+  rankby?: string;
+  type?: T;
   // deprecated. see https://github.com/FaridSafi/react-native-google-places-autocomplete/pull/384
-  types?: T
+  types?: T;
 }
 
 interface Styles {
-  container: StyleProp<ViewStyle>
-  description: StyleProp<TextStyle>
-  textInputContainer: StyleProp<ViewStyle>
-  textInput: StyleProp<TextStyle>
-  loader: StyleProp<ViewStyle>
-  listView: StyleProp<ViewStyle>
-  predefinedPlacesDescription: StyleProp<TextStyle>
-  poweredContainer: StyleProp<ViewStyle>
-  powered: StyleProp<ImageStyle>
-  separator: StyleProp<ViewStyle>
-  row: StyleProp<ViewStyle>
+  container: StyleProp<ViewStyle>;
+  description: StyleProp<TextStyle>;
+  textInputContainer: StyleProp<ViewStyle>;
+  textInput: StyleProp<TextStyle>;
+  loader: StyleProp<ViewStyle>;
+  listView: StyleProp<ViewStyle>;
+  predefinedPlacesDescription: StyleProp<TextStyle>;
+  poweredContainer: StyleProp<ViewStyle>;
+  powered: StyleProp<ImageStyle>;
+  separator: StyleProp<ViewStyle>;
+  row: StyleProp<ViewStyle>;
 }
 
 interface Place {
-  description: string
-  geometry: { location: Point }
+  description: string;
+  geometry: { location: Point };
 }
 
 interface GooglePlacesAutocompleteProps extends TextInputProps {
-  query: Query
-  minLength?: number // minimum length of text to search
-  listViewDisplayed?: 'auto' | boolean
-  fetchDetails?: boolean
-  renderDescription?: (description: DescriptionRow) => string
-  onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void
-  getDefaultValue?: () => string
-  styles?: Partial<Styles>
-  suppressDefaultStyles?: boolean
+  query: Query;
+  minLength?: number; // minimum length of text to search
+  listViewDisplayed?: 'auto' | boolean;
+  fetchDetails?: boolean;
+  renderDescription?: (description: DescriptionRow) => string;
+  onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
+  getDefaultValue?: () => string;
+  styles?: Partial<Styles>;
+  suppressDefaultStyles?: boolean;
 
   // Will add a 'Current location' button at the top of the predefined places list
-  currentLocation?: boolean
-  currentLocationLabel?: string
+  currentLocation?: boolean;
+  currentLocationLabel?: string;
 
   // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch'
+  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
 
   // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
   GoogleReverseGeocodingQuery?: {
-    bounds?: number
-    language?: Language
-    region?: string
-    components?: string
-  }
+    bounds?: number;
+    language?: Language;
+    region?: string;
+    components?: string;
+  };
 
   // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-  GooglePlacesSearchQuery?: Partial<Query<SearchType>>
+  GooglePlacesSearchQuery?: Partial<Query<SearchType>>;
 
   // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
-  GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string }
+  GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string };
 
   // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-  filterReverseGeocodingByTypes?: PlaceType[]
-  predefinedPlaces?: Place[]
+  filterReverseGeocodingByTypes?: PlaceType[];
+  predefinedPlaces?: Place[];
 
   // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-  debounce?: number
+  debounce?: number;
 
-  renderLeftButton?: React.ComponentType<{}>
-  renderRightButton?: React.ComponentType<{}>
+  renderLeftButton?: React.ComponentType<{}>;
+  renderRightButton?: React.ComponentType<{}>;
 }
 
-export class GooglePlacesAutocomplete extends React.Component<GooglePlacesAutocompleteProps> {}
+export class GooglePlacesAutocomplete extends React.Component<
+  GooglePlacesAutocompleteProps
+> {}
