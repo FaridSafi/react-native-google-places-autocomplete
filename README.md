@@ -145,10 +145,12 @@ const GooglePlacesInput = () => {
 - [x] Customizable using the ```styles``` parameter
 - [x] XHR cancellations when typing fast
 - [x] Google Places terms compliant
-- [x] Current location
 - [x] Predefined places
+- [x] typescript types
+- [] Current location
 
 ### Changelog
+- 1.4.2 : Added Typescript types + update dependencies.
 - 1.3.9 : Multiple bugfixes + fixed breaking change in React Native.
 - 1.3.6 : Fixed accuracy issue.
 - 1.3.5 : Fixed bug where input was being cleared.
