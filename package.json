@@ -4,7 +4,7 @@
   "description": "Customizable Google Places autocomplete component for iOS and Android React-Native apps",
   "main": "GooglePlacesAutocomplete.js",
   "scripts": {
-    "test": "./node_modules/eslint/bin/eslint.js GooglePlacesAutocomplete.js"
+    "lint": "eslint . && prettier --write ."
   },
   "author": "Farid from Safi",
   "license": "MIT",
