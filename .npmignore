@@ -2,3 +2,5 @@
 GooglePlacesAutocompleteExample
 Assets
 yarn.lock
+.eslintrc
+.prettierrc
