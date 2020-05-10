@@ -69,9 +69,6 @@ const defaultStyles = {
     justifyContent: 'flex-end',
     height: 20,
   },
-  androidLoader: {
-    marginRight: -15,
-  },
 };
 
 export default class GooglePlacesAutocomplete extends Component {
