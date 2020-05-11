@@ -183,6 +183,17 @@ export default class GooglePlacesAutocomplete extends Component {
     this._requests = [];
   };
 
+  supportedPlatform(from) {
+    if (Platform.OS === 'web' && !this.props.requestUrl) {
+      console.error(
+        'This library cannot be used for the web unless you specify the requestUrl prop. See https://git.io/JflFv more for details.',
+      );
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   /**
    * This method is exposed to parent components to focus on textInput manually.
    * @public
@@ -790,6 +801,7 @@ export default class GooglePlacesAutocomplete extends Component {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
     if (
+      this.supportedPlatform() &&
       (this.state.text !== '' ||
         this.props.predefinedPlaces.length ||
         this.props.currentLocation === true) &&
