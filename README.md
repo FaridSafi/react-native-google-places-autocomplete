@@ -2,17 +2,17 @@
 
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
-### Preview
+## Preview
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
-### Installation
+## Installation
 
 1. `npm install react-native-google-places-autocomplete --save`
 2. Get your [Google Places API keys](https://developers.google.com/places/documentation/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console.
 3. Enable "Google Maps Geocoding API" if you want to use GoogleReverseGeocoding for Current Location
 
-### Example
+## Example
 
 ```jsx
 import React from 'react';
@@ -93,7 +93,7 @@ const GooglePlacesInput = () => {
 };
 ```
 
-### Styling
+## Styling
 
 `GooglePlacesAutocomplete` can be easily customized to meet styles of your app. Pass styles props to `GooglePlacesAutocomplete` with style object for different elements (keys for style object are listed below)
 
@@ -111,7 +111,7 @@ const GooglePlacesInput = () => {
 | separator                   | object (View style)     |
 | row                         | object (View style)     |
 
-#### Example
+### Example
 
 ```jsx
 <GooglePlacesAutocomplete
@@ -141,7 +141,11 @@ const GooglePlacesInput = () => {
 />
 ```
 
-### Features
+## Web Support
+
+Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
+
+## Features
 
 - [x] Places autocompletion
 - [x] iOS and Android compatibility
@@ -155,7 +159,7 @@ const GooglePlacesInput = () => {
 
 ### Changelog
 
-- 1.4.2 : Added Typescript types + referer prop for restricted api key + update dependencies.
+- 1.4.2+: Please see the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases) tab for the changelog information.
 - 1.3.9 : Multiple bugfixes + fixed breaking change in React Native.
 - 1.3.6 : Fixed accuracy issue.
 - 1.3.5 : Fixed bug where input was being cleared.
