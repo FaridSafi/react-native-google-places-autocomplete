@@ -88,8 +88,24 @@ export default class GooglePlacesAutocomplete extends Component {
       this.props.listViewDisplayed === 'auto'
         ? false
         : this.props.listViewDisplayed,
-    url: this.props.url,
+    url: this.getRequestUrl(this.props.requestUrl),
   });
+
+  getRequestUrl = (requestUrl) => {
+    if (requestUrl) {
+      if (requestUrl.useOnPlatform === 'all') {
+        return requestUrl.url;
+      }
+      if (requestUrl.useOnPlatform === 'web') {
+        return Platform.select({
+          web: requestUrl.url,
+          default: 'https://maps.googleapis.com/maps/api',
+        });
+      }
+    } else {
+      return 'https://maps.googleapis.com/maps/api';
+    }
+  };
 
   setAddressText = (address) => this.setState({ text: address });
 
@@ -316,7 +332,11 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials = true;
+      request.withCredentials =
+        this.state.url === 'https://maps.googleapis.com/maps/api'
+          ? true
+          : false; // todo we should have this be passed through the prop.
+
       request.send();
     } else if (rowData.isCurrentLocation === true) {
       // display loader
@@ -488,7 +508,11 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials = true;
+      request.withCredentials =
+        this.state.url === 'https://maps.googleapis.com/maps/api'
+          ? true
+          : false; // todo we should have this be passed through the prop.
+
       request.send();
     } else {
       this._results = [];
@@ -555,7 +579,11 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials = true;
+      request.withCredentials =
+        this.state.url === 'https://maps.googleapis.com/maps/api'
+          ? true
+          : false; // todo we should have this be passed through the prop.
+
       request.send();
     } else {
       this._results = [];
@@ -902,7 +930,10 @@ GooglePlacesAutocomplete.propTypes = {
   onSubmitEditing: PropTypes.func,
   editable: PropTypes.bool,
   referer: PropTypes.string,
-  url: PropTypes.string,
+  requestUrl: PropTypes.shape({
+    url: PropTypes.string,
+    useOnPlatform: PropTypes.oneOf(['web', 'all']),
+  }),
 };
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -952,7 +983,6 @@ GooglePlacesAutocomplete.defaultProps = {
   onSubmitEditing: () => {},
   editable: true,
   referer: null,
-  url: 'https://maps.googleapis.com/maps/api',
 };
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0

@@ -363,6 +363,12 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
+
+  // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
+  requestUrl?: {
+    url: string;
+    useOnPlatform: 'web' | 'all';
+  };
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
