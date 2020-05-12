@@ -79,9 +79,11 @@ const GooglePlacesInput = () => {
         fields: 'formatted_address',
       }}
       filterReverseGeocodingByTypes={[
+        // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+        // available options : https://developers.google.com/maps/documentation/geocoding/intro#Types
         'locality',
         'administrative_area_level_3',
-      ]} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+      ]}
       predefinedPlaces={[homePlace, workPlace]}
       debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
       renderLeftButton={() => (
