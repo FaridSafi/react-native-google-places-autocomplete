@@ -952,7 +952,7 @@ GooglePlacesAutocomplete.defaultProps = {
   placeholderTextColor: '#A8A8A8',
   isRowScrollable: true,
   underlineColorAndroid: 'transparent',
-  returnKeyType: 'default',
+  returnKeyType: 'search',
   keyboardAppearance: 'default',
   onPress: () => {},
   onNotFound: () => {},
