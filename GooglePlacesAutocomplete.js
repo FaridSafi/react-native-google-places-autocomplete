@@ -107,6 +107,9 @@ export default class GooglePlacesAutocomplete extends Component {
     }
   };
 
+  requestShouldUseWithCredentials = () =>
+    this.state.url === 'https://maps.googleapis.com/maps/api';
+
   setAddressText = (address) => this.setState({ text: address });
 
   getAddressText = () => this.state.text;
@@ -343,10 +346,7 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials =
-        this.state.url === 'https://maps.googleapis.com/maps/api'
-          ? true
-          : false; // todo we should have this be passed through the prop.
+      request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -519,10 +519,7 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials =
-        this.state.url === 'https://maps.googleapis.com/maps/api'
-          ? true
-          : false; // todo we should have this be passed through the prop.
+      request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
     } else {
@@ -590,10 +587,7 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
-      request.withCredentials =
-        this.state.url === 'https://maps.googleapis.com/maps/api'
-          ? true
-          : false; // todo we should have this be passed through the prop.
+      request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
     } else {
