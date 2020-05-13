@@ -145,6 +145,8 @@ const GooglePlacesInput = () => {
 
 Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
 
+**_Note:_** The library expects the same response that the Google Maps API would return.
+
 ## Features
 
 - [x] Places autocompletion
