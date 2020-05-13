@@ -88,7 +88,27 @@ export default class GooglePlacesAutocomplete extends Component {
       this.props.listViewDisplayed === 'auto'
         ? false
         : this.props.listViewDisplayed,
+    url: this.getRequestUrl(this.props.requestUrl),
   });
+
+  getRequestUrl = (requestUrl) => {
+    if (requestUrl) {
+      if (requestUrl.useOnPlatform === 'all') {
+        return requestUrl.url;
+      }
+      if (requestUrl.useOnPlatform === 'web') {
+        return Platform.select({
+          web: requestUrl.url,
+          default: 'https://maps.googleapis.com/maps/api',
+        });
+      }
+    } else {
+      return 'https://maps.googleapis.com/maps/api';
+    }
+  };
+
+  requestShouldUseWithCredentials = () =>
+    this.state.url === 'https://maps.googleapis.com/maps/api';
 
   setAddressText = (address) => this.setState({ text: address });
 
@@ -165,6 +185,17 @@ export default class GooglePlacesAutocomplete extends Component {
     this._requests.map((i) => i.abort());
     this._requests = [];
   };
+
+  supportedPlatform(from) {
+    if (Platform.OS === 'web' && !this.props.requestUrl) {
+      console.error(
+        'This library cannot be used for the web unless you specify the requestUrl prop. See https://git.io/JflFv more for details.',
+      );
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   /**
    * This method is exposed to parent components to focus on textInput manually.
@@ -302,7 +333,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
       request.open(
         'GET',
-        'https://maps.googleapis.com/maps/api/place/details/json?' +
+        `${this.state.url}/place/details/json?` +
           Qs.stringify({
             key: this.props.query.key,
             placeid: rowData.place_id,
@@ -314,6 +345,8 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.referer !== null) {
         request.setRequestHeader('Referer', this.props.referer);
       }
+
+      request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -465,7 +498,7 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
         // your key must be allowed to use Google Maps Geocoding API
         url =
-          'https://maps.googleapis.com/maps/api/geocode/json?' +
+          `${this.state.url}/geocode/json?` +
           Qs.stringify({
             latlng: latitude + ',' + longitude,
             key: this.props.query.key,
@@ -473,7 +506,7 @@ export default class GooglePlacesAutocomplete extends Component {
           });
       } else {
         url =
-          'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' +
+          `${this.state.url}/place/nearbysearch/json?` +
           Qs.stringify({
             location: latitude + ',' + longitude,
             key: this.props.query.key,
@@ -486,6 +519,8 @@ export default class GooglePlacesAutocomplete extends Component {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
+      request.withCredentials = this.requestShouldUseWithCredentials();
+
       request.send();
     } else {
       this._results = [];
@@ -497,7 +532,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _request = (text) => {
     this._abortRequests();
-    if (text.length >= this.props.minLength) {
+    if (this.supportedPlatform() && text.length >= this.props.minLength) {
       const request = new XMLHttpRequest();
       this._requests.push(request);
       request.timeout = this.props.timeout;
@@ -543,7 +578,7 @@ export default class GooglePlacesAutocomplete extends Component {
       }
       request.open(
         'GET',
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' +
+        `${this.state.url}/place/autocomplete/json?&input=` +
           encodeURIComponent(text) +
           '&' +
           Qs.stringify(this.props.query),
@@ -551,6 +586,8 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.referer !== null) {
         request.setRequestHeader('Referer', this.props.referer);
       }
+
+      request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
     } else {
@@ -758,6 +795,7 @@ export default class GooglePlacesAutocomplete extends Component {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
     if (
+      this.supportedPlatform() &&
       (this.state.text !== '' ||
         this.props.predefinedPlaces.length ||
         this.props.currentLocation === true) &&
@@ -794,7 +832,7 @@ export default class GooglePlacesAutocomplete extends Component {
       InputComp,
       ...userProps
     } = this.props.textInputProps;
-    const TextInputComp = !!InputComp ? InputComp : TextInput;
+    const TextInputComp = InputComp ? InputComp : TextInput;
     return (
       <View
         style={[
@@ -898,13 +936,17 @@ GooglePlacesAutocomplete.propTypes = {
   onSubmitEditing: PropTypes.func,
   editable: PropTypes.bool,
   referer: PropTypes.string,
+  requestUrl: PropTypes.shape({
+    url: PropTypes.string,
+    useOnPlatform: PropTypes.oneOf(['web', 'all']),
+  }),
 };
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
   placeholderTextColor: '#A8A8A8',
   isRowScrollable: true,
   underlineColorAndroid: 'transparent',
-  returnKeyType: 'default',
+  returnKeyType: 'search',
   keyboardAppearance: 'default',
   onPress: () => {},
   onNotFound: () => {},
@@ -960,7 +1002,4 @@ const create = function create(options = {}) {
   });
 };
 
-module.exports = {
-  GooglePlacesAutocomplete,
-  create,
-};
+export { GooglePlacesAutocomplete, create };
