@@ -46,12 +46,12 @@ You can also try the basic example in a snack [here](https://snack.expo.io/@sbel
 
 **Get Current Location**
 
+<details>
+  <summary>Click to expand</summary>
+
 _Extra step required!_
 
-<details>
-  <summary>Click to expand!</summary>
-
-If you are targeting React Native 0.60.0+ you must install either `@react-native-community/geolocation` ([link](https://github.com/react-native-community/react-native-geolocation)) or `react-native-geolocation-service`(\[link](https://github.com/Agontuk/react-native-geolocation-service)).
+If you are targeting React Native 0.60.0+ you must install either `@react-native-community/geolocation` ([link](https://github.com/react-native-community/react-native-geolocation)) or `react-native-geolocation-service`([link](https://github.com/Agontuk/react-native-geolocation-service)).
 
 Please make sure you follow the installation instructions there and add `navigator.geolocation = require(GEOLOCATION_PACKAGE)` somewhere in you application before `<GooglePlacesAutocomplete />`.
 
@@ -89,7 +89,7 @@ export default GooglePlacesInput;
 **Search with predefined option**
 
 <details>
-  <summary>Click to expand!</summary>
+  <summary>Click to expand</summary>
 
 ```jsx
 import React from 'react';
@@ -130,7 +130,7 @@ export default GooglePlacesInput;
 **Limit results to one country**
 
 <details>
-  <summary>Click to expand!</summary>
+  <summary>Click to expand</summary>
 
 ```jsx
 import React from 'react';
