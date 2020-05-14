@@ -123,7 +123,11 @@ export default class GooglePlacesAutocomplete extends Component {
     ) {
       res = [...this.props.predefinedPlaces];
 
-      if (this.props.currentLocation === true) {
+      if (
+        this.props.currentLocation === true &&
+        navigator &&
+        navigator.geolocation
+      ) {
         res.unshift({
           description: this.props.currentLocationLabel,
           isCurrentLocation: true,
