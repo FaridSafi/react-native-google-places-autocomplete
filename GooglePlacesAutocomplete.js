@@ -110,6 +110,17 @@ export default class GooglePlacesAutocomplete extends Component {
   requestShouldUseWithCredentials = () =>
     this.state.url === 'https://maps.googleapis.com/maps/api';
 
+  hasNavigator = () => {
+    if (navigator && navigator.geolocation) {
+      return true;
+    } else {
+      console.warn(
+        'If you are using React Native v0.60.0+ you must follow these instructions to enable currentLocation: https://git.io/Jf4AR',
+      );
+      return false;
+    }
+  };
+
   setAddressText = (address) => this.setState({ text: address });
 
   getAddressText = () => this.state.text;
@@ -123,11 +134,7 @@ export default class GooglePlacesAutocomplete extends Component {
     ) {
       res = [...this.props.predefinedPlaces];
 
-      if (
-        this.props.currentLocation === true &&
-        navigator &&
-        navigator.geolocation
-      ) {
+      if (this.props.currentLocation === true && this.hasNavigator()) {
         res.unshift({
           description: this.props.currentLocationLabel,
           isCurrentLocation: true,
@@ -192,8 +199,8 @@ export default class GooglePlacesAutocomplete extends Component {
 
   supportedPlatform(from) {
     if (Platform.OS === 'web' && !this.props.requestUrl) {
-      console.error(
-        'This library cannot be used for the web unless you specify the requestUrl prop. See https://git.io/JflFv more for details.',
+      console.warn(
+        'This library cannot be used for the web unless you specify the requestUrl prop. See https://git.io/JflFv for more for details.',
       );
       return false;
     } else {
