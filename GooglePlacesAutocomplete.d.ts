@@ -322,6 +322,11 @@ interface Place {
   geometry: { location: Point };
 }
 
+interface RequestUrl {
+  url: string;
+  useOnPlatform: 'web' | 'all';
+}
+
 interface GooglePlacesAutocompleteProps extends TextInputProps {
   query: Query;
   minLength?: number; // minimum length of text to search
@@ -357,6 +362,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
   filterReverseGeocodingByTypes?: PlaceType[];
   predefinedPlaces?: Place[];
+  predefinedPlacesAlwaysVisible?: boolean;
 
   // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
   debounce?: number;
@@ -365,10 +371,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   renderRightButton?: React.ComponentType<{}>;
 
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
-  requestUrl?: {
-    url: string;
-    useOnPlatform: 'web' | 'all';
-  };
+  requestUrl?: RequestUrl;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
