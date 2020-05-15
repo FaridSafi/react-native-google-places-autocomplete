@@ -362,7 +362,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
   filterReverseGeocodingByTypes?: PlaceType[];
   predefinedPlaces?: Place[];
-  predefinedPlacesAlwaysVisible: boolean;
+  predefinedPlacesAlwaysVisible?: boolean;
 
   // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
   debounce?: number;
