@@ -374,26 +374,6 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   requestUrl?: RequestUrl;
 }
 
-interface InitialState {
-  text: string;
-  dataSource: any[];
-  listViewDisplayed: boolean;
-  url: string;
-}
-
 export class GooglePlacesAutocomplete extends React.Component<
   GooglePlacesAutocompleteProps
-> {
-  getInitialState?: () => InitialState;
-  getRequestUrl?: (requestUrl: RequestUrl) => string;
-  requestShouldUseWithCredentials?: () => boolean;
-  hasNavigator?: () => boolean;
-  setAddressText?: (address: string) => void;
-  getAddressText?: () => string;
-  buildRowsFromResults?: (results: any[]) => any[];
-  supportedPlatform?: () => boolean;
-  triggerFocus?: () => void;
-  triggerBlur?: () => void;
-  getCurrentLocation?: () => void;
-  clearText?: () => void;
-}
+> {}
