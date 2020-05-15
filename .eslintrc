@@ -1,11 +1,7 @@
-// extending airbnb's eslint config
-// see: https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb
 {
-  "extends": "airbnb",
-  "parser": "babel-eslint",
+  "extends": ["@react-native-community", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
-    "no-console": 0,
-    "react/jsx-boolean-value": 0,
-    "react/no-multi-comp": 0,
+    "prettier/prettier": "warn"
   }
 }
