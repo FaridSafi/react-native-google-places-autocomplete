@@ -2,17 +2,94 @@
 
 Customizable Google Places autocomplete component for iOS and Android React-Native apps
 
-### Preview
+## Preview
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
 
-### Installation
+## Installation
 
 1. `npm install react-native-google-places-autocomplete --save`
 2. Get your [Google Places API keys](https://developers.google.com/places/documentation/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console.
 3. Enable "Google Maps Geocoding API" if you want to use GoogleReverseGeocoding for Current Location
 
-### Example
+## Basic Example
+
+**Basic Address Search**
+
+```jsx
+import React from 'react';
+import { Image, Text } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+You can also try the basic example in a snack [here](https://snack.expo.io/@sbell/react-native-google-places-autocomplete)
+
+## More Examples
+
+**Get Current Location**
+
+<details>
+  <summary>Click to expand</summary>
+
+_Extra step required!_
+
+If you are targeting React Native 0.60.0+ you must install either `@react-native-community/geolocation` ([link](https://github.com/react-native-community/react-native-geolocation)) or `react-native-geolocation-service`([link](https://github.com/Agontuk/react-native-geolocation-service)).
+
+Please make sure you follow the installation instructions there and add `navigator.geolocation = require(GEOLOCATION_PACKAGE)` somewhere in you application before `<GooglePlacesAutocomplete />`.
+
+```jsx
+import React from 'react';
+import { Image, Text } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+// navigator.geolocation = require('@react-native-community/geolocation');
+// navigator.geolocation = require('react-native-geolocation-service');
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+      }}
+      currentLocation={true}
+      currentLocationLabel='Current location'
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+</details>
+
+**Search with predefined option**
+
+<details>
+  <summary>Click to expand</summary>
 
 ```jsx
 import React from 'react';
@@ -32,68 +109,57 @@ const GooglePlacesInput = () => {
   return (
     <GooglePlacesAutocomplete
       placeholder='Search'
-      minLength={2} // minimum length of text to search
-      autoFocus={false}
-      returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
-      keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
-      listViewDisplayed='auto' // true/false/undefined
-      fetchDetails={true}
-      renderDescription={(row) => row.description} // custom description render
       onPress={(data, details = null) => {
         // 'details' is provided when fetchDetails = true
         console.log(data, details);
       }}
-      getDefaultValue={() => ''}
       query={{
-        // available options: https://developers.google.com/places/web-service/autocomplete
         key: 'YOUR API KEY',
-        language: 'en', // language of the results
-        types: '(cities)', // default: 'geocode'
+        language: 'en',
       }}
-      styles={{
-        textInputContainer: {
-          width: '100%',
-        },
-        description: {
-          fontWeight: 'bold',
-        },
-        predefinedPlacesDescription: {
-          color: '#1faadb',
-        },
-      }}
-      currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-      currentLocationLabel='Current location'
-      nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-      GoogleReverseGeocodingQuery={
-        {
-          // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-        }
-      }
-      GooglePlacesSearchQuery={{
-        // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-        rankby: 'distance',
-        type: 'cafe',
-      }}
-      GooglePlacesDetailsQuery={{
-        // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
-        fields: 'formatted_address',
-      }}
-      filterReverseGeocodingByTypes={[
-        'locality',
-        'administrative_area_level_3',
-      ]} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
       predefinedPlaces={[homePlace, workPlace]}
-      debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-      renderLeftButton={() => (
-        <Image source={require('path/custom/left-icon')} />
-      )}
-      renderRightButton={() => <Text>Custom text after the input</Text>}
     />
   );
 };
+
+export default GooglePlacesInput;
 ```
 
-### Styling
+</details>
+
+**Limit results to one country**
+
+<details>
+  <summary>Click to expand</summary>
+
+```jsx
+import React from 'react';
+import { Image, Text } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+        components: 'country:us',
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+</details>
+
+## Styling
 
 `GooglePlacesAutocomplete` can be easily customized to meet styles of your app. Pass styles props to `GooglePlacesAutocomplete` with style object for different elements (keys for style object are listed below)
 
@@ -111,7 +177,7 @@ const GooglePlacesInput = () => {
 | separator                   | object (View style)     |
 | row                         | object (View style)     |
 
-#### Example
+### Example
 
 ```jsx
 <GooglePlacesAutocomplete
@@ -137,11 +203,16 @@ const GooglePlacesInput = () => {
       color: '#1faadb',
     },
   }}
-  currentLocation={false}
 />
 ```
 
-### Features
+## Web Support
+
+Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
+
+**_Note:_** The library expects the same response that the Google Maps API would return.
+
+## Features
 
 - [x] Places autocompletion
 - [x] iOS and Android compatibility
@@ -151,11 +222,11 @@ const GooglePlacesInput = () => {
 - [x] Google Places terms compliant
 - [x] Predefined places
 - [x] typescript types
-- [ ] Current location
+- [x] Current location
 
 ### Changelog
 
-- 1.4.2 : Added Typescript types + referer prop for restricted api key + update dependencies.
+- 1.4.2+: Please see the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases) tab for the changelog information.
 - 1.3.9 : Multiple bugfixes + fixed breaking change in React Native.
 - 1.3.6 : Fixed accuracy issue.
 - 1.3.5 : Fixed bug where input was being cleared.
