@@ -353,10 +353,6 @@ export default class GooglePlacesAutocomplete extends Component {
           }),
       );
 
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
-
       request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
@@ -526,9 +522,6 @@ export default class GooglePlacesAutocomplete extends Component {
       }
 
       request.open('GET', url);
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
 
       request.withCredentials = this.requestShouldUseWithCredentials();
 
@@ -598,9 +591,6 @@ export default class GooglePlacesAutocomplete extends Component {
           '&' +
           Qs.stringify(this.props.query),
       );
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
 
       request.withCredentials = this.requestShouldUseWithCredentials();
 
@@ -950,7 +940,6 @@ GooglePlacesAutocomplete.propTypes = {
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
   editable: PropTypes.bool,
-  referer: PropTypes.string,
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
@@ -1003,7 +992,6 @@ GooglePlacesAutocomplete.defaultProps = {
   numberOfLines: 1,
   onSubmitEditing: () => {},
   editable: true,
-  referer: null,
 };
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
