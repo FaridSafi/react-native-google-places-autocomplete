@@ -372,6 +372,9 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
+  
+  // text input props & ref
+  textInputProps: TextInputProps & { ref: (React.MutableRefObject<TextInput | null> | undefined) };
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
