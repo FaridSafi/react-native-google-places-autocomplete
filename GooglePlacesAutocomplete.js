@@ -178,7 +178,7 @@ export default class GooglePlacesAutocomplete extends Component {
         {
           listViewDisplayed: listViewDisplayed,
         },
-        this._handleChangeText(nextProps.text),
+        () => this._handleChangeText(nextProps.text),
       );
     } else {
       this.setState({
