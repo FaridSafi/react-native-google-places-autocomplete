@@ -353,7 +353,7 @@ export default class GooglePlacesAutocomplete extends Component {
           }),
       );
 
-      if (this.props.referer !== null) {
+      if (this.props.referer !== null && Platform.OS === 'web') {
         request.setRequestHeader('Referer', this.props.referer);
       }
 
