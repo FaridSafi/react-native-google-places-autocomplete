@@ -5,6 +5,7 @@ import {
   TextInputProps,
   TextStyle,
   ViewStyle,
+  TextInput,
 } from 'react-native';
 
 // @see https://developers.google.com/maps/faq#languagesupport
@@ -374,7 +375,9 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   requestUrl?: RequestUrl;
   
   // text input props & ref
-  textInputProps: TextInputProps & { ref: (React.MutableRefObject<TextInput | null> | undefined) };
+  textInputProps: TextInputProps & {
+    ref?: React.MutableRefObject<TextInput | null> | undefined;
+  };
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
