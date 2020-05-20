@@ -364,7 +364,6 @@ export default class GooglePlacesAutocomplete extends Component {
         text: this._renderDescription(rowData),
       });
 
-      this.triggerBlur(); // hide keyboard but not the results
       delete rowData.isLoading;
       this.getCurrentLocation();
     } else {
