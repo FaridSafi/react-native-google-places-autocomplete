@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  TextInput,
-  View,
-  FlatList,
-  ScrollView,
-  Image,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableHighlight,
-  Platform,
-  ActivityIndicator,
-  PixelRatio,
-  Keyboard,
-} from 'react-native';
-import Qs from 'qs';
 import debounce from 'lodash.debounce';
+import PropTypes from 'prop-types';
+import Qs from 'qs';
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  Keyboard,
+  PixelRatio,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 const WINDOW = Dimensions.get('window');
 
