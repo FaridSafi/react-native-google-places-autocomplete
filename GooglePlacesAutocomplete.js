@@ -164,7 +164,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    let listViewDisplayed = true;
+    let listViewDisplayed = this.state.listViewDisplayed;
 
     if (nextProps.listViewDisplayed !== 'auto') {
       listViewDisplayed = nextProps.listViewDisplayed;
