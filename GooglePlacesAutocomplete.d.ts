@@ -378,6 +378,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   textInputProps: TextInputProps & {
     ref?: React.MutableRefObject<TextInput | null> | undefined;
   };
+  
+  enablePoweredByContainer?: boolean;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
