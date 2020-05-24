@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  TextInput,
-  View,
-  FlatList,
-  ScrollView,
-  Image,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableHighlight,
-  Platform,
-  ActivityIndicator,
-  PixelRatio,
-  Keyboard,
-} from 'react-native';
-import Qs from 'qs';
 import debounce from 'lodash.debounce';
+import PropTypes from 'prop-types';
+import Qs from 'qs';
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  Keyboard,
+  PixelRatio,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 const WINDOW = Dimensions.get('window');
 
@@ -164,7 +164,7 @@ export default class GooglePlacesAutocomplete extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    let listViewDisplayed = true;
+    let listViewDisplayed = this.state.listViewDisplayed;
 
     if (nextProps.listViewDisplayed !== 'auto') {
       listViewDisplayed = nextProps.listViewDisplayed;
@@ -178,7 +178,7 @@ export default class GooglePlacesAutocomplete extends Component {
         {
           listViewDisplayed: listViewDisplayed,
         },
-        this._handleChangeText(nextProps.text),
+        () => this._handleChangeText(nextProps.text),
       );
     } else {
       this.setState({
@@ -353,10 +353,6 @@ export default class GooglePlacesAutocomplete extends Component {
           }),
       );
 
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
-
       request.withCredentials = this.requestShouldUseWithCredentials();
 
       request.send();
@@ -368,7 +364,6 @@ export default class GooglePlacesAutocomplete extends Component {
         text: this._renderDescription(rowData),
       });
 
-      this.triggerBlur(); // hide keyboard but not the results
       delete rowData.isLoading;
       this.getCurrentLocation();
     } else {
@@ -526,9 +521,6 @@ export default class GooglePlacesAutocomplete extends Component {
       }
 
       request.open('GET', url);
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
 
       request.withCredentials = this.requestShouldUseWithCredentials();
 
@@ -543,7 +535,11 @@ export default class GooglePlacesAutocomplete extends Component {
 
   _request = (text) => {
     this._abortRequests();
-    if (this.supportedPlatform() && text.length >= this.props.minLength) {
+    if (
+      this.supportedPlatform() &&
+      text &&
+      text.length >= this.props.minLength
+    ) {
       const request = new XMLHttpRequest();
       this._requests.push(request);
       request.timeout = this.props.timeout;
@@ -594,9 +590,6 @@ export default class GooglePlacesAutocomplete extends Component {
           '&' +
           Qs.stringify(this.props.query),
       );
-      if (this.props.referer !== null) {
-        request.setRequestHeader('Referer', this.props.referer);
-      }
 
       request.withCredentials = this.requestShouldUseWithCredentials();
 
@@ -952,7 +945,6 @@ GooglePlacesAutocomplete.propTypes = {
   numberOfLines: PropTypes.number,
   onSubmitEditing: PropTypes.func,
   editable: PropTypes.bool,
-  referer: PropTypes.string,
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
@@ -1006,7 +998,6 @@ GooglePlacesAutocomplete.defaultProps = {
   numberOfLines: 1,
   onSubmitEditing: () => {},
   editable: true,
-  referer: null,
   activityIndicatorProps: {},
 };
 

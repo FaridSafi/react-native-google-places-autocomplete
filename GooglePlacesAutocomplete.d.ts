@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   ImageStyle,
   StyleProp,
+  TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
@@ -372,6 +373,13 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
+
+  // text input props & ref
+  textInputProps: TextInputProps & {
+    ref?: React.MutableRefObject<TextInput | null> | undefined;
+  };
+  
+  enablePoweredByContainer?: boolean;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
