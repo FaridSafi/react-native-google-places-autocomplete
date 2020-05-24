@@ -551,6 +551,10 @@ export default class GooglePlacesAutocomplete extends Component {
 
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
+          if(responseJSON.status === 'ZERO_RESULTS'){
+              this.props.onNotFound && this.props.onNotFound(responseJSON);
+              return;
+          }
           if (typeof responseJSON.predictions !== 'undefined') {
             if (this._isMounted === true) {
               const results =
