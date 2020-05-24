@@ -631,7 +631,13 @@ export default class GooglePlacesAutocomplete extends Component {
   };
 
   _getRowLoader() {
-    return <ActivityIndicator animating={true} size='small' />;
+    return (
+       <ActivityIndicator
+          animating={true}
+          size='small'
+          {...this.props.activityIndicatorProps}
+       />
+    );
   }
 
   _renderRowData = (rowData) => {
@@ -943,6 +949,7 @@ GooglePlacesAutocomplete.propTypes = {
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
   }),
+  activityIndicatorProps: PropTypes.object,
 };
 GooglePlacesAutocomplete.defaultProps = {
   placeholder: 'Search',
@@ -991,6 +998,7 @@ GooglePlacesAutocomplete.defaultProps = {
   numberOfLines: 1,
   onSubmitEditing: () => {},
   editable: true,
+  activityIndicatorProps: {},
 };
 
 // this function is still present in the library to be retrocompatible with version < 1.1.0
