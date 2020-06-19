@@ -583,6 +583,9 @@ export default class GooglePlacesAutocomplete extends Component {
       if (this.props.preProcess) {
         text = this.props.preProcess(text);
       }
+      if (this.props.query.location && this.props.query.location.latitude && this.props.query.location.longitude) {
+        this.props.query.location = `${this.props.query.location.latitude},${this.props.query.location.longitude}`;
+      }
       request.open(
         'GET',
         `${this.state.url}/place/autocomplete/json?&input=` +
