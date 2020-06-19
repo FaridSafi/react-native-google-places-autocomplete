@@ -371,6 +371,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
 
+  onFail?: (error?: any) => void;
+
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
 
@@ -378,7 +380,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   textInputProps: TextInputProps & {
     ref?: React.MutableRefObject<TextInput | null> | undefined;
   };
-  
+
   enablePoweredByContainer?: boolean;
 }
 
