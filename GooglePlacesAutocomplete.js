@@ -901,7 +901,6 @@ GooglePlacesAutocomplete.propTypes = {
   currentLocation: PropTypes.bool,
   currentLocationLabel: PropTypes.string,
   debounce: PropTypes.number,
-  editable: PropTypes.bool,
   enableHighAccuracyLocation: PropTypes.bool,
   enablePoweredByContainer: PropTypes.bool,
   fetchDetails: PropTypes.bool,
@@ -911,7 +910,6 @@ GooglePlacesAutocomplete.propTypes = {
   GooglePlacesSearchQuery: PropTypes.object,
   GoogleReverseGeocodingQuery: PropTypes.object,
   isRowScrollable: PropTypes.bool,
-  keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
   listUnderlayColor: PropTypes.string,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
@@ -922,7 +920,6 @@ GooglePlacesAutocomplete.propTypes = {
   onSubmitEditing: PropTypes.func,
   onTimeout: PropTypes.func,
   placeholder: PropTypes.string,
-  placeholderTextColor: PropTypes.string,
   predefinedPlaces: PropTypes.array,
   predefinedPlacesAlwaysVisible: PropTypes.bool,
   query: PropTypes.object,
@@ -934,22 +931,18 @@ GooglePlacesAutocomplete.propTypes = {
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
   }),
-  returnKeyType: PropTypes.string,
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
-  underlineColorAndroid: PropTypes.string,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
   autoFillOnNotFound: false,
-  autoFocus: false,
   currentLocation: false,
   currentLocationLabel: 'Current location',
   debounce: 0,
-  editable: true,
   enableHighAccuracyLocation: true,
   enablePoweredByContainer: true,
   fetchDetails: false,
@@ -973,8 +966,6 @@ GooglePlacesAutocomplete.defaultProps = {
   onSubmitEditing: () => {},
   onPress: () => {},
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
-  placeholder: 'Search',
-  placeholderTextColor: '#A8A8A8',
   predefinedPlaces: [],
   predefinedPlacesAlwaysVisible: false,
   query: {
@@ -982,24 +973,11 @@ GooglePlacesAutocomplete.defaultProps = {
     language: 'en',
     types: 'geocode',
   },
-  returnKeyType: 'search',
   styles: {},
   suppressDefaultStyles: false,
   textInputHide: false,
   textInputProps: {},
   timeout: 20000,
-  underlineColorAndroid: 'transparent',
 };
 
-// this function is still present in the library to be retrocompatible with version < 1.1.0
-const create = function create(options = {}) {
-  return React.createClass({
-    render() {
-      return (
-        <GooglePlacesAutocomplete ref='GooglePlacesAutocomplete' {...options} />
-      );
-    },
-  });
-};
-
-export { GooglePlacesAutocomplete, create };
+export { GooglePlacesAutocomplete };
