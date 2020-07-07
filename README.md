@@ -215,10 +215,10 @@ _This list is a work in progress. PRs welcome!_
 
 ## Methods
 
-| method name | type | description |
-| ----------- | ---- | ----------- |
-| `getAddressText` | `() => string` | return the value of TextInput |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput |
+| method name      | type                      | description                   |
+| ---------------- | ------------------------- | ----------------------------- |
+| `getAddressText` | `() => string`            | return the value of TextInput |
+| `setAddressText` | `(value: string) => void` | set the value of TextInput    |
 
 ## Styling
 
