@@ -386,4 +386,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
 export class GooglePlacesAutocomplete extends React.Component<
   GooglePlacesAutocompleteProps
-> {}
+> {
+  setAddressText(value: string): void;
+  getAddressText(): string;
+}

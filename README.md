@@ -213,6 +213,13 @@ _This list is a work in progress. PRs welcome!_
 | timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
 | underlineColorAndroid         | string   | Text Input underline color (android) https://reactnative.dev/docs/textinput#underlinecolorandroid                                                                                                                                           | 'transparent'                                                     |                                                            |
 
+## Methods
+
+| method name | type | description |
+| ----------- | ---- | ----------- |
+| `getAddressText` | `() => string` | return the value of TextInput |
+| `setAddressText` | `(value: string) => void` | set the value of TextInput |
+
 ## Styling
 
 `GooglePlacesAutocomplete` can be easily customized to meet styles of your app. Pass styles props to `GooglePlacesAutocomplete` with style object for different elements (keys for style object are listed below)
