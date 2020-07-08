@@ -269,9 +269,21 @@ export default class GooglePlacesAutocomplete extends Component {
   };
 
   _onPress = (rowData) => {
+    const {
+      fetchDetails,
+      timeout,
+      onTimeout,
+      onPress,
+      autoFillOnNotFound,
+      onNotFound,
+      onFail,
+      googleGeocodingAPI,
+      query,
+      GooglePlacesDetailsQuery
+    } = this.props
     if (
       rowData.isPredefinedPlace !== true &&
-      this.props.fetchDetails === true
+      fetchDetails === true
     ) {
       if (rowData.isLoading === true) {
         // already requesting
@@ -288,8 +300,8 @@ export default class GooglePlacesAutocomplete extends Component {
       // fetch details
       const request = new XMLHttpRequest();
       this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
+      request.timeout = timeout;
+      request.ontimeout = onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) return;
 
@@ -298,7 +310,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
           if (responseJSON.status === 'OK') {
             if (this._isMounted === true) {
-              const details = responseJSON.result;
+              const details = googleGeocodingAPI ? responseJSON.results[0] : responseJSON.result;
               this._disableRowLoaders();
               this._onBlur();
 
@@ -307,51 +319,61 @@ export default class GooglePlacesAutocomplete extends Component {
               });
 
               delete rowData.isLoading;
-              this.props.onPress(rowData, details);
+              onPress(rowData, details);
             }
           } else {
             this._disableRowLoaders();
 
-            if (this.props.autoFillOnNotFound) {
+            if (autoFillOnNotFound) {
               this.setState({
                 text: this._renderDescription(rowData),
               });
               delete rowData.isLoading;
             }
 
-            if (!this.props.onNotFound) {
+            if (!onNotFound) {
               console.warn(
                 'google places autocomplete: ' + responseJSON.status,
               );
             } else {
-              this.props.onNotFound(responseJSON);
+              onNotFound(responseJSON);
             }
           }
         } else {
           this._disableRowLoaders();
 
-          if (!this.props.onFail) {
+          if (!onFail) {
             console.warn(
               'google places autocomplete: request could not be completed or has been aborted',
             );
           } else {
-            this.props.onFail(
+            onFail(
               'request could not be completed or has been aborted',
             );
           }
         }
       };
-
-      request.open(
-        'GET',
-        `${this.state.url}/place/details/json?` +
-          Qs.stringify({
-            key: this.props.query.key,
-            placeid: rowData.place_id,
-            language: this.props.query.language,
-            ...this.props.GooglePlacesDetailsQuery,
-          }),
-      );
+      if(googleGeocodingAPI) {
+        request.open(
+          'GET',
+          `${this.state.url}/geocode/json?` +
+            Qs.stringify({
+              key: query.key,
+              place_id: rowData.place_id
+            }),
+        );
+      } else {
+        request.open(
+          'GET',
+          `${this.state.url}/place/details/json?` +
+            Qs.stringify({
+              key: query.key,
+              placeid: rowData.place_id,
+              language: query.language,
+              ...GooglePlacesDetailsQuery,
+            }),
+        );
+      }
 
       request.withCredentials = this.requestShouldUseWithCredentials();
 
@@ -914,6 +936,7 @@ GooglePlacesAutocomplete.propTypes = {
   keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
   listUnderlayColor: PropTypes.string,
   minLength: PropTypes.number,
+  googleGeocodingAPI: PropTypes.bool,
   nearbyPlacesAPI: PropTypes.string,
   numberOfLines: PropTypes.number,
   onFail: PropTypes.func,
