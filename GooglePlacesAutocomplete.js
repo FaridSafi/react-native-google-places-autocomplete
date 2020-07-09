@@ -711,7 +711,7 @@ export default class GooglePlacesAutocomplete extends Component {
   };
 
   _renderSeparator = (sectionID, rowID) => {
-    if (rowID == this.state.dataSource.length - 1) {
+    if (rowID === this.state.dataSource.length - 1) {
       return null;
     }
 
@@ -764,7 +764,7 @@ export default class GooglePlacesAutocomplete extends Component {
   _shouldShowPoweredLogo = () => {
     if (
       !this.props.enablePoweredByContainer ||
-      this.state.dataSource.length == 0
+      this.state.dataSource.length === 0
     ) {
       return false;
     }
