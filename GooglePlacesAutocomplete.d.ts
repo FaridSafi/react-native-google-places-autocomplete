@@ -382,6 +382,9 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   };
 
   enablePoweredByContainer?: boolean;
+
+  // use the ListEmptyComponent prop when no autocomplete results are found.
+  listEmptyComponent?: React.ComponentType<{}>;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
