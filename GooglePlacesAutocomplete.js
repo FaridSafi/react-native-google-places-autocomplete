@@ -132,7 +132,11 @@ export default class GooglePlacesAutocomplete extends Component {
       results.length === 0 ||
       this.props.predefinedPlacesAlwaysVisible === true
     ) {
-      res = [...this.props.predefinedPlaces];
+      res = [
+        ...this.props.predefinedPlaces.filter(
+          (place) => place.description && place.description.length,
+        ),
+      ];
 
       if (this.props.currentLocation === true && this.hasNavigator()) {
         res.unshift({
@@ -184,6 +188,12 @@ export default class GooglePlacesAutocomplete extends Component {
       this.setState({
         listViewDisplayed: listViewDisplayed,
       });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.predefinedPlaces !== this.props.predefinedPlaces) {
+      this.setState({ dataSource: this.buildRowsFromResults(this._results) });
     }
   }
 
