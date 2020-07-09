@@ -817,6 +817,10 @@ export default class GooglePlacesAutocomplete extends Component {
           extraData={[this.state.dataSource, this.props]}
           ItemSeparatorComponent={this._renderSeparator}
           renderItem={({ item }) => this._renderRow(item)}
+          ListEmptyComponent={
+            this.state.text.length > this.props.minLength &&
+            this.props.listEmptyComponent
+          }
           ListHeaderComponent={
             this.props.renderHeaderComponent &&
             this.props.renderHeaderComponent(this.state.text)
@@ -912,6 +916,7 @@ GooglePlacesAutocomplete.propTypes = {
   GoogleReverseGeocodingQuery: PropTypes.object,
   isRowScrollable: PropTypes.bool,
   keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
+  listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
