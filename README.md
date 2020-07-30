@@ -18,7 +18,6 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const GooglePlacesInput = () => {
@@ -57,7 +56,6 @@ Please make sure you follow the installation instructions there and add `navigat
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 // navigator.geolocation = require('@react-native-community/geolocation');
@@ -93,7 +91,6 @@ export default GooglePlacesInput;
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const homePlace = {
@@ -134,7 +131,6 @@ export default GooglePlacesInput;
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const GooglePlacesInput = () => {
