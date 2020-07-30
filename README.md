@@ -302,7 +302,7 @@ This library does not use the iOS, Android or JS SDKs from Google. This comes wi
 - doesn't work directly on the web without a proxy server
 - any Google API change can be a breaking change for the library.
 
-## Inside ScrollView or FlatList
+### Use Inside a `<ScrollView/>` or `<FlatList/>`
 
 If you need to include this component inside a ScrolView or FlatList, remember to apply the `keyboardShouldPersistTaps` attribute to all ancestors ScrollView or FlatList (see [this](https://github.com/FaridSafi/react-native-google-places-autocomplete/issues/486#issuecomment-665602257) issue comment).
 
