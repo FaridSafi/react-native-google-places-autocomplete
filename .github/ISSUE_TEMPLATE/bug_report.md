@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 # Reproduction - (required - issue will be closed without this)
 
-Steps to reproduce the behavior - a minimal reproducible code example, link to a [snack](https://snakc.expo.io) or a repository.
+Steps to reproduce the behavior - a minimal reproducible code example, link to a [snack](https://snack.expo.io) or a repository.
 
 **Please provide a FULLY REPRODUCIBLE example.**
 
