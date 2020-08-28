@@ -151,7 +151,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     url === 'https://maps.googleapis.com/maps/api';
 
   const hasNavigator = () => {
-    if (navigator && navigator.geolocation) {
+    if (navigator?.geolocation) {
       return true;
     } else {
       console.warn(
@@ -532,8 +532,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _handleChangeText = (text) => {
     _onChangeText(text);
 
-    const onChangeText =
-      props && props.textInputProps && props.textInputProps.onChangeText;
+    const onChangeText = props?.textInputProps?.onChangeText;
 
     if (onChangeText) {
       onChangeText(text);
