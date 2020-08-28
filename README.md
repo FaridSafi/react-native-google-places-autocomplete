@@ -18,7 +18,6 @@ Customizable Google Places autocomplete component for iOS and Android React-Nati
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const GooglePlacesInput = () => {
@@ -57,7 +56,6 @@ Please make sure you follow the installation instructions there and add `navigat
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 // navigator.geolocation = require('@react-native-community/geolocation');
@@ -93,7 +91,6 @@ export default GooglePlacesInput;
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const homePlace = {
@@ -134,7 +131,6 @@ export default GooglePlacesInput;
 
 ```js
 import React from 'react';
-import { Image, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const GooglePlacesInput = () => {
@@ -170,7 +166,7 @@ _This list is a work in progress. PRs welcome!_
 | currentLocation               | boolean  | Will add a 'Current location' button at the top of the predefined places list                                                                                                                                                               | false                                                             | true \| false                                              |
 | currentLocationLabel          | string   | change the display label for the current location button                                                                                                                                                                                    | Current Location                                                  | Any string                                                 |
 | debounce                      | number   | debounce the requests (in ms)                                                                                                                                                                                                               | 0                                                                 |                                                            |
-| disableScroll                 |          | disable scroll on the results list                                                                                                                                                                                                          |                                                                   |                                                            |
+| disableScroll                 | boolean  | disable scroll on the results list                                                                                                                                                                                                          |                                                                   |                                                            |
 | editable                      | boolean  | editable from text input https://reactnative.dev/docs/textinput#editable                                                                                                                                                                    | true                                                              | true \| false                                              |
 | enableHighAccuracyLocation    | boolean  | use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. | true                                                              |                                                            |
 | enablePoweredByContainer      | boolean  | show "powered by Google" at the bottom of the search results list                                                                                                                                                                           | true                                                              |                                                            |
@@ -182,6 +178,7 @@ _This list is a work in progress. PRs welcome!_
 | isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |                                                            |
 | keyboardAppearance            | enum     | keyboard appearance (iOS) https://reactnative.dev/docs/textinput#keyboardappearance                                                                                                                                                         | 'default'                                                         | 'default' \| 'light' \| 'dark'                             |
 | keyboardShouldPersistTaps     | string   | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
+| listEmptyComponent            | function | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
 | listUnderlayColor             | string   | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                | '#c8c7cc'                                                         |                                                            |
 | listViewDisplayed             | string   | override the default behavior of showing the list (results) view                                                                                                                                                                            | 'auto'                                                            | 'auto' \| true \| false                                    |
 | minLength                     | number   | minimum length of text to trigger a search                                                                                                                                                                                                  | 0                                                                 |                                                            |
@@ -199,7 +196,7 @@ _This list is a work in progress. PRs welcome!_
 | preProcess                    | function | do something to the text of the search input before a search request is sent                                                                                                                                                                |                                                                   |                                                            |
 | query                         | object   | "query" object for the Google Places Autocomplete API (link)                                                                                                                                                                                | `{ key: 'missing api key', language: 'en', types: 'geocode' }`    |                                                            |
 | renderDescription             | function | determines the data passed to each renderRow (search result)                                                                                                                                                                                |                                                                   |                                                            |
-| renderHeaderComponent         |          |                                                                                                                                                                                                                                             |                                                                   |                                                            |
+| renderHeaderComponent         | function | use the `ListHeaderComponent` from `FlatList` when showing autocomplete results                                                                                                                                                             |                                                                   |                                                            |
 | renderLeftButton              | function | add a component to the left side of the Text Input                                                                                                                                                                                          |                                                                   |                                                            |
 | renderRightButton             | function | add a component to the right side of the Text Input                                                                                                                                                                                         |                                                                   |                                                            |
 | renderRow                     | function | custom component to render each result row (use this to show an icon beside each result)                                                                                                                                                    |                                                                   |                                                            |
@@ -211,6 +208,13 @@ _This list is a work in progress. PRs welcome!_
 | textInputProps                | object   | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                               |                                                                   |                                                            |
 | timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
 | underlineColorAndroid         | string   | Text Input underline color (android) https://reactnative.dev/docs/textinput#underlinecolorandroid                                                                                                                                           | 'transparent'                                                     |                                                            |
+
+## Methods
+
+| method name      | type                      | description                   |
+| ---------------- | ------------------------- | ----------------------------- |
+| `getAddressText` | `() => string`            | return the value of TextInput |
+| `setAddressText` | `(value: string) => void` | set the value of TextInput    |
 
 ## Styling
 
@@ -292,6 +296,45 @@ This library does not use the iOS, Android or JS SDKs from Google. This comes wi
 - the library is not compatible with a Application key restrictions
 - doesn't work directly on the web without a proxy server
 - any Google API change can be a breaking change for the library.
+
+### Use Inside a `<ScrollView/>` or `<FlatList/>`
+
+If you need to include this component inside a ScrolView or FlatList, remember to apply the `keyboardShouldPersistTaps` attribute to all ancestors ScrollView or FlatList (see [this](https://github.com/FaridSafi/react-native-google-places-autocomplete/issues/486#issuecomment-665602257) issue comment).
+
+## A word about the Google Maps APIs
+
+Google Provides a bunch of web APIs for finding an address or place, and getting it’s details.
+There are the Google Places Web APIs ([Place Search](https://developers.google.com/places/web-service/search), [Place Details](https://developers.google.com/places/web-service/details), [Place Photos](https://developers.google.com/places/web-service/photos), [Place Autocomplete](https://developers.google.com/places/web-service/autocomplete), [Query Autocomplete](https://developers.google.com/places/web-service/query)) and the [Google Geocode API](https://developers.google.com/maps/documentation/geocoding/intro) .
+
+The are 5 Google Places APIs:
+
+- **Place Autocomplete -** automatically fills in the name and/or address of a place as users type.
+- **Place Details -** returns more detailed information about a specific place (using a place_id that you get from Place Search, Place Autocomplete, or Query Autocomplete).
+- **Place Photos -** provides access to the millions of place-related photos stored in Google's Place database (using a reference_id that you get from Place Search, Place Autocomplete, or Query Autocomplete).
+- **Place Search -** returns a list of places based on a user's location or search string.
+- **Query Autocomplete -** provides a query prediction service for text-based geographic searches, returning suggested queries as users type.
+
+The **Geocoding API** allows you to convert an address into geographic coordinates (lat, long) and to "reverse geocode", which is the process of converting geographic coordinates into a human-readable address.
+
+### Which APIs does this library use?
+
+Place Autocomplete API, Place Details API, Place Search API and the Geocoding API.
+
+We use the **Place Autocomplete API** to get suggestions as you type. When you click on a suggestion, we use the **Place Details API** to get more information about the place.
+
+We use the **Geocoding API** and the **Place Search API** to use your current location to get results.
+
+Because the query parameters are different for each API, there are 4 different "query" props.
+
+1. Autocomplete -> `query` ([options](https://developers.google.com/places/web-service/autocomplete#place_autocomplete_requests))
+2. Place Details -> `GooglePlacesDetailsQuery` ([options](https://developers.google.com/places/web-service/details#PlaceDetailsRequests))
+3. Nearby Search -> `GooglePlacesSearchQuery` ([options](https://developers.google.com/places/web-service/search#PlaceSearchRequests))
+4. Geocode -> `GoogleReverseGeocodingQuery` ([options](https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests))
+
+Number 1 is used while getting autocomplete results.  
+Number 2 is used when you click on a result.  
+Number 3 is used when you select 'Current Location' to load nearby results.  
+Number 4 is used when `nearbyPlacesAPI='GoogleReverseGeocoding'` is set and you select 'Current Location' to load nearby results.
 
 ## Changelog
 

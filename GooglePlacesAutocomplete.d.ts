@@ -291,10 +291,7 @@ interface Query<T = AutocompleteRequestType> {
   key: string;
   sessiontoken?: string;
   offset?: number;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
+  location?: string;
   radius?: number;
   language?: Language;
   components?: string;
@@ -370,6 +367,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
 
+  onFail?: (error?: any) => void;
+
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
 
@@ -379,8 +378,14 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   };
 
   enablePoweredByContainer?: boolean;
+
+  // use the ListEmptyComponent prop when no autocomplete results are found.
+  listEmptyComponent?: React.ComponentType<{}>;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
   GooglePlacesAutocompleteProps
-> {}
+> {
+  setAddressText(value: string): void;
+  getAddressText(): string;
+}

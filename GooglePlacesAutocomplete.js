@@ -85,8 +85,19 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const buildRowsFromResults = (results) => {
     let res = [];
 
+    if (
+      results.length === 0 ||
+      this.props.predefinedPlacesAlwaysVisible === true
+    ) {
+      res = [
+        ...this.props.predefinedPlaces.filter(
+          (place) => place.description && place.description.length,
+        ),
+      ];
+
     if (results.length === 0 || props.predefinedPlacesAlwaysVisible === true) {
-      res = [...props.predefinedPlaces];
+      res = [...props.predefinedPlaces.filter(
+          (place) => place?.description.length,
 
       if (props.currentLocation === true && hasNavigator()) {
         res.unshift({
@@ -721,6 +732,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           extraData={[dataSource, props]}
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item }) => _renderRow(item)}
+          ListEmptyComponent={
+            text.length > props.minLength &&
+            props.listEmptyComponent
+          }
           ListHeaderComponent={
             props.renderHeaderComponent &&
             props.renderHeaderComponent(stateText)
@@ -736,6 +751,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   let {
     onFocus,
+onBlur,
     clearButtonMode,
     InputComp,
     ...userProps
@@ -779,7 +795,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                   }
                 : _onFocus
             }
-            onBlur={_onBlur}
+            onBlur={
+onBlur
+                ? () => {
+                    _onBlur();
+                    onBlur();
+                  }
+                : _onBlur}
             underlineColorAndroid={props.underlineColorAndroid}
             clearButtonMode={
               clearButtonMode ? clearButtonMode : 'while-editing'
@@ -810,6 +832,8 @@ GooglePlacesAutocomplete.propTypes = {
   GooglePlacesSearchQuery: PropTypes.object,
   GoogleReverseGeocodingQuery: PropTypes.object,
   isRowScrollable: PropTypes.bool,
+  keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
+  listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
