@@ -1,7 +1,14 @@
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -71,7 +78,7 @@ const defaultStyles = {
   },
 };
 
-export const GooglePlacesAutocomplete = (props) => {
+export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let _results = [];
   let _requests = [];
 
@@ -120,7 +127,7 @@ export const GooglePlacesAutocomplete = (props) => {
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
 
-  const textInputRef = useRef(null);
+  const inputRef = useRef();
 
   useEffect(() => {
     // This will load the default value's search results after the view has
@@ -132,26 +139,13 @@ export const GooglePlacesAutocomplete = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-
-  //   if (
-  //     typeof props.text !== 'undefined' &&
-  //     stateText !== props.text
-  //   ) {
-  //     this.setState(
-  //       {
-  //         listViewDisplayed: listViewDisplayed,
-  //       },
-  //       () => handleChangeText(props.text),
-  //     );
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (props.listViewDisplayed !== 'auto') {
-  //     setListViewDisplayed(props.listViewDisplayed)
-  //   }
-  // }, [props.listViewDisplayed])
+  useImperativeHandle(ref, () => ({
+    setAddressText: (address) => {
+      setStateText(address);
+    },
+    getAddressText: () => stateText,
+    ...inputRef.current,
+  }));
 
   const requestShouldUseWithCredentials = () =>
     url === 'https://maps.googleapis.com/maps/api';
@@ -166,10 +160,6 @@ export const GooglePlacesAutocomplete = (props) => {
       return false;
     }
   };
-
-  // const setAddressText = (address) => setStateText(address);
-
-  // const getAddressText = () => stateText;
 
   const _abortRequests = () => {
     _requests.map((i) => i.abort());
@@ -186,18 +176,6 @@ export const GooglePlacesAutocomplete = (props) => {
       return true;
     }
   };
-
-  /**
-   * This method is exposed to parent components to focus on textInput manually.
-   * @public
-   */
-  // const triggerFocus = () => textInputRef?.current?.focus();
-
-  /**
-   * This method is exposed to parent components to blur textInput manually.
-   * @public
-   */
-  const triggerBlur = () => textInputRef?.current?.blur();
 
   const getCurrentLocation = () => {
     let options = {
@@ -660,9 +638,8 @@ export const GooglePlacesAutocomplete = (props) => {
   };
 
   const _onBlur = () => {
-    triggerBlur();
-
     setListViewDisplayed(false);
+    inputRef?.current?.blur();
   };
 
   const _onFocus = () => setListViewDisplayed(true);
@@ -782,7 +759,7 @@ export const GooglePlacesAutocomplete = (props) => {
         >
           {_renderLeftButton()}
           <TextInputComp
-            ref={textInputRef}
+            ref={inputRef}
             editable={props.editable}
             returnKeyType={props.returnKeyType}
             keyboardAppearance={props.keyboardAppearance}
@@ -818,7 +795,7 @@ export const GooglePlacesAutocomplete = (props) => {
       {props.children}
     </View>
   );
-};
+});
 
 GooglePlacesAutocomplete.propTypes = {
   autoFillOnNotFound: PropTypes.bool,
