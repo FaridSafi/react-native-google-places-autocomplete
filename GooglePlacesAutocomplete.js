@@ -85,19 +85,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const buildRowsFromResults = (results) => {
     let res = [];
 
-    if (
-      results.length === 0 ||
-      this.props.predefinedPlacesAlwaysVisible === true
-    ) {
-      res = [
-        ...this.props.predefinedPlaces.filter(
-          (place) => place.description && place.description.length,
-        ),
-      ];
-
     if (results.length === 0 || props.predefinedPlacesAlwaysVisible === true) {
-      res = [...props.predefinedPlaces.filter(
-          (place) => place?.description.length,
+      res = [
+        ...props.predefinedPlaces.filter((place) => place?.description.length),
+      ];
 
       if (props.currentLocation === true && hasNavigator()) {
         res.unshift({
@@ -733,8 +724,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item }) => _renderRow(item)}
           ListEmptyComponent={
-            text.length > props.minLength &&
-            props.listEmptyComponent
+            stateText.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
             props.renderHeaderComponent &&
@@ -751,7 +741,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   let {
     onFocus,
-onBlur,
+    onBlur,
     clearButtonMode,
     InputComp,
     ...userProps
@@ -796,12 +786,13 @@ onBlur,
                 : _onFocus
             }
             onBlur={
-onBlur
+              onBlur
                 ? () => {
                     _onBlur();
                     onBlur();
                   }
-                : _onBlur}
+                : _onBlur
+            }
             underlineColorAndroid={props.underlineColorAndroid}
             clearButtonMode={
               clearButtonMode ? clearButtonMode : 'while-editing'
