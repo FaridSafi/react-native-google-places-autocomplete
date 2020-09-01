@@ -382,6 +382,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   // use the ListEmptyComponent prop when no autocomplete results are found.
   listEmptyComponent?: React.ComponentType<{}>;
+  
+  listUnderlayColor?: string;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
