@@ -374,7 +374,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   requestUrl?: RequestUrl;
 
   // text input props & ref
-  textInputProps: TextInputProps & {
+  textInputProps?: TextInputProps & {
     ref?: React.MutableRefObject<TextInput | null> | undefined;
   };
 
