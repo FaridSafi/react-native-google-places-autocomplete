@@ -247,8 +247,8 @@ export default class GooglePlacesAutocomplete extends Component {
         timeout: 20000,
       };
     }
-
-    navigator.geolocation.getCurrentPosition(
+    const getCurrentPosition = navigator.geolocation.getCurrentPosition || navigator.geolocation.default.getCurrentPosition;
+    getCurrentPosition(
       (position) => {
         if (this.props.nearbyPlacesAPI === 'None') {
           let currentLocation = {
