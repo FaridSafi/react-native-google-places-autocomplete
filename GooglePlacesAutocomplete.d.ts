@@ -368,6 +368,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
+  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>
 
   onFail?: (error?: any) => void;
 
