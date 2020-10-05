@@ -92,6 +92,7 @@ type Language =
   | 'zh'
   | 'zu';
 
+// @see https://developers.google.com/places/web-service/supported_types#table1
 type SearchType =
   | 'accounting'
   | 'airport'
@@ -123,6 +124,7 @@ type SearchType =
   | 'dentist'
   | 'department_store'
   | 'doctor'
+  | 'drugstore'
   | 'electrician'
   | 'electronics_store'
   | 'embassy'
@@ -142,6 +144,7 @@ type SearchType =
   | 'laundry'
   | 'lawyer'
   | 'library'
+  | 'light_rail_station'
   | 'liquor_store'
   | 'local_government_office'
   | 'locksmith'
@@ -163,11 +166,13 @@ type SearchType =
   | 'plumber'
   | 'police'
   | 'post_office'
+  | 'primary_school'
   | 'real_estate_agency'
   | 'restaurant'
   | 'roofing_contractor'
   | 'rv_park'
   | 'school'
+  | 'secondary_school'
   | 'shoe_store'
   | 'shopping_mall'
   | 'spa'
@@ -178,9 +183,11 @@ type SearchType =
   | 'supermarket'
   | 'synagogue'
   | 'taxi_stand'
+  | 'tourist_attraction'
   | 'train_station'
   | 'transit_station'
   | 'travel_agency'
+  | 'university'
   | 'veterinary_care'
   | 'zoo';
 
