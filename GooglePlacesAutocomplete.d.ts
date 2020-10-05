@@ -191,13 +191,16 @@ type SearchType =
   | 'veterinary_care'
   | 'zoo';
 
+// @see https://developers.google.com/places/web-service/supported_types#table2
 type PlaceType =
   | 'administrative_area_level_1'
   | 'administrative_area_level_2'
   | 'administrative_area_level_3'
   | 'administrative_area_level_4'
   | 'administrative_area_level_5'
+  | 'archipelago'
   | 'colloquial_area'
+  | 'continent'
   | 'country'
   | 'establishment'
   | 'finance'
@@ -211,8 +214,9 @@ type PlaceType =
   | 'natural_feature'
   | 'neighborhood'
   | 'place_of_worship'
-  | 'political'
+  | 'plus_code'
   | 'point_of_interest'
+  | 'political'
   | 'post_box'
   | 'postal_code'
   | 'postal_code_prefix'
@@ -224,12 +228,13 @@ type PlaceType =
   | 'street_address'
   | 'street_number'
   | 'sublocality'
+  | 'sublocality_level_1'
+  | 'sublocality_level_2'
+  | 'sublocality_level_3'
   | 'sublocality_level_4'
   | 'sublocality_level_5'
-  | 'sublocality_level_3'
-  | 'sublocality_level_2'
-  | 'sublocality_level_1'
-  | 'subpremise';
+  | 'subpremise'
+  | 'town_square';
 
 type AutocompleteRequestType =
   | '(regions)'
