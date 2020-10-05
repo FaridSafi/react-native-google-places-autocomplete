@@ -192,8 +192,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         timeout: 20000,
       };
     }
-
-    navigator.geolocation.getCurrentPosition(
+    const getCurrentPosition = navigator.geolocation.getCurrentPosition || navigator.geolocation.default.getCurrentPosition;
+    getCurrentPosition(
       (position) => {
         if (props.nearbyPlacesAPI === 'None') {
           let currentLocation = {

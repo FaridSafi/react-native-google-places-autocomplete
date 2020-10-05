@@ -297,6 +297,7 @@ interface Query<T = AutocompleteRequestType> {
   components?: string;
   rankby?: string;
   type?: T;
+  strictbounds?: boolean;
   // deprecated. see https://github.com/FaridSafi/react-native-google-places-autocomplete/pull/384
   types?: T;
 }
@@ -366,6 +367,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
+  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>
 
   onFail?: (error?: any) => void;
 
@@ -373,7 +375,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
   requestUrl?: RequestUrl;
 
   // text input props & ref
-  textInputProps: TextInputProps & {
+  textInputProps?: TextInputProps & {
     ref?: React.MutableRefObject<TextInput | null> | undefined;
   };
 
@@ -381,6 +383,8 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   // use the ListEmptyComponent prop when no autocomplete results are found.
   listEmptyComponent?: React.ComponentType<{}>;
+  
+  listUnderlayColor?: string;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
