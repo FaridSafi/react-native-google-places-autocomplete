@@ -10,67 +10,87 @@ import {
 
 // @see https://developers.google.com/maps/faq#languagesupport
 type Language =
+  | 'af'
+  | 'am'
   | 'ar'
+  | 'az'
   | 'be'
   | 'bg'
   | 'bn'
+  | 'bs'
   | 'ca'
   | 'cs'
   | 'da'
   | 'de'
   | 'el'
-  | 'en'
-  | 'en-Au'
+  | 'en-AU'
   | 'en-GB'
+  | 'en'
+  | 'es-419'
   | 'es'
+  | 'et'
   | 'eu'
   | 'fa'
   | 'fi'
   | 'fil'
+  | 'fr-CA'
   | 'fr'
   | 'gl'
   | 'gu'
   | 'hi'
   | 'hr'
   | 'hu'
+  | 'hy'
   | 'id'
+  | 'is'
   | 'it'
   | 'iw'
   | 'ja'
+  | 'ka'
   | 'kk'
+  | 'km'
   | 'kn'
   | 'ko'
   | 'ky'
+  | 'lo'
   | 'lt'
   | 'lv'
   | 'mk'
   | 'ml'
+  | 'mn'
   | 'mr'
+  | 'ms'
   | 'my'
+  | 'ne'
   | 'nl'
   | 'no'
   | 'pa'
   | 'pl'
-  | 'pt'
   | 'pt-BR'
   | 'pt-PT'
+  | 'pt'
   | 'ro'
   | 'ru'
+  | 'si'
   | 'sk'
   | 'sl'
   | 'sq'
   | 'sr'
   | 'sv'
+  | 'sw'
   | 'ta'
   | 'te'
   | 'th'
-  | 'tl'
   | 'tr'
   | 'uk'
+  | 'ur'
   | 'uz'
   | 'vi'
   | 'zh-CN'
-  | 'zh-TW';
+  | 'zh-HK'
+  | 'zh-TW'
+  | 'zh'
+  | 'zu';
 
 type SearchType =
   | 'accounting'
@@ -367,7 +387,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   renderLeftButton?: React.ComponentType<{}>;
   renderRightButton?: React.ComponentType<{}>;
-  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>
+  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>;
 
   onFail?: (error?: any) => void;
 
@@ -383,7 +403,7 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
 
   // use the ListEmptyComponent prop when no autocomplete results are found.
   listEmptyComponent?: React.ComponentType<{}>;
-  
+
   listUnderlayColor?: string;
 }
 
