@@ -192,32 +192,36 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         timeout: 20000,
       };
     }
-    const getCurrentPosition = navigator.geolocation.getCurrentPosition || navigator.geolocation.default.getCurrentPosition;
-    getCurrentPosition(
-      (position) => {
-        if (props.nearbyPlacesAPI === 'None') {
-          let currentLocation = {
-            description: props.currentLocationLabel,
-            geometry: {
-              location: {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              },
-            },
-          };
+    const getCurrentPosition =
+      navigator.geolocation.getCurrentPosition ||
+      navigator.geolocation.default.getCurrentPosition;
 
+    getCurrentPosition &&
+      getCurrentPosition(
+        (position) => {
+          if (props.nearbyPlacesAPI === 'None') {
+            let currentLocation = {
+              description: props.currentLocationLabel,
+              geometry: {
+                location: {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                },
+              },
+            };
+
+            _disableRowLoaders();
+            props.onPress(currentLocation, currentLocation);
+          } else {
+            _requestNearby(position.coords.latitude, position.coords.longitude);
+          }
+        },
+        (error) => {
           _disableRowLoaders();
-          props.onPress(currentLocation, currentLocation);
-        } else {
-          _requestNearby(position.coords.latitude, position.coords.longitude);
-        }
-      },
-      (error) => {
-        _disableRowLoaders();
-        console.error(error.message);
-      },
-      options,
-    );
+          console.error(error.message);
+        },
+        options,
+      );
   };
 
   const _onPress = (rowData) => {
