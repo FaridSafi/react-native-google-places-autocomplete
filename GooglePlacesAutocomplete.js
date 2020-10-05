@@ -509,6 +509,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
         }
       };
+
+      if (props.preProcess) {
+        setStateText(props.preProcess(text));
+      }
+
       request.open(
         'GET',
         `${url}/place/autocomplete/json?&input=` +
@@ -750,7 +755,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     InputComp,
     ...userProps
   } = props.textInputProps;
-  const TextInputComp = InputComp ? InputComp : TextInput;
+  const TextInputComp = InputComp || TextInput;
   return (
     <View
       style={[
@@ -769,18 +774,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           {_renderLeftButton()}
           <TextInputComp
             ref={inputRef}
-            editable={props.editable}
-            returnKeyType={props.returnKeyType}
-            keyboardAppearance={props.keyboardAppearance}
-            autoFocus={props.autoFocus}
             style={[
               props.suppressDefaultStyles ? {} : defaultStyles.textInput,
               props.styles.textInput,
             ]}
             value={stateText}
             placeholder={props.placeholder}
-            onSubmitEditing={props.onSubmitEditing}
-            placeholderTextColor={props.placeholderTextColor}
             onFocus={
               onFocus
                 ? () => {
@@ -797,12 +796,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                   }
                 : _onBlur
             }
-            underlineColorAndroid={props.underlineColorAndroid}
-            clearButtonMode={
-              clearButtonMode ? clearButtonMode : 'while-editing'
-            }
-            {...userProps}
+            clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
+            {...userProps}
           />
           {_renderRightButton()}
         </View>
@@ -815,10 +811,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
 GooglePlacesAutocomplete.propTypes = {
   autoFillOnNotFound: PropTypes.bool,
-  autoFocus: PropTypes.bool,
   currentLocation: PropTypes.bool,
   currentLocationLabel: PropTypes.string,
   debounce: PropTypes.number,
+  disableScroll: PropTypes.bool,
   enableHighAccuracyLocation: PropTypes.bool,
   enablePoweredByContainer: PropTypes.bool,
   fetchDetails: PropTypes.bool,
@@ -827,22 +823,24 @@ GooglePlacesAutocomplete.propTypes = {
   GooglePlacesSearchQuery: PropTypes.object,
   GoogleReverseGeocodingQuery: PropTypes.object,
   isRowScrollable: PropTypes.bool,
-  keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
+  keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
+  listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
   numberOfLines: PropTypes.number,
   onFail: PropTypes.func,
   onNotFound: PropTypes.func,
   onPress: PropTypes.func,
-  onSubmitEditing: PropTypes.func,
   onTimeout: PropTypes.func,
   placeholder: PropTypes.string,
   predefinedPlaces: PropTypes.array,
   predefinedPlacesAlwaysVisible: PropTypes.bool,
+  preProcess: PropTypes.func,
   query: PropTypes.object,
   renderDescription: PropTypes.func,
+  renderHeaderComponent: PropTypes.func,
   renderLeftButton: PropTypes.func,
   renderRightButton: PropTypes.func,
   renderRow: PropTypes.func,
@@ -862,6 +860,7 @@ GooglePlacesAutocomplete.defaultProps = {
   currentLocation: false,
   currentLocationLabel: 'Current location',
   debounce: 0,
+  disableScroll: false,
   enableHighAccuracyLocation: true,
   enablePoweredByContainer: true,
   fetchDetails: false,
@@ -873,17 +872,17 @@ GooglePlacesAutocomplete.defaultProps = {
   },
   GoogleReverseGeocodingQuery: {},
   isRowScrollable: true,
-  keyboardAppearance: 'default',
   keyboardShouldPersistTaps: 'always',
+  listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
   minLength: 0,
   nearbyPlacesAPI: 'GooglePlacesSearch',
   numberOfLines: 1,
   onFail: () => {},
   onNotFound: () => {},
-  onSubmitEditing: () => {},
   onPress: () => {},
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
+  placeholder: '',
   predefinedPlaces: [],
   predefinedPlacesAlwaysVisible: false,
   query: {

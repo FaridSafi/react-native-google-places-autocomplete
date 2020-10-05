@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   ImageStyle,
   StyleProp,
-  TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
@@ -236,6 +235,7 @@ type PlaceType =
   | 'subpremise'
   | 'town_square';
 
+// @see https://developers.google.com/places/web-service/supported_types#table3
 type AutocompleteRequestType =
   | '(regions)'
   | '(cities)'
@@ -358,23 +358,23 @@ interface RequestUrl {
   useOnPlatform: 'web' | 'all';
 }
 
-interface GooglePlacesAutocompleteProps extends TextInputProps {
-  query: Query;
-  minLength?: number; // minimum length of text to search
-  listViewDisplayed?: 'auto' | boolean;
-  fetchDetails?: boolean;
-  renderDescription?: (description: DescriptionRow) => string;
-  onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
-  styles?: Partial<Styles>;
-  suppressDefaultStyles?: boolean;
-
+interface GooglePlacesAutocompleteProps {
+  autoFillOnNotFound?: boolean;
   // Will add a 'Current location' button at the top of the predefined places list
   currentLocation?: boolean;
   currentLocationLabel?: string;
-
-  // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
-
+  // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+  debounce?: number;
+  disableScroll?: boolean;
+  enableHighAccuracyLocation?: boolean;
+  enablePoweredByContainer?: boolean;
+  fetchDetails?: boolean;
+  // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+  filterReverseGeocodingByTypes?: PlaceType[];
+  // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
+  GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string };
+  // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+  GooglePlacesSearchQuery?: Partial<Query<SearchType>>;
   // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
   GoogleReverseGeocodingQuery?: {
     bounds?: number;
@@ -382,46 +382,40 @@ interface GooglePlacesAutocompleteProps extends TextInputProps {
     region?: string;
     components?: string;
   };
-
-  // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-  GooglePlacesSearchQuery?: Partial<Query<SearchType>>;
-
-  // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
-  GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string };
-
-  // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-  filterReverseGeocodingByTypes?: PlaceType[];
-  predefinedPlaces?: Place[];
-  predefinedPlacesAlwaysVisible?: boolean;
-
-  // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-  debounce?: number;
-
-  renderLeftButton?: React.ComponentType<{}>;
-  renderRightButton?: React.ComponentType<{}>;
-  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>;
-
-  onFail?: (error?: any) => void;
-
-  // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
-  requestUrl?: RequestUrl;
-
-  // text input props & ref
-  textInputProps?: TextInputProps & {
-    ref?: React.MutableRefObject<TextInput | null> | undefined;
-  };
-
-  enablePoweredByContainer?: boolean;
-
+  isRowScrollable?: boolean;
+  keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
   // use the ListEmptyComponent prop when no autocomplete results are found.
   listEmptyComponent?: React.ComponentType<{}>;
-
   listUnderlayColor?: string;
+  listViewDisplayed?: 'auto' | boolean;
+  minLength?: number; // minimum length of text to search
+  // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
+  numberOfLines?: number;
+  onFail?: (error?: any) => void;
+  onNotFound?: () => void;
+  onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
+  onTimeout?: () => void;
+  placeholder: string;
+  predefinedPlaces?: Place[];
+  predefinedPlacesAlwaysVisible?: boolean;
+  preProcess: (text: string) => string;
+  query: Query;
+  renderDescription?: (description: DescriptionRow) => string;
+  renderHeaderComponent?: () => React.ComponentType<{}>;
+  renderLeftButton?: () => React.ComponentType<{}>;
+  renderRightButton?: () => React.ComponentType<{}>;
+  renderRow?: (data: GooglePlaceData) => React.ComponentType<{}>;
+  // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
+  requestUrl?: RequestUrl;
+  styles?: Partial<Styles>;
+  suppressDefaultStyles?: boolean;
+  textInputHide?: boolean;
+  // text input props
+  textInputProps?: TextInputProps;
+  timeout?: number;
 }
 
 export class GooglePlacesAutocomplete extends React.Component<
   GooglePlacesAutocompleteProps
-> {
-  setAddressText(value: string): void;
-  getAddressText(): string;
-}
+> {}
