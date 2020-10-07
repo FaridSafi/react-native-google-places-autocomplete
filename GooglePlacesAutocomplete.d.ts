@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   ImageStyle,
   StyleProp,
+  TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
@@ -416,6 +417,12 @@ interface GooglePlacesAutocompleteProps {
   timeout?: number;
 }
 
-export class GooglePlacesAutocomplete extends React.Component<
-  GooglePlacesAutocompleteProps
-> {}
+export type GooglePlacesAutocompleteRef = {
+  setAddressText(address: string): void;
+  getAddressText(): string;
+} & TextInput;
+
+export const GooglePlacesAutocomplete: React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<GooglePlacesAutocompleteProps> &
+    React.RefAttributes<GooglePlacesAutocompleteRef>
+>;
