@@ -205,10 +205,48 @@ _This list is a work in progress. PRs welcome!_
 
 ## Methods
 
-| method name      | type                      | description                   |
-| ---------------- | ------------------------- | ----------------------------- |
-| `getAddressText` | `() => string`            | return the value of TextInput |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput    |
+| method name      | type                      | description                                                             |
+| ---------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `getAddressText` | `() => string`            | return the value of TextInput                                           |
+| `setAddressText` | `(value: string) => void` | set the value of TextInput                                              |
+| `focus`          | `void`                    | makes the TextInput focus                                               |
+| `blur`           | `void`                    | makes the TextInput lose focus                                          |
+| `clear`          | `void`                    | removes all text from the TextInput                                     |
+| `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+
+You can access these methods using a ref.
+
+### Example
+
+```js
+import React, { useEffect, useState } from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.setAddressText('Some Text');
+  }, []);
+
+  return (
+    <GooglePlacesAutocomplete
+      ref={ref}
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
 
 ## Styling
 
