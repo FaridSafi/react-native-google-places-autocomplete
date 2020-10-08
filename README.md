@@ -162,22 +162,18 @@ _This list is a work in progress. PRs welcome!_
 | Prop Name                     | type     | description                                                                                                                                                                                                                                 | default value                                                     | Options                                                    |
 | ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
 | autoFillOnNotFound            | boolean  | displays the result from autocomplete if the place details api return not found                                                                                                                                                             | false                                                             | true \| false                                              |
-| autoFocus                     | boolean  | autoFocus the Text Input https://reactnative.dev/docs/textinput#autofocus                                                                                                                                                                   | no                                                                | true \| false                                              |
 | currentLocation               | boolean  | Will add a 'Current location' button at the top of the predefined places list                                                                                                                                                               | false                                                             | true \| false                                              |
 | currentLocationLabel          | string   | change the display label for the current location button                                                                                                                                                                                    | Current Location                                                  | Any string                                                 |
 | debounce                      | number   | debounce the requests (in ms)                                                                                                                                                                                                               | 0                                                                 |                                                            |
 | disableScroll                 | boolean  | disable scroll on the results list                                                                                                                                                                                                          |                                                                   |                                                            |
-| editable                      | boolean  | editable from text input https://reactnative.dev/docs/textinput#editable                                                                                                                                                                    | true                                                              | true \| false                                              |
 | enableHighAccuracyLocation    | boolean  | use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. | true                                                              |                                                            |
 | enablePoweredByContainer      | boolean  | show "powered by Google" at the bottom of the search results list                                                                                                                                                                           | true                                                              |                                                            |
 | fetchDetails                  | boolean  | get more place details about the selected option from the Place Details API                                                                                                                                                                 | false                                                             |                                                            |
 | filterReverseGeocodingByTypes | array    | filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities                                                                                                              |                                                                   |                                                            |
-| getDefaultValue               | function | Provides an initial value that will change when the user starts typing                                                                                                                                                                      |                                                                   |                                                            |
 | GooglePlacesDetailsQuery      | object   | "query" object for the Google Place Details API (when you press on a suggestion)                                                                                                                                                            |                                                                   |                                                            |
 | GooglePlacesSearchQuery       | object   | "query" object for the Google Places Nearby API (when you use current location to find nearby places)                                                                                                                                       | `{ rankby: 'distance', type: 'restaurant' }`                      |                                                            |
 | GoogleReverseGeocodingQuery   | object   | "query" object for the Google Geocode API (when you use current location to get the current address)                                                                                                                                        |                                                                   |                                                            |
 | isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |                                                            |
-| keyboardAppearance            | enum     | keyboard appearance (iOS) https://reactnative.dev/docs/textinput#keyboardappearance                                                                                                                                                         | 'default'                                                         | 'default' \| 'light' \| 'dark'                             |
 | keyboardShouldPersistTaps     | string   | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
 | listEmptyComponent            | function | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
 | listUnderlayColor             | string   | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                | '#c8c7cc'                                                         |                                                            |
@@ -188,10 +184,8 @@ _This list is a work in progress. PRs welcome!_
 | onFail                        | function | returns if an unspecified error comes back from the API                                                                                                                                                                                     |                                                                   |                                                            |
 | onNotFound                    | function | returns if the Google Places Details API returns a 'not found' code (when you press a suggestion).                                                                                                                                          |                                                                   |                                                            |
 | onPress                       | function | returns when after a suggestion is selected                                                                                                                                                                                                 |                                                                   |                                                            |
-| onSubmitEditing               | function | Callback that is called when the text input's submit button is pressed with the argument https://reactnative.dev/docs/textinput#onsubmitediting                                                                                             |                                                                   |                                                            |
 | onTimeout                     | function | callback when a request timeout                                                                                                                                                                                                             | `()=>console.warn('google places autocomplete: request timeout')` |                                                            |
 | placeholder                   | string   | placeholder text https://reactnative.dev/docs/textinput#placeholder                                                                                                                                                                         | 'Search'                                                          |                                                            |
-| placeholderTextColor          | string   | placeholder text color https://reactnative.dev/docs/textinput#placeholdertextcolor                                                                                                                                                          | '#A8A8A8'                                                         | https://reactnative.dev/docs/colors                        |
 | predefinedPlaces              | array    | Allows you to show pre-defined places (e.g. home, work)                                                                                                                                                                                     |                                                                   |                                                            |
 | predefinedPlacesAlwaysVisible | boolean  | Shows predefined places at the top of the search results                                                                                                                                                                                    | false                                                             |                                                            |
 | preProcess                    | function | do something to the text of the search input before a search request is sent                                                                                                                                                                |                                                                   |                                                            |
@@ -208,14 +202,51 @@ _This list is a work in progress. PRs welcome!_
 | textInputHide                 | boolean  | Hide the Search input                                                                                                                                                                                                                       | false                                                             | true \| false                                              |
 | textInputProps                | object   | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                               |                                                                   |                                                            |
 | timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
-| underlineColorAndroid         | string   | Text Input underline color (android) https://reactnative.dev/docs/textinput#underlinecolorandroid                                                                                                                                           | 'transparent'                                                     |                                                            |
 
 ## Methods
 
-| method name      | type                      | description                   |
-| ---------------- | ------------------------- | ----------------------------- |
-| `getAddressText` | `() => string`            | return the value of TextInput |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput    |
+| method name      | type                      | description                                                             |
+| ---------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `getAddressText` | `() => string`            | return the value of TextInput                                           |
+| `setAddressText` | `(value: string) => void` | set the value of TextInput                                              |
+| `focus`          | `void`                    | makes the TextInput focus                                               |
+| `blur`           | `void`                    | makes the TextInput lose focus                                          |
+| `clear`          | `void`                    | removes all text from the TextInput                                     |
+| `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+
+You can access these methods using a ref.
+
+### Example
+
+```js
+import React, { useEffect, useState } from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.setAddressText('Some Text');
+  }, []);
+
+  return (
+    <GooglePlacesAutocomplete
+      ref={ref}
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
 
 ## Styling
 
@@ -246,13 +277,9 @@ _This list is a work in progress. PRs welcome!_
   fetchDetails={true}
   styles={{
     textInputContainer: {
-      backgroundColor: 'rgba(0,0,0,0)',
-      borderTopWidth: 0,
-      borderBottomWidth: 0,
+      backgroundColor: 'grey',
     },
     textInput: {
-      marginLeft: 0,
-      marginRight: 0,
       height: 38,
       color: '#5d5d5d',
       fontSize: 16,
@@ -262,6 +289,54 @@ _This list is a work in progress. PRs welcome!_
     },
   }}
 />
+```
+
+### Default Styles
+
+```js
+{
+  container: {
+    flex: 1,
+  },
+  textInputContainer: {
+    flexDirection: 'row',
+  },
+  textInput: {
+    backgroundColor: '#FFFFFF',
+    height: 44,
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    fontSize: 15,
+    flex: 1,
+  },
+  poweredContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderColor: '#c8c7cc',
+    borderTopWidth: 0.5,
+  },
+  powered: {},
+  listView: {},
+  row: {
+    backgroundColor: '#FFFFFF',
+    padding: 13,
+    height: 44,
+    flexDirection: 'row',
+  },
+  separator: {
+    height: 0.5,
+    backgroundColor: '#c8c7cc',
+  },
+  description: {},
+  loader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
+  },
+}
 ```
 
 ## Web Support
