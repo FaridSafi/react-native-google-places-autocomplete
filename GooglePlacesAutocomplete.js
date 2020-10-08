@@ -11,7 +11,6 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
   FlatList,
   Image,
   Keyboard,
@@ -22,8 +21,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-
-const WINDOW = Dimensions.get('window');
 
 const defaultStyles = {
   container: {
@@ -54,7 +51,7 @@ const defaultStyles = {
   row: {
     backgroundColor: '#FFFFFF',
     padding: 13,
-    height: 44,
+    minHeight: 44,
     flexDirection: 'row',
   },
   separator: {
@@ -594,8 +591,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _renderRow = (rowData = {}) => {
     return (
       <ScrollView
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{ flex: 1 }}
         scrollEnabled={props.isRowScrollable}
         keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
         horizontal={true}
@@ -603,7 +598,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsVerticalScrollIndicator={false}
       >
         <TouchableHighlight
-          style={{ width: WINDOW.width }}
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{ minWidth: '100%' }}
           onPress={() => _onPress(rowData)}
           underlayColor={props.listUnderlayColor || '#c8c7cc'}
         >
