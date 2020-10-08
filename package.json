@@ -31,11 +31,11 @@
     "qs": "~6.9.1"
   },
   "devDependencies": {
-    "@react-native-community/eslint-config": "^1.1.0",
-    "eslint": "^6.0.0",
-    "husky": ">=4",
-    "lint-staged": ">=10",
-    "prettier": "2.0.5",
+    "@react-native-community/eslint-config": "2.0.0",
+    "eslint": "7.10.0",
+    "husky": "4.3.0",
+    "lint-staged": "10.4.0",
+    "prettier": "2.1.2",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
