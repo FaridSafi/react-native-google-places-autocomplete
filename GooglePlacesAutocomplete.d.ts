@@ -400,7 +400,7 @@ interface GooglePlacesAutocompleteProps {
   placeholder: string;
   predefinedPlaces?: Place[];
   predefinedPlacesAlwaysVisible?: boolean;
-  preProcess: (text: string) => string;
+  preProcess?: (text: string) => string;
   query: Query;
   renderDescription?: (description: DescriptionRow) => string;
   renderHeaderComponent?: () => React.ComponentType<{}>;
