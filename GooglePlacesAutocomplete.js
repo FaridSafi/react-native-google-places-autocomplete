@@ -520,11 +520,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const debounceData = useCallback(
-    () => debounce(_request, props.debounce),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const debounceData = useCallback(debounce(_request, props.debounce), []);
 
   const _onChangeText = (text) => {
     setStateText(text);
