@@ -255,16 +255,16 @@ export default GooglePlacesInput;
 | key                         | type                    |
 | --------------------------- | ----------------------- |
 | container                   | object (View)           |
-| description                 | object (Text style)     |
 | textInputContainer          | object (View style)     |
 | textInput                   | object (style)          |
-| loader                      | object (View style)     |
 | listView                    | object (ListView style) |
+| row                         | object (View style)     |
+| loader                      | object (View style)     |
+| description                 | object (Text style)     |
 | predefinedPlacesDescription | object (Text style)     |
+| separator                   | object (View style)     |
 | poweredContainer            | object (View style)     |
 | powered                     | object (Image style)    |
-| separator                   | object (View style)     |
-| row                         | object (View style)     |
 
 #### Example
 
