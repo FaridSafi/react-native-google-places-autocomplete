@@ -47,6 +47,6 @@
     }
   },
   "lint-staged": {
-    "*/**": "yarn lint --"
+    "*/**": "yarn lint"
   }
 }
