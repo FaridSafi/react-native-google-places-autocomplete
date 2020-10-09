@@ -37,6 +37,24 @@ const defaultStyles = {
     paddingHorizontal: 10,
     fontSize: 15,
     flex: 1,
+    marginBottom: 5,
+  },
+  listView: {},
+  row: {
+    backgroundColor: '#FFFFFF',
+    padding: 13,
+    minHeight: 44,
+    flexDirection: 'row',
+  },
+  loader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
+  },
+  description: {},
+  separator: {
+    height: 0.5,
+    backgroundColor: '#c8c7cc',
   },
   poweredContainer: {
     justifyContent: 'flex-end',
@@ -47,28 +65,22 @@ const defaultStyles = {
     borderTopWidth: 0.5,
   },
   powered: {},
-  listView: {},
-  row: {
-    backgroundColor: '#FFFFFF',
-    padding: 13,
-    minHeight: 44,
-    flexDirection: 'row',
-  },
-  separator: {
-    height: 0.5,
-    backgroundColor: '#c8c7cc',
-  },
-  description: {},
-  loader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    height: 20,
-  },
 };
 
 export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let _results = [];
   let _requests = [];
+
+  const hasNavigator = () => {
+    if (navigator?.geolocation) {
+      return true;
+    } else {
+      console.warn(
+        'If you are using React Native v0.60.0+ you must follow these instructions to enable currentLocation: https://git.io/Jf4AR',
+      );
+      return false;
+    }
+  };
 
   const buildRowsFromResults = (results) => {
     let res = [];
@@ -139,17 +151,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const requestShouldUseWithCredentials = () =>
     url === 'https://maps.googleapis.com/maps/api';
-
-  const hasNavigator = () => {
-    if (navigator?.geolocation) {
-      return true;
-    } else {
-      console.warn(
-        'If you are using React Native v0.60.0+ you must follow these instructions to enable currentLocation: https://git.io/Jf4AR',
-      );
-      return false;
-    }
-  };
 
   const _abortRequests = () => {
     _requests.map((i) => i.abort());
