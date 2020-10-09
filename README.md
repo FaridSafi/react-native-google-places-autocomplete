@@ -1,8 +1,8 @@
 # react-native-google-places-autocomplete
 
-Customizable Google Places autocomplete component for iOS and Android React-Native apps
+**Customizable Google Places autocomplete component for iOS and Android React-Native apps**
 
-### [V2 just released.](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0)
+Version 2 of this library is now available.  See more in the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0) section.
 
 ## Preview
 
