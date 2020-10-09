@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Qs from 'qs';
 import React, {
   forwardRef,
-  useCallback,
+  useMemo,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -520,7 +520,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const debounceData = useCallback(
+  const debounceData = useMemo(
     () => debounce(_request, props.debounce),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
