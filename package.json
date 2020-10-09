@@ -3,6 +3,7 @@
   "version": "2.0.2",
   "description": "Customizable Google Places autocomplete component for iOS and Android React-Native apps",
   "main": "GooglePlacesAutocomplete.js",
+  "types": "GooglePlacesAutocomplete.d.ts",
   "scripts": {
     "lint": "eslint . && prettier --write ."
   },
