@@ -360,6 +360,25 @@ export default GooglePlacesInput;
 
 Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
 
+The requestUrl prop takes an object with two properties: useOnPlatform and url.
+
+The url property is used to set the url requests will be made to. This needs to include the Google API URL. For example, to use the CORS Anywhere proxy the following value must be given: https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api.
+
+useOnPlatform configures when this proxy url is used. A value of 'web' means this address will only be used on the web platform while a value of 'all' means the address will always be used.
+
+Example requestUrl
+
+```
+<GooglePlacesAutocomplete
+    ...
+    requestUrl={{
+        useOnPlatform: "web",
+        url:
+            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api",
+    }}
+/>
+```
+
 **_Note:_** The library expects the same response that the Google Maps API would return.
 
 ## Features
