@@ -590,7 +590,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _renderRow = (rowData = {}) => {
     return (
       <ScrollView
-        contentContainerStyle={{ flex: 1 }}
+        contentContainerStyle={
+          props.isRowScrollable ? { minWidth: "100%" } : { width: "100%" }
+        }
         scrollEnabled={props.isRowScrollable}
         keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
         horizontal={true}
