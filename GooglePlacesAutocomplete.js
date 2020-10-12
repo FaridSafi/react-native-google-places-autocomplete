@@ -590,6 +590,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _renderRow = (rowData = {}) => {
     return (
       <ScrollView
+        contentContainerStyle={
+          props.isRowScrollable ? { minWidth: "100%" } : { width: "100%" }
+        }
         scrollEnabled={props.isRowScrollable}
         keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
         horizontal={true}
@@ -598,7 +601,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       >
         <TouchableHighlight
           // eslint-disable-next-line react-native/no-inline-styles
-          style={{ minWidth: '100%' }}
+          style={
+            props.isRowScrollable ? { minWidth: "100%" } : { width: "100%" }
+          }
           onPress={() => _onPress(rowData)}
           underlayColor={props.listUnderlayColor || '#c8c7cc'}
         >
