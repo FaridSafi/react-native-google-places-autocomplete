@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
@@ -520,6 +521,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceData = useCallback(debounce(_request, props.debounce), []);
 
   const _onChangeText = (text) => {
@@ -591,7 +593,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return (
       <ScrollView
         contentContainerStyle={
-          props.isRowScrollable ? { minWidth: "100%" } : { width: "100%" }
+          props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
         }
         scrollEnabled={props.isRowScrollable}
         keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
@@ -600,9 +602,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsVerticalScrollIndicator={false}
       >
         <TouchableHighlight
-          // eslint-disable-next-line react-native/no-inline-styles
           style={
-            props.isRowScrollable ? { minWidth: "100%" } : { width: "100%" }
+            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
           }
           onPress={() => _onPress(rowData)}
           underlayColor={props.listUnderlayColor || '#c8c7cc'}
