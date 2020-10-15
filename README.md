@@ -360,6 +360,41 @@ export default GooglePlacesInput;
 
 Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
 
+The `requestUrl` prop takes an object with two properties: `useOnPlatform` and `url`.
+
+The `url` property is used to set the url that requests will be made to. If you are using the regular google maps API, you need to make sure you are ultimately hitting https://maps.googleapis.com/maps/api.
+
+`useOnPlatform` configures when the proxy url is used. It can be set to either `web`-  will be used only when the device platform is detected as web (but not iOS or Android, or `all` -  will always be used.  
+
+### Example:
+
+```js
+import React from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+      }}
+      requestUrl={{
+        useOnPlatform: "web", // or "all"
+        url: "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api", // or any proxy server that hits https://maps.googleapis.com/maps/api
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
 **_Note:_** The library expects the same response that the Google Maps API would return.
 
 ## Features
