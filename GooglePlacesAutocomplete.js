@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Qs from 'qs';
 import React, {
   forwardRef,
-  useCallback,
+  useMemo,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -522,7 +522,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useCallback(debounce(_request, props.debounce), []);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), []);
 
   const _onChangeText = (text) => {
     setStateText(text);
