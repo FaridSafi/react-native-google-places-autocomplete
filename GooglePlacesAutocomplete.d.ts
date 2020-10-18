@@ -341,6 +341,7 @@ interface Styles {
   textInputContainer: StyleProp<ViewStyle>;
   textInput: StyleProp<TextStyle>;
   loader: StyleProp<ViewStyle>;
+  loaderColor: StyleProp<string>;
   listView: StyleProp<ViewStyle>;
   predefinedPlacesDescription: StyleProp<TextStyle>;
   poweredContainer: StyleProp<ViewStyle>;
