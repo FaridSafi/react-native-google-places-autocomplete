@@ -52,6 +52,7 @@ const defaultStyles = {
     justifyContent: 'flex-end',
     height: 20,
   },
+  loaderColor: '#999999',
   description: {},
   separator: {
     height: 0.5,
@@ -540,7 +541,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _getRowLoader = () => {
-    return <ActivityIndicator animating={true} size='small' />;
+    return <ActivityIndicator animating={true} size='small' color={
+      props.styles.loaderColor || (props.supressDefaultStyles ? defaultStyles.loaderColor : null)
+    } />;
   };
 
   const _renderRowData = (rowData) => {
