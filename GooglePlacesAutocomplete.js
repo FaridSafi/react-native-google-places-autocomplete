@@ -640,11 +640,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _onBlur = () => {
-    setListViewDisplayed(false);
+    if (props.listViewDisplayed === 'auto') {
+      setListViewDisplayed(false);
+    }
     inputRef?.current?.blur();
   };
 
-  const _onFocus = () => setListViewDisplayed(true);
+  const _onFocus = () => {
+    if (props.listViewDisplayed === 'auto') {
+      setListViewDisplayed(true);
+    }
+  }
 
   const _renderPoweredLogo = () => {
     if (!_shouldShowPoweredLogo()) {
