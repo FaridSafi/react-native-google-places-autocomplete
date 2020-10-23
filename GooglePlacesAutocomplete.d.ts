@@ -401,7 +401,7 @@ interface GooglePlacesAutocompleteProps {
   predefinedPlaces?: Place[];
   predefinedPlacesAlwaysVisible?: boolean;
   preProcess?: (text: string) => string;
-  query: Query;
+  query: Query | Object;
   renderDescription?: (description: DescriptionRow) => string;
   renderHeaderComponent?: () => JSX.Element | React.ComponentType<{}>;
   renderLeftButton?: () => JSX.Element | React.ComponentType<{}>;
@@ -410,11 +410,11 @@ interface GooglePlacesAutocompleteProps {
   
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
-  styles?: Partial<Styles>;
+  styles?: Partial<Styles> | Object;
   suppressDefaultStyles?: boolean;
   textInputHide?: boolean;
   // text input props
-  textInputProps?: TextInputProps;
+  textInputProps?: TextInputProps | Object;
   timeout?: number;
 }
 
