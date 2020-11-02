@@ -743,6 +743,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let {
     onFocus,
     onBlur,
+    onChangeText,
     clearButtonMode,
     InputComp,
     ...userProps
