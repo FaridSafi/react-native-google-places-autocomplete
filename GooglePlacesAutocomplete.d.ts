@@ -398,6 +398,7 @@ interface GooglePlacesAutocompleteProps {
   onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
   onTimeout?: () => void;
   placeholder: string;
+  placeholderTextColor: string;
   predefinedPlaces?: Place[];
   predefinedPlacesAlwaysVisible?: boolean;
   preProcess?: (text: string) => string;
