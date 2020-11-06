@@ -772,6 +772,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             ]}
             value={stateText}
             placeholder={props.placeholder}
+            placeholderTextColor={props.placeholderTextColor}
             onFocus={
               onFocus
                 ? () => {
@@ -827,6 +828,7 @@ GooglePlacesAutocomplete.propTypes = {
   onPress: PropTypes.func,
   onTimeout: PropTypes.func,
   placeholder: PropTypes.string,
+  placeholderTextColor: PropTypes.string,
   predefinedPlaces: PropTypes.array,
   predefinedPlacesAlwaysVisible: PropTypes.bool,
   preProcess: PropTypes.func,
@@ -875,6 +877,7 @@ GooglePlacesAutocomplete.defaultProps = {
   onPress: () => {},
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
   placeholder: '',
+  placeholderTextColor: '#A8A8A8',
   predefinedPlaces: [],
   predefinedPlacesAlwaysVisible: false,
   query: {
