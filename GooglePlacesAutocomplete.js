@@ -147,7 +147,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setStateText(address);
     },
     getAddressText: () => stateText,
-    ...inputRef.current,
+    blur: () => inputRef.current.blur(),
+    focus: () => inputRef.current.focus(),
+    isFocused: () => inputRef.current.isFocused(),
+    clear: () => inputRef.current.clear(),
   }));
 
   const requestShouldUseWithCredentials = () =>
