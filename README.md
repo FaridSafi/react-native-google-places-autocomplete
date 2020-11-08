@@ -2,7 +2,7 @@
 
 **Customizable Google Places autocomplete component for iOS and Android React-Native apps**
 
-Version 2 of this library is now available.  See more in the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0) section.
+Version 2 of this library is now available. See more in the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0) section.
 
 ## Preview
 
@@ -15,6 +15,7 @@ Version 2 of this library is now available.  See more in the [releases](https://
 ```
 npm install react-native-google-places-autocomplete --save
 ```
+
 or
 
 ```
@@ -162,6 +163,43 @@ const GooglePlacesInput = () => {
         key: 'YOUR API KEY',
         language: 'en',
         components: 'country:us',
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+</details>
+
+**Use a custom Text Input Component**
+
+<details>
+  <summary>Click to expand</summary>
+
+This is an example using the Text Input from [`react-native-elements`](https://reactnativeelements.com/docs/input).
+
+```js
+import React from 'react';
+import { Text, View, Image } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { Input } from 'react-native-elements';
+
+const GOOGLE_PLACES_API_KEY = 'YOUR_GOOGLE_API_KEY';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      query={{
+        key: GOOGLE_PLACES_API_KEY,
+        language: 'en', // language of the results
+      }}
+      onPress={(data, details) => console.log(data, details)}
+      textInputProps={{
+        InputComp: Input,
+        leftIcon: { type: 'font-awesome', name: 'chevron-left' },
+        errorStyle: { color: 'red' },
       }}
     />
   );
@@ -364,7 +402,7 @@ The `requestUrl` prop takes an object with two properties: `useOnPlatform` and `
 
 The `url` property is used to set the url that requests will be made to. If you are using the regular google maps API, you need to make sure you are ultimately hitting https://maps.googleapis.com/maps/api.
 
-`useOnPlatform` configures when the proxy url is used. It can be set to either `web`-  will be used only when the device platform is detected as web (but not iOS or Android, or `all` -  will always be used.  
+`useOnPlatform` configures when the proxy url is used. It can be set to either `web`- will be used only when the device platform is detected as web (but not iOS or Android, or `all` - will always be used.
 
 ### Example:
 
@@ -385,8 +423,9 @@ const GooglePlacesInput = () => {
         language: 'en',
       }}
       requestUrl={{
-        useOnPlatform: "web", // or "all"
-        url: "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api", // or any proxy server that hits https://maps.googleapis.com/maps/api
+        useOnPlatform: 'web', // or "all"
+        url:
+          'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api', // or any proxy server that hits https://maps.googleapis.com/maps/api
       }}
     />
   );

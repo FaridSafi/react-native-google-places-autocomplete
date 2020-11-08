@@ -743,6 +743,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   let {
     onFocus,
+    onBlur,// destructuring here stops this being set after onBlur={_onBlur}
+    onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
     clearButtonMode,
     InputComp,
     ...userProps
