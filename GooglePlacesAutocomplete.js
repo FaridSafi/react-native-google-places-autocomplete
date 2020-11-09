@@ -643,6 +643,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _onBlur = () => {
+    props.textInputProps.onBlur;
     setListViewDisplayed(false);
     inputRef?.current?.blur();
   };
@@ -745,7 +746,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   let {
     onFocus,
-    onBlur,
+    onBlur,// destructuring here stops this being set after onBlur={_onBlur}
     onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
     clearButtonMode,
     InputComp,
@@ -784,14 +785,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                   }
                 : _onFocus
             }
-            onBlur={
-              onBlur
-                ? () => {
-                    _onBlur();
-                    onBlur();
-                  }
-                : _onBlur
-            }
+            onBlur={_onBlur}
             clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
             {...userProps}
@@ -889,7 +883,9 @@ GooglePlacesAutocomplete.defaultProps = {
   styles: {},
   suppressDefaultStyles: false,
   textInputHide: false,
-  textInputProps: {},
+  textInputProps: {
+    onBlur: () => '',
+  },
   timeout: 20000,
 };
 
