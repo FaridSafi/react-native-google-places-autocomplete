@@ -6,3 +6,4 @@ yarn.lock
 .prettierrc
 .*ignore
 .github
+.release-it.json
