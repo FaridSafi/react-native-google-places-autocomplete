@@ -4,3 +4,5 @@ Assets
 yarn.lock
 .eslintrc
 .prettierrc
+.*ignore
+.github
