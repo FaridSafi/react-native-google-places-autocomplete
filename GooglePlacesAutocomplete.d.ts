@@ -360,9 +360,14 @@ interface Place {
   geometry: { location: Point };
 }
 
+interface Header {
+  authorization?: string; 
+}
+
 interface RequestUrl {
   url: string;
   useOnPlatform: 'web' | 'all';
+  headers?: Header;
 }
 
 interface GooglePlacesAutocompleteProps {

@@ -107,6 +107,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return [...res, ...results];
   };
 
+  const getRequestHeaders = (requestUrl) => {
+    if(requestUrl) {
+      if (requestUrl.headers) {
+        return requestUrl.headers;
+      } else {
+        return {}
+      }
+    }
+  }
+
   const getRequestUrl = (requestUrl) => {
     if (requestUrl) {
       if (requestUrl.useOnPlatform === 'all') {
@@ -123,12 +133,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  const setRequestHeaders = (request, headers) => 
+    Object.keys(headers).map((k) => request.setRequestHeader(k, headers[k]))
+  
+
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
+  const [headers] = useState(getRequestHeaders(props.requestUrl));
 
   const inputRef = useRef();
 
@@ -299,7 +314,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-
+      // request headers must be set after open but before send
+      setRequestHeaders(request, headers)
       request.send();
     } else if (rowData.isCurrentLocation === true) {
       // display loader
@@ -458,7 +474,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
-
+      // request headers must be set after open but before send
+      setRequestHeaders(request, headers)
+      
       request.send();
     } else {
       _results = [];
@@ -521,7 +539,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-
+      // request headers must be set after open but before send
+      setRequestHeaders(request, headers)
+      
       request.send();
     } else {
       _results = [];
@@ -871,6 +891,9 @@ GooglePlacesAutocomplete.propTypes = {
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
+    headers: PropTypes.shape({
+      authorization: PropTypes.string,
+    })
   }),
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
