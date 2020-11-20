@@ -642,8 +642,24 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     );
   };
 
-  const _onBlur = () => {
+  const isNewFocusInAutocompleteResultList = ({ relatedTarget, currentTarget }) => {
+    if (!relatedTarget) return false;
+
+    var node = relatedTarget.parentNode;
+
+    while (node) {
+      if (node.id === 'result-list-id') return true;
+      node = node.parentNode;
+    }
+
+    return false;
+  }
+
+  const _onBlur = (e) => {
+    if (e && isNewFocusInAutocompleteResultList(e)) return;
+
     setListViewDisplayed(false);
+
     inputRef?.current?.blur();
   };
 
@@ -717,6 +733,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       return (
         <FlatList
+          nativeID="result-list-id"
           scrollEnabled={!props.disableScroll}
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
@@ -786,8 +803,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             }
             onBlur={
               onBlur
-                ? () => {
-                    _onBlur();
+                ? (e) => {
+                    _onBlur(e);
                     onBlur();
                   }
                 : _onBlur
