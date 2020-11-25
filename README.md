@@ -274,7 +274,7 @@ You can access these methods using a ref.
 ### Example
 
 ```js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const GooglePlacesInput = () => {
