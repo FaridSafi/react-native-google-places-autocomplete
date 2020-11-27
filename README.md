@@ -315,6 +315,7 @@ export default GooglePlacesInput;
 | listView                    | object (ListView style) |
 | row                         | object (View style)     |
 | loader                      | object (View style)     |
+| loaderColor                 | string                  |
 | description                 | object (Text style)     |
 | predefinedPlacesDescription | object (Text style)     |
 | separator                   | object (View style)     |

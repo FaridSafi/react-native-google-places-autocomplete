@@ -52,6 +52,7 @@ const defaultStyles = {
     justifyContent: 'flex-end',
     height: 20,
   },
+  loaderColor: '#999999',
   description: {},
   separator: {
     height: 0.5,
@@ -543,7 +544,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _getRowLoader = () => {
-    return <ActivityIndicator animating={true} size='small' />;
+    return <ActivityIndicator animating={true} size='small' color={
+      props.styles.loaderColor || (props.supressDefaultStyles ? defaultStyles.loaderColor : null)
+    } />;
   };
 
   const _renderRowData = (rowData) => {
@@ -643,11 +646,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _onBlur = () => {
-    setListViewDisplayed(false);
+    if (props.listViewDisplayed === 'auto') {
+      setListViewDisplayed(false);
+    }
     inputRef?.current?.blur();
   };
 
-  const _onFocus = () => setListViewDisplayed(true);
+  const _onFocus = () => {
+    if (props.listViewDisplayed === 'auto') {
+      setListViewDisplayed(true);
+    }
+  }
 
   const _renderPoweredLogo = () => {
     if (!_shouldShowPoweredLogo()) {
@@ -792,9 +801,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                   }
                 : _onBlur
             }
-            clearButtonMode={clearButtonMode || 'while-editing'}
-            onChangeText={_handleChangeText}
+            clearButtonMode={clearButtonMode || 'while-editing'}            
             {...userProps}
+            onChangeText={_handleChangeText}
           />
           {_renderRightButton()}
         </View>
