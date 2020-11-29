@@ -302,6 +302,11 @@ interface Geometry {
   };
 }
 
+interface PlusCode {
+  compound_code: string;
+  global_code: string;
+}
+
 interface GooglePlaceDetail {
   address_components: AddressComponent[];
   adr_address: string;
@@ -311,6 +316,7 @@ interface GooglePlaceDetail {
   id: string;
   name: string;
   place_id: string;
+  plus_code: PlusCode;
   reference: string;
   scope: 'GOOGLE';
   types: PlaceType;
