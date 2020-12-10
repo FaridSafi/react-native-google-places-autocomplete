@@ -68,9 +68,46 @@ const defaultStyles = {
   powered: {},
 };
 
-export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
-  let _results = [];
-  let _requests = [];
+export default class GooglePlacesAutocomplete extends Component {
+  _isMounted = false;
+  _results = [];
+  _requests = [];
+
+  constructor(props) {
+    super(props);
+    this.state = this.getInitialState.call(this);
+  }
+
+  getInitialState = () => ({
+    text: this.props.getDefaultValue(),
+    dataSource: this.buildRowsFromResults([]),
+    hasResults: false,
+    listViewDisplayed:
+      this.props.listViewDisplayed === 'auto'
+        ? false
+        : this.props.listViewDisplayed,
+    url: this.getRequestUrl(this.props.requestUrl),
+    autoSelected: false,
+  });
+
+  getRequestUrl = (requestUrl) => {
+    if (requestUrl) {
+      if (requestUrl.useOnPlatform === 'all') {
+        return requestUrl.url;
+      }
+      if (requestUrl.useOnPlatform === 'web') {
+        return Platform.select({
+          web: requestUrl.url,
+          default: 'https://maps.googleapis.com/maps/api',
+        });
+      }
+    } else {
+      return 'https://maps.googleapis.com/maps/api';
+    }
+  };
+
+  requestShouldUseWithCredentials = () =>
+    this.state.url === 'https://maps.googleapis.com/maps/api';
 
   const hasNavigator = () => {
     if (navigator?.geolocation) {
@@ -325,7 +362,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           rowData.isCurrentLocation === true)
       ) {
         rows[i].isLoading = true;
-        setDataSource(rows);
+        this.setState({
+          dataSource: rows,
+          hasResults: rows.length > 0,
+        });
         break;
       }
     }
@@ -337,6 +377,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       if (_results[i].isLoading === true) {
         _results[i].isLoading = false;
       }
+      this.setState({
+        dataSource: this.buildRowsFromResults(this._results),
+        hasResults: this._results.length > 0,
+      });
     }
 
     setDataSource(buildRowsFromResults(_results));
@@ -402,15 +446,21 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           _disableRowLoaders();
 
           if (typeof responseJSON.results !== 'undefined') {
-            // if (_isMounted === true) {
-            var results = [];
-            if (props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-              results = _filterResultsByTypes(
-                responseJSON.results,
-                props.filterReverseGeocodingByTypes,
-              );
-            } else {
-              results = responseJSON.results;
+            if (this._isMounted === true) {
+              var results = [];
+              if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+                results = this._filterResultsByTypes(
+                  responseJSON.results,
+                  this.props.filterReverseGeocodingByTypes,
+                );
+              } else {
+                results = responseJSON.results;
+              }
+
+              this.setState({
+                dataSource: this.buildRowsFromResults(results),
+                hasResults: results.length > 0,
+              });
             }
 
             setDataSource(buildRowsFromResults(results));
@@ -422,11 +472,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 'google places autocomplete: ' + responseJSON.error_message,
               );
             else {
-              props.onFail(responseJSON.error_message);
+              this.props.onFail(responseJSON.error_message);
+              this.setState({
+                hasResults: false,
+              });
             }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
+          this.setState({
+            hasResults: false,
+          });
         }
       };
 
@@ -456,8 +512,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.send();
     } else {
-      _results = [];
-      setDataSource(buildRowsFromResults([]));
+      this._results = [];
+      this.setState({
+        dataSource: this.buildRowsFromResults([]),
+        hasResults: false,
+      });
     }
   };
 
@@ -476,18 +535,21 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
-            // if (_isMounted === true) {
-            const results =
-              props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
-                ? _filterResultsByTypes(
-                    responseJSON.predictions,
-                    props.filterReverseGeocodingByTypes,
-                  )
-                : responseJSON.predictions;
+            if (this._isMounted === true) {
+              const results =
+                this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
+                  ? this._filterResultsByTypes(
+                      responseJSON.predictions,
+                      this.props.filterReverseGeocodingByTypes,
+                    )
+                  : responseJSON.predictions;
 
-            _results = results;
-            setDataSource(buildRowsFromResults(results));
-            // }
+              this._results = results;
+              this.setState({
+                dataSource: this.buildRowsFromResults(results),
+                hasResults: results.length > 0,
+              });
+            }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
             if (!props.onFail)
@@ -519,17 +581,25 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.send();
     } else {
-      _results = [];
-      setDataSource(buildRowsFromResults([]));
+      this._results = [];
+      this.setState({
+        dataSource: this.buildRowsFromResults([]),
+        hasResults: false,
+      });
     }
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceData = useMemo(() => debounce(_request, props.debounce), []);
 
-  const _onChangeText = (text) => {
-    setStateText(text);
-    debounceData(text);
+  _onChangeText = (text) => {
+    this._request(text);
+
+    this.setState({
+      text: text,
+      autoSelected: false,
+      listViewDisplayed: this._isMounted || this.props.autoFocus,
+    });
   };
 
   const _handleChangeText = (text) => {
@@ -642,9 +712,23 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     );
   };
 
-  const _onBlur = () => {
-    setListViewDisplayed(false);
-    inputRef?.current?.blur();
+  _onBlur = () => {
+    this.triggerBlur();
+
+    if (
+      !this.state.autoSelected &&
+      this.props.autoSelectFirstResult &&
+      this.state.hasResults &&
+      this.state.dataSource[0]
+    ) {
+      this.setState(
+        {
+          autoSelected: true,
+          listViewDisplayed: false,
+        },
+        () => this._onPress(this.state.dataSource[0]),
+      );
+    }
   };
 
   const _onFocus = () => setListViewDisplayed(true);

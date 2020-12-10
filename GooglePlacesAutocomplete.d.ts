@@ -364,9 +364,17 @@ interface RequestUrl {
   url: string;
   useOnPlatform: 'web' | 'all';
 }
-
-interface GooglePlacesAutocompleteProps {
-  autoFillOnNotFound?: boolean;
+interface GooglePlacesAutocompleteProps extends TextInputProps {
+  query: Query;
+  minLength?: number; // minimum length of text to search
+  listViewDisplayed?: 'auto' | boolean;
+  fetchDetails?: boolean;
+  renderDescription?: (description: DescriptionRow) => string;
+  onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
+  getDefaultValue?: () => string;
+  styles?: Partial<Styles>;
+  suppressDefaultStyles?: boolean;
+  autoSelectFirstResult?: boolean;
   // Will add a 'Current location' button at the top of the predefined places list
   currentLocation?: boolean;
   currentLocationLabel?: string;
