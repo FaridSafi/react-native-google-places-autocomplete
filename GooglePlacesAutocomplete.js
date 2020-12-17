@@ -141,6 +141,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    // Update dataSource if props.predefinedPlaces changed
+    setDataSource(buildRowsFromResults([])) 
+  }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
