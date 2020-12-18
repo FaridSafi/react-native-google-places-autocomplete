@@ -546,9 +546,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return <ActivityIndicator animating={true} size='small' />;
   };
 
-  const _renderRowData = (rowData) => {
+  const _renderRowData = (rowData, index) => {
     if (props.renderRow) {
-      return props.renderRow(rowData);
+      return props.renderRow(rowData, index);
     }
 
     return (
@@ -592,7 +592,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return null;
   };
 
-  const _renderRow = (rowData = {}) => {
+  const _renderRow = (rowData = {}, index) => {
     return (
       <ScrollView
         contentContainerStyle={
@@ -619,7 +619,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             ]}
           >
             {_renderLoader(rowData)}
-            {_renderRowData(rowData)}
+            {_renderRowData(rowData, index)}
           </View>
         </TouchableHighlight>
       </ScrollView>
@@ -745,7 +745,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           keyExtractor={keyGenerator}
           extraData={[dataSource, props]}
           ItemSeparatorComponent={_renderSeparator}
-          renderItem={({ item }) => _renderRow(item)}
+          renderItem={({ item, index }) => _renderRow(item, index)}
           ListEmptyComponent={
             stateText.length > props.minLength && props.listEmptyComponent
           }
