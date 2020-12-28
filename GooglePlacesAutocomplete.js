@@ -1,222 +1,209 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  TextInput,
-  View,
-  FlatList,
-  ScrollView,
-  Image,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableHighlight,
-  Platform,
-  ActivityIndicator,
-  PixelRatio,
-  Keyboard
-} from 'react-native';
-import Qs from 'qs';
+/* eslint-disable react-native/no-inline-styles */
 import debounce from 'lodash.debounce';
-
-const WINDOW = Dimensions.get('window');
+import PropTypes from 'prop-types';
+import Qs from 'qs';
+import React, {
+  forwardRef,
+  useMemo,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Keyboard,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 const defaultStyles = {
   container: {
     flex: 1,
   },
   textInputContainer: {
-    backgroundColor: '#C9C9CE',
-    height: 44,
-    borderTopColor: '#7e7e7e',
-    borderBottomColor: '#b5b5b5',
-    borderTopWidth: 1 / PixelRatio.get(),
-    borderBottomWidth: 1 / PixelRatio.get(),
     flexDirection: 'row',
   },
   textInput: {
     backgroundColor: '#FFFFFF',
-    height: 28,
+    height: 44,
     borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 7.5,
-    marginLeft: 8,
-    marginRight: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     fontSize: 15,
-    flex: 1
+    flex: 1,
+    marginBottom: 5,
   },
-  poweredContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  powered: {},
   listView: {},
   row: {
+    backgroundColor: '#FFFFFF',
     padding: 13,
-    height: 44,
+    minHeight: 44,
     flexDirection: 'row',
   },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#c8c7cc',
-  },
-  description: {},
   loader: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     height: 20,
   },
-  androidLoader: {
-    marginRight: -15,
+  description: {},
+  separator: {
+    height: 0.5,
+    backgroundColor: '#c8c7cc',
   },
+  poweredContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderColor: '#c8c7cc',
+    borderTopWidth: 0.5,
+  },
+  powered: {},
 };
 
-export default class GooglePlacesAutocomplete extends Component {
-  _isMounted = false;
-  _results = [];
-  _requests = [];
+export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+  let _results = [];
+  let _requests = [];
 
-  constructor (props) {
-    super(props);
-    this.state = this.getInitialState.call(this);
-  }
+  const hasNavigator = () => {
+    if (navigator?.geolocation) {
+      return true;
+    } else {
+      console.warn(
+        'If you are using React Native v0.60.0+ you must follow these instructions to enable currentLocation: https://git.io/Jf4AR',
+      );
+      return false;
+    }
+  };
 
-  getInitialState = () => ({
-    text: this.props.getDefaultValue(),
-    dataSource: this.buildRowsFromResults([]),
-    listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
-  })
-
-  setAddressText = address => this.setState({ text: address })
-
-  getAddressText = () => this.state.text
-
-  buildRowsFromResults = (results) => {
+  const buildRowsFromResults = (results) => {
     let res = [];
 
-    if (results.length === 0 || this.props.predefinedPlacesAlwaysVisible === true) {
-      res = [...this.props.predefinedPlaces];
+    if (results.length === 0 || props.predefinedPlacesAlwaysVisible === true) {
+      res = [
+        ...props.predefinedPlaces.filter((place) => place?.description.length),
+      ];
 
-      if (this.props.currentLocation === true) {
+      if (props.currentLocation === true && hasNavigator()) {
         res.unshift({
-          description: this.props.currentLocationLabel,
+          description: props.currentLocationLabel,
           isCurrentLocation: true,
         });
       }
     }
 
-    res = res.map(place => ({
+    res = res.map((place) => ({
       ...place,
-      isPredefinedPlace: true
+      isPredefinedPlace: true,
     }));
 
     return [...res, ...results];
-  }
+  };
 
-  UNSAFE_componentWillMount() {
-    this._request = this.props.debounce
-        ? debounce(this._request, this.props.debounce)
-        : this._request;
-  }
+  const getRequestUrl = (requestUrl) => {
+    if (requestUrl) {
+      if (requestUrl.useOnPlatform === 'all') {
+        return requestUrl.url;
+      }
+      if (requestUrl.useOnPlatform === 'web') {
+        return Platform.select({
+          web: requestUrl.url,
+          default: 'https://maps.googleapis.com/maps/api',
+        });
+      }
+    } else {
+      return 'https://maps.googleapis.com/maps/api';
+    }
+  };
 
-  componentDidMount() {
+  const [stateText, setStateText] = useState('');
+  const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
+  const [listViewDisplayed, setListViewDisplayed] = useState(
+    props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
+  );
+  const [url] = useState(getRequestUrl(props.requestUrl));
+
+  const inputRef = useRef();
+
+  useEffect(() => {
     // This will load the default value's search results after the view has
     // been rendered
-    this._handleChangeText(this.state.text);
-    this._isMounted = true;
-  }
+    _handleChangeText(stateText);
+    return () => {
+      _abortRequests();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    let listViewDisplayed = true;
+  useImperativeHandle(ref, () => ({
+    setAddressText: (address) => {
+      setStateText(address);
+    },
+    getAddressText: () => stateText,
+    blur: () => inputRef.current.blur(),
+    focus: () => inputRef.current.focus(),
+    isFocused: () => inputRef.current.isFocused(),
+    clear: () => inputRef.current.clear(),
+  }));
 
-    if (nextProps.listViewDisplayed !== 'auto') {
-      listViewDisplayed = nextProps.listViewDisplayed;
-    }
+  const requestShouldUseWithCredentials = () =>
+    url === 'https://maps.googleapis.com/maps/api';
 
-    if (typeof (nextProps.text) !== "undefined" && this.state.text !== nextProps.text) {
-      this.setState({
-            listViewDisplayed: listViewDisplayed
-          },
-          this._handleChangeText(nextProps.text));
+  const _abortRequests = () => {
+    _requests.map((i) => i.abort());
+    _requests = [];
+  };
+
+  const supportedPlatform = () => {
+    if (Platform.OS === 'web' && !props.requestUrl) {
+      console.warn(
+        'This library cannot be used for the web unless you specify the requestUrl prop. See https://git.io/JflFv for more for details.',
+      );
+      return false;
     } else {
-      this.setState({
-        listViewDisplayed: listViewDisplayed
-      });
+      return true;
     }
-  }
+  };
 
-  componentWillUnmount() {
-    this._abortRequests();
-    this._isMounted = false;
-  }
-
-  _abortRequests = () => {
-    this._requests.map(i => i.abort());
-    this._requests = [];
-  }
-
-  /**
-   * This method is exposed to parent components to focus on textInput manually.
-   * @public
-   */
-  triggerFocus = () => {
-    if (this.refs.textInput) this.refs.textInput.focus();
-  }
-
-  /**
-   * This method is exposed to parent components to blur textInput manually.
-   * @public
-   */
-  triggerBlur = () => {
-    if (this.refs.textInput) this.refs.textInput.blur();
-  }
-
-  getCurrentLocation = () => {
+  const getCurrentLocation = () => {
     let options = {
       enableHighAccuracy: false,
       timeout: 20000,
-      maximumAge: 1000
+      maximumAge: 1000,
     };
 
-    if (this.props.enableHighAccuracyLocation && Platform.OS === 'android') {
+    if (props.enableHighAccuracyLocation && Platform.OS === 'android') {
       options = {
         enableHighAccuracy: true,
-        timeout: 20000
-      }
+        timeout: 20000,
+      };
     }
+    const getCurrentPosition =
+      navigator.geolocation.getCurrentPosition ||
+      navigator.geolocation.default.getCurrentPosition;
 
-    navigator.geolocation.getCurrentPosition(
+    getCurrentPosition &&
+      getCurrentPosition(
         (position) => {
-          if (this.props.nearbyPlacesAPI === 'None') {
-            let currentLocation = {
-              description: this.props.currentLocationLabel,
-              geometry: {
-                location: {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude
-                }
-              }
-            };
-
-            this._disableRowLoaders();
-            this.props.onPress(currentLocation, currentLocation);
-          } else {
-            this._requestNearby(position.coords.latitude, position.coords.longitude);
-          }
+          props.currentPlace();
         },
         (error) => {
-          this._disableRowLoaders();
-          alert(error.message);
+          _disableRowLoaders();
+          console.error(error.message);
         },
-        options
-    );
-  }
+        options,
+      );
+  };
 
-  _onPress = (rowData) => {
-    if (rowData.isPredefinedPlace !== true && this.props.fetchDetails === true) {
+  const _onPress = (rowData) => {
+    if (rowData.isPredefinedPlace !== true && props.fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
         return;
@@ -224,16 +211,16 @@ export default class GooglePlacesAutocomplete extends Component {
 
       Keyboard.dismiss();
 
-      this._abortRequests();
+      _abortRequests();
 
       // display loader
-      this._enableRowLoader(rowData);
+      _enableRowLoader(rowData);
 
       // fetch details
       const request = new XMLHttpRequest();
-      this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
+      _requests.push(request);
+      request.timeout = props.timeout;
+      request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) return;
 
@@ -241,128 +228,121 @@ export default class GooglePlacesAutocomplete extends Component {
           const responseJSON = JSON.parse(request.responseText);
 
           if (responseJSON.status === 'OK') {
+            // if (_isMounted === true) {
+            const details = responseJSON.result;
+            _disableRowLoaders();
+            _onBlur();
 
-            if (this._isMounted === true) {
-              const details = responseJSON.result;
-              this._disableRowLoaders();
-              this._onBlur();
+            setStateText(_renderDescription(rowData));
 
-              this.setState({
-                text: this._renderDescription( rowData ),
-              });
-
-              delete rowData.isLoading;
-              this.props.onPress(rowData, details);
-            }
+            delete rowData.isLoading;
+            props.onPress(rowData, details);
+            // }
           } else {
-            this._disableRowLoaders();
+            _disableRowLoaders();
 
-            if (this.props.autoFillOnNotFound) {
-              this.setState({
-                text: this._renderDescription(rowData)
-              });
+            if (props.autoFillOnNotFound) {
+              setStateText(_renderDescription(rowData));
               delete rowData.isLoading;
             }
 
-            if (!this.props.onNotFound) {
-              console.warn('google places autocomplete: ' + responseJSON.status);
+            if (!props.onNotFound) {
+              console.warn(
+                'google places autocomplete: ' + responseJSON.status,
+              );
             } else {
-              this.props.onNotFound(responseJSON);
+              props.onNotFound(responseJSON);
             }
           }
         } else {
-          this._disableRowLoaders();
+          _disableRowLoaders();
 
-          if (!this.props.onFail) {
+          if (!props.onFail) {
             console.warn(
-                'google places autocomplete: request could not be completed or has been aborted'
+              'google places autocomplete: request could not be completed or has been aborted',
             );
           } else {
-            this.props.onFail('request could not be completed or has been aborted');
+            props.onFail('request could not be completed or has been aborted');
           }
         }
       };
 
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
-        key: this.props.query.key,
-        placeid: rowData.place_id,
-        language: this.props.query.language,
-        ...this.props.GooglePlacesDetailsQuery,
-      }));
+      request.open(
+        'GET',
+        `${url}/place/details/json?` +
+          Qs.stringify({
+            key: props.query.key,
+            placeid: rowData.place_id,
+            language: props.query.language,
+            ...props.GooglePlacesDetailsQuery,
+          }),
+      );
 
-      if (this.props.query.origin !== null) {
-        request.setRequestHeader('Referer', this.props.query.origin)
-      }
+      request.withCredentials = requestShouldUseWithCredentials();
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
       // display loader
-      this._enableRowLoader(rowData);
+      _enableRowLoader(rowData);
 
-      this.setState({
-        text: this._renderDescription( rowData ),
-      });
+      setStateText(_renderDescription(rowData));
 
-      this.triggerBlur(); // hide keyboard but not the results
       delete rowData.isLoading;
-      this.getCurrentLocation();
-
+      getCurrentLocation();
     } else {
-      this.setState({
-        text: this._renderDescription( rowData ),
-      });
+      setStateText(_renderDescription(rowData));
 
-      this._onBlur();
+      _onBlur();
       delete rowData.isLoading;
-      let predefinedPlace = this._getPredefinedPlace(rowData);
+      let predefinedPlace = _getPredefinedPlace(rowData);
 
       // sending predefinedPlace as details for predefined places
-      this.props.onPress(predefinedPlace, predefinedPlace);
+      props.onPress(predefinedPlace, predefinedPlace);
     }
-  }
+  };
 
-  _enableRowLoader = (rowData) => {
-    let rows = this.buildRowsFromResults(this._results);
+  const _enableRowLoader = (rowData) => {
+    let rows = buildRowsFromResults(_results);
     for (let i = 0; i < rows.length; i++) {
-      if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
+      if (
+        rows[i].place_id === rowData.place_id ||
+        (rows[i].isCurrentLocation === true &&
+          rowData.isCurrentLocation === true)
+      ) {
         rows[i].isLoading = true;
-        this.setState({
-          dataSource: rows,
-        });
+        setDataSource(rows);
         break;
       }
     }
-  }
+  };
 
-  _disableRowLoaders = () => {
-    if (this._isMounted === true) {
-      for (let i = 0; i < this._results.length; i++) {
-        if (this._results[i].isLoading === true) {
-          this._results[i].isLoading = false;
-        }
+  const _disableRowLoaders = () => {
+    // if (_isMounted === true) {
+    for (let i = 0; i < _results.length; i++) {
+      if (_results[i].isLoading === true) {
+        _results[i].isLoading = false;
       }
-
-      this.setState({
-        dataSource: this.buildRowsFromResults(this._results),
-      });
     }
-  }
 
-  _getPredefinedPlace = (rowData) => {
+    setDataSource(buildRowsFromResults(_results));
+    // }
+  };
+
+  const _getPredefinedPlace = (rowData) => {
     if (rowData.isPredefinedPlace !== true) {
       return rowData;
     }
 
-    for (let i = 0; i < this.props.predefinedPlaces.length; i++) {
-      if (this.props.predefinedPlaces[i].description === rowData.description) {
-        return this.props.predefinedPlaces[i];
+    for (let i = 0; i < props.predefinedPlaces.length; i++) {
+      if (props.predefinedPlaces[i].description === rowData.description) {
+        return props.predefinedPlaces[i];
       }
     }
 
     return rowData;
-  }
+  };
 
-  _filterResultsByTypes = (unfilteredResults, types) => {
+  const _filterResultsByTypes = (unfilteredResults, types) => {
     if (types.length === 0) return unfilteredResults;
 
     const results = [];
@@ -381,16 +361,21 @@ export default class GooglePlacesAutocomplete extends Component {
       }
     }
     return results;
-  }
+  };
 
-  _requestNearby = (latitude, longitude) => {
-    this._abortRequests();
+  const _requestNearby = (latitude, longitude) => {
+    _abortRequests();
 
-    if (latitude !== undefined && longitude !== undefined && latitude !== null && longitude !== null) {
+    if (
+      latitude !== undefined &&
+      longitude !== undefined &&
+      latitude !== null &&
+      longitude !== null
+    ) {
       const request = new XMLHttpRequest();
-      this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
+      _requests.push(request);
+      request.timeout = props.timeout;
+      request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
           return;
@@ -399,27 +384,30 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
-          this._disableRowLoaders();
+          _disableRowLoaders();
 
           if (typeof responseJSON.results !== 'undefined') {
-            if (this._isMounted === true) {
-              var results = [];
-              if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-                results = this._filterResultsByTypes(responseJSON.results, this.props.filterReverseGeocodingByTypes);
-              } else {
-                results = responseJSON.results;
-              }
-
-              this.setState({
-                dataSource: this.buildRowsFromResults(results),
-              });
+            // if (_isMounted === true) {
+            var results = [];
+            if (props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+              results = _filterResultsByTypes(
+                responseJSON.results,
+                props.filterReverseGeocodingByTypes,
+              );
+            } else {
+              results = responseJSON.results;
             }
+
+            setDataSource(buildRowsFromResults(results));
+            // }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            if(!this.props.onFail)
-              console.warn('google places autocomplete: ' + responseJSON.error_message);
-            else{
-              this.props.onFail(responseJSON.error_message)
+            if (!props.onFail)
+              console.warn(
+                'google places autocomplete: ' + responseJSON.error_message,
+              );
+            else {
+              props.onFail(responseJSON.error_message);
             }
           }
         } else {
@@ -427,43 +415,44 @@ export default class GooglePlacesAutocomplete extends Component {
         }
       };
 
-      let url = '';
-      if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+      let requestUrl = '';
+      if (props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
         // your key must be allowed to use Google Maps Geocoding API
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
-          latlng: latitude + ',' + longitude,
-          key: this.props.query.key,
-          ...this.props.GoogleReverseGeocodingQuery,
-        });
+        requestUrl =
+          `${url}/geocode/json?` +
+          Qs.stringify({
+            latlng: latitude + ',' + longitude,
+            key: props.query.key,
+            ...props.GoogleReverseGeocodingQuery,
+          });
       } else {
-        url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + Qs.stringify({
-          location: latitude + ',' + longitude,
-          key: this.props.query.key,
-          ...this.props.GooglePlacesSearchQuery,
-        });
+        requestUrl =
+          `${url}/place/nearbysearch/json?` +
+          Qs.stringify({
+            location: latitude + ',' + longitude,
+            key: props.query.key,
+            ...props.GooglePlacesSearchQuery,
+          });
       }
 
-      request.open('GET', url);
-      if (this.props.query.origin !== null) {
-        request.setRequestHeader('Referer', this.props.query.origin)
-      }
+      request.open('GET', requestUrl);
+
+      request.withCredentials = requestShouldUseWithCredentials();
 
       request.send();
     } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.buildRowsFromResults([]),
-      });
+      _results = [];
+      setDataSource(buildRowsFromResults([]));
     }
-  }
+  };
 
-  _request = (text) => {
-    this._abortRequests();
-    if (text.length >= this.props.minLength) {
+  const _request = (text) => {
+    _abortRequests();
+    if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
-      this._requests.push(request);
-      request.timeout = this.props.timeout;
-      request.ontimeout = this.props.onTimeout;
+      _requests.push(request);
+      request.timeout = props.timeout;
+      request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
           return;
@@ -472,377 +461,440 @@ export default class GooglePlacesAutocomplete extends Component {
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
-            if (this._isMounted === true) {
-              const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
-                  ? this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes)
-                  : responseJSON.predictions;
+            // if (_isMounted === true) {
+            const results =
+              props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
+                ? _filterResultsByTypes(
+                    responseJSON.predictions,
+                    props.filterReverseGeocodingByTypes,
+                  )
+                : responseJSON.predictions;
 
-              this._results = results;
-              this.setState({
-                dataSource: this.buildRowsFromResults(results),
-              });
-            }
+            _results = results;
+            setDataSource(buildRowsFromResults(results));
+            // }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            if(!this.props.onFail)
-              console.warn('google places autocomplete: ' + responseJSON.error_message);
-            else{
-              this.props.onFail(responseJSON.error_message)
+            if (!props.onFail)
+              console.warn(
+                'google places autocomplete: ' + responseJSON.error_message,
+              );
+            else {
+              props.onFail(responseJSON.error_message);
             }
           }
         } else {
           // console.warn("google places autocomplete: request could not be completed or has been aborted");
         }
       };
-      if (this.props.preProcess) {
-        text = this.props.preProcess(text);
+
+      if (props.preProcess) {
+        setStateText(props.preProcess(text));
       }
-      request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
-      if (this.props.query.origin !== null) {
-        request.setRequestHeader('Referer', this.props.query.origin)
-      }
+
+      request.open(
+        'GET',
+        `${url}/place/autocomplete/json?&input=` +
+          encodeURIComponent(text) +
+          '&' +
+          Qs.stringify(props.query),
+      );
+
+      request.withCredentials = requestShouldUseWithCredentials();
 
       request.send();
     } else {
-      this._results = [];
-      this.setState({
-        dataSource: this.buildRowsFromResults([]),
-      });
+      _results = [];
+      setDataSource(buildRowsFromResults([]));
     }
-  }
+  };
 
-  clearText(){
-    this.setState({
-      text: ""
-    })
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceData = useMemo(() => debounce(_request, props.debounce), []);
 
-  _onChangeText = (text) => {
-    this._request(text);
+  const _onChangeText = (text) => {
+    setStateText(text);
+    debounceData(text);
+  };
 
-    this.setState({
-      text: text,
-      listViewDisplayed: this._isMounted || this.props.autoFocus,
-    });
-  }
+  const _handleChangeText = (text) => {
+    _onChangeText(text);
 
-  _handleChangeText = (text) => {
-    this._onChangeText(text);
-
-    const onChangeText = this.props
-        && this.props.textInputProps
-        && this.props.textInputProps.onChangeText;
+    const onChangeText = props?.textInputProps?.onChangeText;
 
     if (onChangeText) {
       onChangeText(text);
     }
-  }
+  };
 
-  _getRowLoader() {
-    return (
-        <ActivityIndicator
-            animating={true}
-            size="small"
-        />
-    );
-  }
+  const _getRowLoader = () => {
+    return <ActivityIndicator animating={true} size='small' />;
+  };
 
-  _renderRowData = (rowData) => {
-    return(
-        <View>
-          <Text style={{color: '#222B2F', fontSize: 15 }}>{rowData.structured_formatting.main_text}</Text>
-          <Text style={{color: '#9BABB4', fontSize: 13 }}>{rowData.structured_formatting.secondary_text}</Text>
-        </View>
-    );
-  }
-
-  _renderDescription = (rowData) => {
-    if (this.props.renderDescription) {
-      return this.props.renderDescription(rowData);
+  const _renderRowData = (rowData) => {
+    if (props.renderRow) {
+      return props.renderRow(rowData);
     }
 
-    return rowData;
-  }
+    return (
+      <Text
+        style={[
+          props.suppressDefaultStyles ? {} : defaultStyles.description,
+          props.styles.description,
+          rowData.isPredefinedPlace
+            ? props.styles.predefinedPlacesDescription
+            : {},
+        ]}
+        numberOfLines={props.numberOfLines}
+      >
+        {_renderDescription(rowData)}
+      </Text>
+    );
+  };
 
-  _renderLoader = (rowData) => {
+  const _renderDescription = (rowData) => {
+    if (props.renderDescription) {
+      return props.renderDescription(rowData);
+    }
+
+    return rowData.description || rowData.formatted_address || rowData.name;
+  };
+
+  const _renderLoader = (rowData) => {
     if (rowData.isLoading === true) {
       return (
-          <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.loader, this.props.styles.loader]}>
-            {this._getRowLoader()}
-          </View>
+        <View
+          style={[
+            props.suppressDefaultStyles ? {} : defaultStyles.loader,
+            props.styles.loader,
+          ]}
+        >
+          {_getRowLoader()}
+        </View>
       );
     }
 
     return null;
-  }
+  };
 
-  _renderRow = (rowData = {}, sectionID, rowID) => {
+  const _renderRow = (rowData = {}) => {
     return (
-        <ScrollView
-            style={{ flex: 1 }}
-            scrollEnabled={this.props.isRowScrollable}
-            keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}>
-          <TouchableHighlight
-              style={{ width: WINDOW.width }}
-              onPress={() => this._onPress(rowData)}
-              underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
-          >
-            <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
-              {this._renderLoader(rowData)}
-              {this._renderRowData(rowData)}
-            </View>
-          </TouchableHighlight>
-        </ScrollView>
-    );
-  }
-
-  _renderSeparator = (sectionID, rowID) => {
-    return (
-        <View
-            style={{backgroundColor: 'gray', height: 0.5, marginTop: 12}} />
-    );
-  }
-
-  _onBlur = () => {
-    this.triggerBlur();
-
-    this.setState({
-      listViewDisplayed: false
-    });
-  }
-
-  _onFocus = () => this.setState({ listViewDisplayed: true })
-
-  _renderPoweredLogo = () => {
-    if (!this._shouldShowPoweredLogo()) {
-      return null
-    }
-
-    return (
-        <View
-            style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, defaultStyles.poweredContainer, this.props.styles.poweredContainer]}
+      <ScrollView
+        contentContainerStyle={
+          props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
+        }
+        scrollEnabled={props.isRowScrollable}
+        keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableHighlight
+          style={
+            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
+          }
+          onPress={() => _onPress(rowData)}
+          underlayColor={props.listUnderlayColor || '#c8c7cc'}
         >
-          <Image
-              style={[this.props.suppressDefaultStyles ? {} : defaultStyles.powered, this.props.styles.powered]}
-              resizeMode='contain'
-              source={require('./images/powered_by_google_on_white.png')}
-          />
-        </View>
+          <View
+            style={[
+              props.suppressDefaultStyles ? {} : defaultStyles.row,
+              props.styles.row,
+              rowData.isPredefinedPlace ? props.styles.specialItemRow : {},
+            ]}
+          >
+            {_renderLoader(rowData)}
+            {_renderRowData(rowData)}
+          </View>
+        </TouchableHighlight>
+      </ScrollView>
     );
-  }
+  };
 
-  _shouldShowPoweredLogo = () => {
-    if (!this.props.enablePoweredByContainer || this.state.dataSource.length == 0) {
-      return false
+  const _renderSeparator = (sectionID, rowID) => {
+    if (rowID === dataSource.length - 1) {
+      return null;
     }
 
-    for (let i = 0; i < this.state.dataSource.length; i++) {
-      let row = this.state.dataSource[i];
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={[
+          props.suppressDefaultStyles ? {} : defaultStyles.separator,
+          props.styles.separator,
+        ]}
+      />
+    );
+  };
 
-      if (!row.hasOwnProperty('isCurrentLocation') && !row.hasOwnProperty('isPredefinedPlace')) {
-        return true
+  const isNewFocusInAutocompleteResultList = ({
+    relatedTarget,
+    currentTarget,
+  }) => {
+    if (!relatedTarget) return false;
+
+    var node = relatedTarget.parentNode;
+
+    while (node) {
+      if (node.id === 'result-list-id') return true;
+      node = node.parentNode;
+    }
+
+    return false;
+  };
+
+  const _onBlur = (e) => {
+    if (e && isNewFocusInAutocompleteResultList(e)) return;
+
+    setListViewDisplayed(false);
+    inputRef?.current?.blur();
+  };
+
+  const _onFocus = () => setListViewDisplayed(true);
+
+  const _renderPoweredLogo = () => {
+    if (!_shouldShowPoweredLogo()) {
+      return null;
+    }
+
+    return (
+      <View
+        style={[
+          props.suppressDefaultStyles ? {} : defaultStyles.row,
+          defaultStyles.poweredContainer,
+          props.styles.poweredContainer,
+        ]}
+      >
+        <Image
+          style={[
+            props.suppressDefaultStyles ? {} : defaultStyles.powered,
+            props.styles.powered,
+          ]}
+          resizeMode='contain'
+          source={require('./images/powered_by_google_on_white.png')}
+        />
+      </View>
+    );
+  };
+
+  const _shouldShowPoweredLogo = () => {
+    if (!props.enablePoweredByContainer || dataSource.length === 0) {
+      return false;
+    }
+
+    for (let i = 0; i < dataSource.length; i++) {
+      let row = dataSource[i];
+
+      if (
+        !row.hasOwnProperty('isCurrentLocation') &&
+        !row.hasOwnProperty('isPredefinedPlace')
+      ) {
+        return true;
       }
     }
 
-    return false
-  }
+    return false;
+  };
 
-  _renderLeftButton = () => {
-    if (this.props.renderLeftButton) {
-      return this.props.renderLeftButton()
+  const _renderLeftButton = () => {
+    if (props.renderLeftButton) {
+      return props.renderLeftButton();
     }
-  }
+  };
 
-  _renderRightButton = () => {
-    if (this.props.renderRightButton) {
-      return this.props.renderRightButton()
+  const _renderRightButton = () => {
+    if (props.renderRightButton) {
+      return props.renderRightButton();
     }
-  }
+  };
 
-  _getFlatList = () => {
-    const keyGenerator = () => (
-        Math.random().toString(36).substr(2, 10)
-    );
+  const _getFlatList = () => {
+    const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
-    if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
+    if (
+      supportedPlatform() &&
+      (stateText !== '' ||
+        props.predefinedPlaces.length > 0 ||
+        props.currentLocation === true) &&
+      listViewDisplayed === true
+    ) {
       return (
-          <FlatList
-              scrollEnabled={!this.props.disableScroll}
-              // style={[this.props.suppressDefaultStyles ? {} : defaultStyles.listView, this.props.styles.listView]}
-              data={this.state.dataSource}
-              keyExtractor={keyGenerator}
-              extraData={[this.state.dataSource, this.props]}
-              ItemSeparatorComponent={this._renderSeparator}
-              renderItem={({ item }) => this._renderRow(item)}
-              ListHeaderComponent={this.props.renderHeaderComponent && this.props.renderHeaderComponent(this.state.text)}
-              ListFooterComponent={this._renderPoweredLogo}
-              {...this.props}
-          />
+        <FlatList
+          nativeID='result-list-id'
+          scrollEnabled={!props.disableScroll}
+          style={[
+            props.suppressDefaultStyles ? {} : defaultStyles.listView,
+            props.styles.listView,
+          ]}
+          data={dataSource}
+          keyExtractor={keyGenerator}
+          extraData={[dataSource, props]}
+          ItemSeparatorComponent={_renderSeparator}
+          renderItem={({ item }) => _renderRow(item)}
+          ListEmptyComponent={
+            stateText.length > props.minLength && props.listEmptyComponent
+          }
+          ListHeaderComponent={
+            props.renderHeaderComponent &&
+            props.renderHeaderComponent(stateText)
+          }
+          ListFooterComponent={_renderPoweredLogo}
+          {...props}
+        />
       );
     }
 
     return null;
-  }
-  render() {
-    let {
-      onFocus,
-      clearButtonMode,
-      InputComp,
-      ...userProps
-    } = this.props.textInputProps;
-    const TextInputComp = !!InputComp ? InputComp : TextInput;
-    return (
+  };
+
+  let {
+    onFocus,
+    onBlur,
+    onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
+    clearButtonMode,
+    InputComp,
+    ...userProps
+  } = props.textInputProps;
+  const TextInputComp = InputComp || TextInput;
+  return (
+    <View
+      style={[
+        props.suppressDefaultStyles ? {} : defaultStyles.container,
+        props.styles.container,
+      ]}
+      pointerEvents='box-none'
+    >
+      {!props.textInputHide && (
         <View
-            style={[this.props.suppressDefaultStyles ? {} : defaultStyles.container, this.props.styles.container]}
-            pointerEvents="box-none"
+          style={[
+            props.suppressDefaultStyles ? {} : defaultStyles.textInputContainer,
+            props.styles.textInputContainer,
+          ]}
         >
-          {!this.props.textInputHide &&
-          <View
-              style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInputContainer, this.props.styles.textInputContainer]}
-          >
-            {this._renderLeftButton()}
-            <TextInputComp
-                ref="textInput"
-                editable={this.props.editable}
-                returnKeyType={this.props.returnKeyType}
-                keyboardAppearance={this.props.keyboardAppearance}
-                autoFocus={this.props.autoFocus}
-                style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInput, this.props.styles.textInput]}
-                value={this.state.text}
-                placeholder={this.props.placeholder}
-                onSubmitEditing={this.props.onSubmitEditing}
-                placeholderTextColor={this.props.placeholderTextColor}
-                onFocus={onFocus ? () => {this._onFocus(); onFocus()} : this._onFocus}
-                onBlur={this._onBlur}
-                underlineColorAndroid={this.props.underlineColorAndroid}
-                clearButtonMode={
-                  clearButtonMode ? clearButtonMode : "while-editing"
-                }
-                { ...userProps }
-                onChangeText={this._handleChangeText}
-            />
-            {this._renderRightButton()}
-          </View>
-          }
-          {this._getFlatList()}
-          {this.props.children}
+          {_renderLeftButton()}
+          <TextInputComp
+            ref={inputRef}
+            style={[
+              props.suppressDefaultStyles ? {} : defaultStyles.textInput,
+              props.styles.textInput,
+            ]}
+            value={stateText}
+            placeholder={props.placeholder}
+            onFocus={
+              onFocus
+                ? () => {
+                    _onFocus();
+                    onFocus();
+                  }
+                : _onFocus
+            }
+            onBlur={
+              onBlur
+                ? (e) => {
+                    _onBlur(e);
+                    onBlur();
+                  }
+                : _onBlur
+            }
+            clearButtonMode={clearButtonMode || 'while-editing'}
+            onChangeText={_handleChangeText}
+            {...userProps}
+          />
+          {_renderRightButton()}
         </View>
-    );
-  }
-}
+      )}
+      {_getFlatList()}
+      {props.children}
+    </View>
+  );
+});
 
 GooglePlacesAutocomplete.propTypes = {
-  placeholder: PropTypes.string,
-  placeholderTextColor: PropTypes.string,
-  underlineColorAndroid: PropTypes.string,
-  returnKeyType: PropTypes.string,
-  keyboardAppearance: PropTypes.oneOf(['default', 'light', 'dark']),
-  onPress: PropTypes.func,
-  onNotFound: PropTypes.func,
-  onFail: PropTypes.func,
-  minLength: PropTypes.number,
-  fetchDetails: PropTypes.bool,
-  autoFocus: PropTypes.bool,
   autoFillOnNotFound: PropTypes.bool,
-  getDefaultValue: PropTypes.func,
-  timeout: PropTypes.number,
-  onTimeout: PropTypes.func,
-  query: PropTypes.object,
-  GoogleReverseGeocodingQuery: PropTypes.object,
-  GooglePlacesSearchQuery: PropTypes.object,
-  GooglePlacesDetailsQuery: PropTypes.object,
-  styles: PropTypes.object,
-  textInputProps: PropTypes.object,
-  enablePoweredByContainer: PropTypes.bool,
-  predefinedPlaces: PropTypes.array,
   currentLocation: PropTypes.bool,
   currentLocationLabel: PropTypes.string,
-  nearbyPlacesAPI: PropTypes.string,
+  debounce: PropTypes.number,
+  disableScroll: PropTypes.bool,
   enableHighAccuracyLocation: PropTypes.bool,
+  enablePoweredByContainer: PropTypes.bool,
+  fetchDetails: PropTypes.bool,
   filterReverseGeocodingByTypes: PropTypes.array,
+  GooglePlacesDetailsQuery: PropTypes.object,
+  GooglePlacesSearchQuery: PropTypes.object,
+  GoogleReverseGeocodingQuery: PropTypes.object,
+  isRowScrollable: PropTypes.bool,
+  keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
+  listEmptyComponent: PropTypes.func,
+  listUnderlayColor: PropTypes.string,
+  listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
+  minLength: PropTypes.number,
+  nearbyPlacesAPI: PropTypes.string,
+  numberOfLines: PropTypes.number,
+  onFail: PropTypes.func,
+  onNotFound: PropTypes.func,
+  onPress: PropTypes.func,
+  onTimeout: PropTypes.func,
+  placeholder: PropTypes.string,
+  predefinedPlaces: PropTypes.array,
   predefinedPlacesAlwaysVisible: PropTypes.bool,
-  enableEmptySections: PropTypes.bool,
+  preProcess: PropTypes.func,
+  query: PropTypes.object,
   renderDescription: PropTypes.func,
-  renderRow: PropTypes.func,
+  renderHeaderComponent: PropTypes.func,
   renderLeftButton: PropTypes.func,
   renderRightButton: PropTypes.func,
-  listUnderlayColor: PropTypes.string,
-  debounce: PropTypes.number,
-  isRowScrollable: PropTypes.bool,
-  text: PropTypes.string,
-  textInputHide: PropTypes.bool,
+  renderRow: PropTypes.func,
+  requestUrl: PropTypes.shape({
+    url: PropTypes.string,
+    useOnPlatform: PropTypes.oneOf(['web', 'all']),
+  }),
+  styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
-  numberOfLines: PropTypes.number,
-  onSubmitEditing: PropTypes.func,
-  editable: PropTypes.bool
-}
+  textInputHide: PropTypes.bool,
+  textInputProps: PropTypes.object,
+  timeout: PropTypes.number,
+};
+
 GooglePlacesAutocomplete.defaultProps = {
-  placeholder: 'Search',
-  placeholderTextColor: '#A8A8A8',
-  isRowScrollable: true,
-  underlineColorAndroid: 'transparent',
-  returnKeyType: 'default',
-  keyboardAppearance: 'default',
-  onPress: () => {},
-  onNotFound: () => {},
-  onFail: () => {},
-  minLength: 0,
-  fetchDetails: false,
-  autoFocus: false,
   autoFillOnNotFound: false,
+  currentLocation: false,
+  currentLocationLabel: 'Current location',
+  debounce: 0,
+  disableScroll: false,
+  enableHighAccuracyLocation: true,
+  enablePoweredByContainer: true,
+  fetchDetails: false,
+  filterReverseGeocodingByTypes: [],
+  GooglePlacesDetailsQuery: {},
+  GooglePlacesSearchQuery: {
+    rankby: 'distance',
+    type: 'restaurant',
+  },
+  GoogleReverseGeocodingQuery: {},
+  isRowScrollable: true,
   keyboardShouldPersistTaps: 'always',
-  getDefaultValue: () => '',
-  timeout: 20000,
+  listUnderlayColor: '#c8c7cc',
+  listViewDisplayed: 'auto',
+  minLength: 0,
+  nearbyPlacesAPI: 'GooglePlacesSearch',
+  numberOfLines: 1,
+  onFail: () => {},
+  onNotFound: () => {},
+  onPress: () => {},
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
+  placeholder: '',
+  predefinedPlaces: [],
+  predefinedPlacesAlwaysVisible: false,
   query: {
     key: 'missing api key',
     language: 'en',
     types: 'geocode',
   },
-  GoogleReverseGeocodingQuery: {},
-  GooglePlacesDetailsQuery: {},
-  GooglePlacesSearchQuery: {
-    rankby: 'distance',
-    type: 'restaurant'
-  },
   styles: {},
-  textInputProps: {},
-  enablePoweredByContainer: true,
-  predefinedPlaces: [],
-  currentLocation: false,
-  currentLocationLabel: 'Current location',
-  nearbyPlacesAPI: 'GooglePlacesSearch',
-  enableHighAccuracyLocation: true,
-  filterReverseGeocodingByTypes: [],
-  predefinedPlacesAlwaysVisible: false,
-  enableEmptySections: true,
-  listViewDisplayed: 'auto',
-  debounce: 0,
-  textInputHide: false,
   suppressDefaultStyles: false,
-  numberOfLines: 1,
-  onSubmitEditing: () => {},
-  editable: true
-}
-
-// this function is still present in the library to be retrocompatible with version < 1.1.0
-const create = function create(options = {}) {
-  return React.createClass({
-    render() {
-      return (
-          <GooglePlacesAutocomplete
-              ref="GooglePlacesAutocomplete"
-              {...options}
-          />
-      );
-    },
-  });
+  textInputHide: false,
+  textInputProps: {},
+  timeout: 20000,
 };
 
-module.exports = {
-  GooglePlacesAutocomplete,
-  create
-};
+export default { GooglePlacesAutocomplete };
