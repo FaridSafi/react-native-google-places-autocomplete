@@ -6,7 +6,7 @@
   "types": "GooglePlacesAutocomplete.d.ts",
   "scripts": {
     "lint": "eslint . && prettier --write .",
-    "release": "release-it"
+    "release": "npx release-it"
   },
   "author": "Farid from Safi",
   "license": "MIT",
@@ -38,7 +38,6 @@
     "husky": "4.3.0",
     "lint-staged": "10.4.0",
     "prettier": "2.1.2",
-    "release-it": "14.2.1",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
