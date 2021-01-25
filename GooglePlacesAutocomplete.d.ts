@@ -412,7 +412,10 @@ interface GooglePlacesAutocompleteProps {
   renderHeaderComponent?: () => JSX.Element | React.ComponentType<{}>;
   renderLeftButton?: () => JSX.Element | React.ComponentType<{}>;
   renderRightButton?: () => JSX.Element | React.ComponentType<{}>;
-  renderRow?: (data: GooglePlaceData, index: number) => JSX.Element | React.ComponentType<{}>;
+  renderRow?: (
+    data: GooglePlaceData,
+    index: number,
+  ) => JSX.Element | React.ComponentType<{}>;
   // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
   requestUrl?: RequestUrl;
   styles?: Partial<Styles> | Object;
