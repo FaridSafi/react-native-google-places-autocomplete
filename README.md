@@ -68,16 +68,20 @@ You can also try the basic example in a snack [here](https://snack.expo.io/@sbel
 
 _Extra step required!_
 
-If you are targeting React Native 0.60.0+ you must install either `@react-native-community/geolocation` ([link](https://github.com/react-native-community/react-native-geolocation)) or `react-native-geolocation-service`([link](https://github.com/Agontuk/react-native-geolocation-service)).
+If you are targeting React Native 0.60.0+ you must install either `@react-native-community/geolocation` ([link](https://github.com/react-native-community/react-native-geolocation)) or `react-native-geolocation-service`([link](https://github.com/Agontuk/react-native-geolocation-service)) or `expo-location` ([link](https://docs.expo.io/versions/latest/sdk/location)).
 
 Please make sure you follow the installation instructions there and add `navigator.geolocation = require(GEOLOCATION_PACKAGE)` somewhere in you application before `<GooglePlacesAutocomplete />`.
 
 ```js
 import React from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import * as Location from 'expo-location'; // import this if you want to use expo
 
 // navigator.geolocation = require('@react-native-community/geolocation');
 // navigator.geolocation = require('react-native-geolocation-service');
+// navigator.geolocation = Location; // use this if you want to use expo
+
+// remember to set the usingExpo prop to true;
 
 const GooglePlacesInput = () => {
   return (
@@ -93,6 +97,7 @@ const GooglePlacesInput = () => {
       }}
       currentLocation={true}
       currentLocationLabel='Current location'
+      usingExpo={true}
     />
   );
 };
