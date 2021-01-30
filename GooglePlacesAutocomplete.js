@@ -185,44 +185,54 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         timeout: 20000,
       };
     }
-    const expoLocation = async () => {
+    
+    const _useExpoLocation = async () => {
       try {
-        return await navigator.geolocation.getCurrentPositionAsync();
-      }catch() {
-        return false
+        const position = await navigator.geolocation.getCurrentPositionAsync();
+        handleCurrentPosition(position);
+      } catch (error) {
+        _disableRowLoaders();
+        console.error(error.message);
       }
-      
-     }
-    const getCurrentPosition =
-      navigator.geolocation.getCurrentPosition ||
-      navigator.geolocation.default.getCurrentPosition || expoLocation();
+    }
+    
+    const handleCurrentPosition = (position) => {
+      if (props.nearbyPlacesAPI === 'None') {
+        let currentLocation = {
+          description: props.currentLocationLabel,
+          geometry: {
+            location: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          },
+        };
 
-    getCurrentPosition &&
-      getCurrentPosition(
-        (position) => {
-          if (props.nearbyPlacesAPI === 'None') {
-            let currentLocation = {
-              description: props.currentLocationLabel,
-              geometry: {
-                location: {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                },
-              },
-            };
+        _disableRowLoaders();
+        props.onPress(currentLocation, currentLocation);
+      } else {
+        _requestNearby(position.coords.latitude, position.coords.longitude);
+      }
+    }
+    if (props.usingExpo) {
+      _useExpoLocation();
+    } else {
+      const getCurrentPosition =
+        navigator.geolocation.getCurrentPosition ||
+        navigator.geolocation.default.getCurrentPosition
 
+      getCurrentPosition &&
+        getCurrentPosition(
+          (position) => {
+            handleCurrentPosition(position);
+          },
+          (error) => {
             _disableRowLoaders();
-            props.onPress(currentLocation, currentLocation);
-          } else {
-            _requestNearby(position.coords.latitude, position.coords.longitude);
-          }
-        },
-        (error) => {
-          _disableRowLoaders();
-          console.error(error.message);
-        },
-        options,
-      );
+            console.error(error.message);
+          },
+          options,
+        );
+    }
   };
 
   const _onPress = (rowData) => {
@@ -918,6 +928,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   textInputProps: {},
   timeout: 20000,
+  usingExpo: false.
 };
 
 export default { GooglePlacesAutocomplete };
