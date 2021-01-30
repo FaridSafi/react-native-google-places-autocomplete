@@ -185,9 +185,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         timeout: 20000,
       };
     }
+    const expoLocation = async () => {
+      try {
+        return await navigator.geolocation.getCurrentPositionAsync();
+      }catch() {
+        return false
+      }
+      
+     }
     const getCurrentPosition =
       navigator.geolocation.getCurrentPosition ||
-      navigator.geolocation.default.getCurrentPosition;
+      navigator.geolocation.default.getCurrentPosition || expoLocation();
 
     getCurrentPosition &&
       getCurrentPosition(
