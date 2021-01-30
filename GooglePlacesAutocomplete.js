@@ -886,6 +886,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
+  usingExpo: PropTypes.bool,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
