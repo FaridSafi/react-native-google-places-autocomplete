@@ -261,7 +261,9 @@ _This list is a work in progress. PRs welcome!_
 | suppressDefaultStyles         | boolean  | removes all default styling from the library                                                                                                                                                                                                | false                                                             | true \| false                                              |
 | textInputHide                 | boolean  | Hide the Search input                                                                                                                                                                                                                       | false                                                             | true \| false                                              |
 | textInputProps                | object   | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                               |                                                                   |                                                            |
-| timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
+| timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000   
+| usingExpo                 | boolean | when true, currentLocation is taken from the expo-location library               | false  |
+
 
 ## Methods
 
