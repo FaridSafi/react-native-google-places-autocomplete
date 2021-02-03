@@ -509,7 +509,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.open(
         'GET',
-        `${url}/place/autocomplete/json?&input=` +
+        `${url}/place/autocomplete/json?input=` +
           encodeURIComponent(text) +
           '&' +
           Qs.stringify(props.query),
