@@ -396,7 +396,7 @@ export default GooglePlacesInput;
 
 ## Web Support
 
-Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You can use a proxy server like [CORS Anywhere](https://github.com/Rob--W/cors-anywhere/) or roll your own. Please be mindful of this limitation when opening an issue.
+Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You will need to use a proxy server. Please be mindful of this limitation when opening an issue.
 
 The `requestUrl` prop takes an object with two properties: `useOnPlatform` and `url`.
 
