@@ -1,4 +1,9 @@
-# react-native-google-places-autocomplete
+
+<a href="https://www.npmjs.com/package/react-native-google-places-autocomplete">
+  <img alt="npm version" src="https://img.shields.io/npm/v/react-native-google-places-autocomplete"/>
+</a>
+
+# Google Maps Search Component for React Native
 
 **Customizable Google Places autocomplete component for iOS and Android React-Native apps**
 
