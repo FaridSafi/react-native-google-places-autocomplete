@@ -525,7 +525,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), []);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), [props.query]);
 
   const _onChangeText = (text) => {
     setStateText(text);
