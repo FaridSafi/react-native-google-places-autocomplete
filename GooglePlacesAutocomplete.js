@@ -124,6 +124,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const [stateText, setStateText] = useState('');
+  const [loading, setLoader] =useState(false);
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
@@ -141,10 +142,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
-  }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -490,6 +487,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 : responseJSON.predictions;
 
             _results = results;
+            setLoader(false);
             setDataSource(buildRowsFromResults(results));
             // }
           }
@@ -529,10 +527,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), [props.query]);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), []);
 
   const _onChangeText = (text) => {
     setStateText(text);
+    setLoader(true);
+    
     debounceData(text);
   };
 
@@ -547,7 +547,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _getRowLoader = () => {
-    return <ActivityIndicator animating={true} size='small' />;
+    return <ActivityIndicator animating={true} color={props.loaderColor} size='small' />;
   };
 
   const _renderRowData = (rowData, index) => {
@@ -597,7 +597,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _renderRow = (rowData = {}, index) => {
-    return (
+  return (
       <ScrollView
         contentContainerStyle={
           props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
@@ -738,7 +738,20 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       listViewDisplayed === true
     ) {
       return (
-        <FlatList
+        <View>
+        {loading?   
+            <View 
+             style={[
+              props.suppressDefaultStyles ? {} : defaultStyles.loader,
+              props.styles.loader,
+            ]}
+       
+        >
+          {_getRowLoader()}
+          {props.loadingText &&<Text style={props.styles.loadingText}>{props.loadingText}</Text>}
+        </View>
+     : 
+       <FlatList
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
           style={[
@@ -759,7 +772,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           }
           ListFooterComponent={_renderPoweredLogo}
           {...props}
-        />
+        />}
+       
+        </View>
       );
     }
 
