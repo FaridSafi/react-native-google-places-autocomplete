@@ -124,7 +124,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const [stateText, setStateText] = useState('');
-  const [loading, setLoader] =useState(false);
+  const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
@@ -142,6 +142,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    // Update dataSource if props.predefinedPlaces changed
+    setDataSource(buildRowsFromResults([]));
+  }, [props.predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -487,7 +491,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 : responseJSON.predictions;
 
             _results = results;
-            setLoader(false);
+            setLoading(false);
             setDataSource(buildRowsFromResults(results));
             // }
           }
@@ -527,12 +531,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), []);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), [
+    props.query,
+  ]);
 
   const _onChangeText = (text) => {
     setStateText(text);
-    setLoader(true);
-    
+    setLoading(true);
     debounceData(text);
   };
 
@@ -547,7 +552,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _getRowLoader = () => {
-    return <ActivityIndicator animating={true} color={props.loaderColor} size='small' />;
+    return (
+      <ActivityIndicator
+        animating={true}
+        color={props.loaderColor}
+        size='small'
+      />
+    );
   };
 
   const _renderRowData = (rowData, index) => {
@@ -579,8 +590,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return rowData.description || rowData.formatted_address || rowData.name;
   };
 
-  const _renderLoader = (rowData) => {
-    if (rowData.isLoading === true) {
+  const _renderLoader = ({ isLoading = false } = {}) => {
+    if (isLoading === true || loading === true) {
       return (
         <View
           style={[
@@ -589,6 +600,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ]}
         >
           {_getRowLoader()}
+          {props.loadingText && (
+            <Text style={props.styles.loadingText}>{props.loadingText}</Text>
+          )}
         </View>
       );
     }
@@ -597,7 +611,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _renderRow = (rowData = {}, index) => {
-  return (
+    return (
       <ScrollView
         contentContainerStyle={
           props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
@@ -739,41 +753,32 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       return (
         <View>
-        {loading?   
-            <View 
-             style={[
-              props.suppressDefaultStyles ? {} : defaultStyles.loader,
-              props.styles.loader,
-            ]}
-       
-        >
-          {_getRowLoader()}
-          {props.loadingText &&<Text style={props.styles.loadingText}>{props.loadingText}</Text>}
-        </View>
-     : 
-       <FlatList
-          nativeID='result-list-id'
-          scrollEnabled={!props.disableScroll}
-          style={[
-            props.suppressDefaultStyles ? {} : defaultStyles.listView,
-            props.styles.listView,
-          ]}
-          data={dataSource}
-          keyExtractor={keyGenerator}
-          extraData={[dataSource, props]}
-          ItemSeparatorComponent={_renderSeparator}
-          renderItem={({ item, index }) => _renderRow(item, index)}
-          ListEmptyComponent={
-            stateText.length > props.minLength && props.listEmptyComponent
-          }
-          ListHeaderComponent={
-            props.renderHeaderComponent &&
-            props.renderHeaderComponent(stateText)
-          }
-          ListFooterComponent={_renderPoweredLogo}
-          {...props}
-        />}
-       
+          {loading ? (
+            _renderLoader()
+          ) : (
+            <FlatList
+              nativeID='result-list-id'
+              scrollEnabled={!props.disableScroll}
+              style={[
+                props.suppressDefaultStyles ? {} : defaultStyles.listView,
+                props.styles.listView,
+              ]}
+              data={dataSource}
+              keyExtractor={keyGenerator}
+              extraData={[dataSource, props]}
+              ItemSeparatorComponent={_renderSeparator}
+              renderItem={({ item, index }) => _renderRow(item, index)}
+              ListEmptyComponent={
+                stateText.length > props.minLength && props.listEmptyComponent
+              }
+              ListHeaderComponent={
+                props.renderHeaderComponent &&
+                props.renderHeaderComponent(stateText)
+              }
+              ListFooterComponent={_renderPoweredLogo}
+              {...props}
+            />
+          )}
         </View>
       );
     }
