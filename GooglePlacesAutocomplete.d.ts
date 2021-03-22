@@ -395,6 +395,7 @@ interface GooglePlacesAutocompleteProps {
   listEmptyComponent?: JSX.Element | React.ComponentType<{}>;
   listUnderlayColor?: string;
   listViewDisplayed?: 'auto' | boolean;
+  keepResultsAfterBlur?: boolean;
   minLength?: number; // minimum length of text to search
   // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
   nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';

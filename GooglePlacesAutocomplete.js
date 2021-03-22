@@ -665,7 +665,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _onBlur = (e) => {
     if (e && isNewFocusInAutocompleteResultList(e)) return;
 
-    setListViewDisplayed(false);
+    if (!props.keepResultsAfterBlur) {
+      setListViewDisplayed(false);
+    }
     inputRef?.current?.blur();
   };
 
@@ -846,6 +848,7 @@ GooglePlacesAutocomplete.propTypes = {
   listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
+  keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
   numberOfLines: PropTypes.number,
