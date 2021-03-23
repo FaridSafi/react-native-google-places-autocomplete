@@ -397,6 +397,7 @@ interface GooglePlacesAutocompleteProps {
   listViewDisplayed?: 'auto' | boolean;
   /** minimum length of text to search */
   minLength?: number;
+  keepResultsAfterBlur?: boolean;
   /** Which API to use: GoogleReverseGeocoding or GooglePlacesSearch */
   nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
   numberOfLines?: number;
