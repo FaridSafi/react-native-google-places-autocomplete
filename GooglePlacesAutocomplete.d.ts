@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-// @see https://developers.google.com/maps/faq#languagesupport
+/** @see https://developers.google.com/maps/faq#languagesupport */
 type Language =
   | 'af'
   | 'am'
@@ -92,7 +92,7 @@ type Language =
   | 'zh'
   | 'zu';
 
-// @see https://developers.google.com/places/web-service/supported_types#table1
+/** @see https://developers.google.com/places/web-service/supported_types#table1 */
 type SearchType =
   | 'accounting'
   | 'airport'
@@ -191,7 +191,7 @@ type SearchType =
   | 'veterinary_care'
   | 'zoo';
 
-// @see https://developers.google.com/places/web-service/supported_types#table2
+/** @see https://developers.google.com/places/web-service/supported_types#table2 */
 type PlaceType =
   | 'administrative_area_level_1'
   | 'administrative_area_level_2'
@@ -236,7 +236,7 @@ type PlaceType =
   | 'subpremise'
   | 'town_square';
 
-// @see https://developers.google.com/places/web-service/supported_types#table3
+/** @see https://developers.google.com/places/web-service/supported_types#table3 */
 type AutocompleteRequestType =
   | '(regions)'
   | '(cities)'
@@ -325,7 +325,7 @@ interface GooglePlaceDetail {
   vicinity: string;
 }
 
-// @see https://developers.google.com/places/web-service/autocomplete
+/** @see https://developers.google.com/places/web-service/autocomplete */
 interface Query<T = AutocompleteRequestType> {
   key: string;
   sessiontoken?: string;
@@ -337,7 +337,7 @@ interface Query<T = AutocompleteRequestType> {
   rankby?: string;
   type?: T;
   strictbounds?: boolean;
-  // deprecated. see https://github.com/FaridSafi/react-native-google-places-autocomplete/pull/384
+  /** @deprecated @see https://github.com/FaridSafi/react-native-google-places-autocomplete/pull/384 */
   types?: T;
 }
 
@@ -367,22 +367,22 @@ interface RequestUrl {
 
 interface GooglePlacesAutocompleteProps {
   autoFillOnNotFound?: boolean;
-  // Will add a 'Current location' button at the top of the predefined places list
+  /** Will add a 'Current location' button at the top of the predefined places list */
   currentLocation?: boolean;
   currentLocationLabel?: string;
-  // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+  /** debounce the requests in ms. Set to 0 to remove debounce. By default 0ms. */
   debounce?: number;
   disableScroll?: boolean;
   enableHighAccuracyLocation?: boolean;
   enablePoweredByContainer?: boolean;
   fetchDetails?: boolean;
-  // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+  /** filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities */
   filterReverseGeocodingByTypes?: PlaceType[];
-  // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
+  /** available options for GooglePlacesDetails API: https://developers.google.com/places/web-service/details */
   GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string };
-  // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+  /** available options for GooglePlacesSearch API: https://developers.google.com/places/web-service/search */
   GooglePlacesSearchQuery?: Partial<Query<SearchType>>;
-  // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+  /** available options for GoogleReverseGeocoding API: https://developers.google.com/maps/documentation/geocoding/intro */
   GoogleReverseGeocodingQuery?: {
     bounds?: number;
     language?: Language;
@@ -391,13 +391,14 @@ interface GooglePlacesAutocompleteProps {
   };
   isRowScrollable?: boolean;
   keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
-  // use the ListEmptyComponent prop when no autocomplete results are found.
+  /** use the ListEmptyComponent prop when no autocomplete results are found. */
   listEmptyComponent?: JSX.Element | React.ComponentType<{}>;
   listUnderlayColor?: string;
   listViewDisplayed?: 'auto' | boolean;
+  /** minimum length of text to search */
+  minLength?: number;
   keepResultsAfterBlur?: boolean;
-  minLength?: number; // minimum length of text to search
-  // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+  /** Which API to use: GoogleReverseGeocoding or GooglePlacesSearch */
   nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
   numberOfLines?: number;
   onFail?: (error?: any) => void;
@@ -417,12 +418,12 @@ interface GooglePlacesAutocompleteProps {
     data: GooglePlaceData,
     index: number,
   ) => JSX.Element | React.ComponentType<{}>;
-  // sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api.
+  /** sets the request URL to something other than the google api.  Helpful if you want web support or to use your own api. */
   requestUrl?: RequestUrl;
   styles?: Partial<Styles> | Object;
   suppressDefaultStyles?: boolean;
   textInputHide?: boolean;
-  // text input props
+  /** text input props */
   textInputProps?: TextInputProps | Object;
   timeout?: number;
 }
