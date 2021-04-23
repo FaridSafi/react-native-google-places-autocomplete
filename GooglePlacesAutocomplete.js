@@ -129,6 +129,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
+  const [typingLoader, setTypingLoader] = useState(false);
 
   const inputRef = useRef();
 
@@ -473,10 +474,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.timeout = props.timeout;
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
+
         if (request.readyState !== 4) {
+          setTypingLoader(true); // show loading if loadingIndication activated and request not yet ready
           return;
         }
-
+        setTypingLoader(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -513,7 +516,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.open(
         'GET',
-        `${url}/place/autocomplete/json?input=` +
+        `${url}/place/autocomplete/json?&input=` +
           encodeURIComponent(text) +
           '&' +
           Qs.stringify(props.query),
@@ -665,9 +668,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _onBlur = (e) => {
     if (e && isNewFocusInAutocompleteResultList(e)) return;
 
-    if (!props.keepResultsAfterBlur) {
-      setListViewDisplayed(false);
-    }
+    setListViewDisplayed(false);
     inputRef?.current?.blur();
   };
 
@@ -728,6 +729,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       return props.renderRightButton();
     }
   };
+
+const _renderTypingLoader = () => {  
+  if (!typingLoader || !props.enableTypingLoader) return;
+  else if (props.renderTypingLoader) return props.renderTypingLoader;
+  else return <ActivityIndicator style={{paddingTop:20}} size={"large"} color={"blue"} animating={true}/>
+}
 
   const _getFlatList = () => {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
@@ -824,8 +831,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           {_renderRightButton()}
         </View>
       )}
+     { _renderTypingLoader()}     
       {_getFlatList()}
-      {props.children}
+      {props.children}     
     </View>
   );
 });
@@ -848,7 +856,6 @@ GooglePlacesAutocomplete.propTypes = {
   listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
-  keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
   numberOfLines: PropTypes.number,
@@ -875,6 +882,8 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
+  enableTypingLoader: PropTypes.bool,
+  renderTypingLoader: PropTypes.func
 };
 
 GooglePlacesAutocomplete.defaultProps = {
@@ -897,7 +906,6 @@ GooglePlacesAutocomplete.defaultProps = {
   keyboardShouldPersistTaps: 'always',
   listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
-  keepResultsAfterBlur: false,
   minLength: 0,
   nearbyPlacesAPI: 'GooglePlacesSearch',
   numberOfLines: 1,
@@ -918,6 +926,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   textInputProps: {},
   timeout: 20000,
+  enableTypingLoader: true,
 };
 
 export default { GooglePlacesAutocomplete };
