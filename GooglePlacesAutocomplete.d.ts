@@ -319,7 +319,7 @@ interface GooglePlaceDetail {
   plus_code: PlusCode;
   reference: string;
   scope: 'GOOGLE';
-  types: PlaceType;
+  types: PlaceType[];
   url: string;
   utc_offset: number;
   vicinity: string;
