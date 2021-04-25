@@ -273,6 +273,7 @@ _This list is a work in progress. PRs welcome!_
 | `blur`           | `void`                    | makes the TextInput lose focus                                          |
 | `clear`          | `void`                    | removes all text from the TextInput                                     |
 | `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+| `getCurrentLocation` | `() => void`          | makes a query to find nearby places based on current location           |
 
 You can access these methods using a ref.
 
