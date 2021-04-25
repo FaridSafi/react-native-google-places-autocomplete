@@ -848,7 +848,8 @@ GooglePlacesAutocomplete.propTypes = {
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
-  listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
+  // Must write it this way: https://stackoverflow.com/a/54290946/7180620
+  listViewDisplayed: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['auto'])]),
   keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
