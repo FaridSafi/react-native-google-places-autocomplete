@@ -834,7 +834,7 @@ const _renderTypingLoader = () => {
       )}
      { _renderTypingLoader()}     
       {_getFlatList()}
-      {props.children}     
+      {props.children} 
     </View>
   );
 });
