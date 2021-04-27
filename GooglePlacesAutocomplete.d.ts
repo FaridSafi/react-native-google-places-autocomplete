@@ -319,7 +319,7 @@ interface GooglePlaceDetail {
   plus_code: PlusCode;
   reference: string;
   scope: 'GOOGLE';
-  types: PlaceType;
+  types: PlaceType[];
   url: string;
   utc_offset: number;
   vicinity: string;
@@ -431,6 +431,7 @@ interface GooglePlacesAutocompleteProps {
 export type GooglePlacesAutocompleteRef = {
   setAddressText(address: string): void;
   getAddressText(): string;
+  getCurrentLocation(): void;
 } & TextInput;
 
 export const GooglePlacesAutocomplete: React.ForwardRefExoticComponent<

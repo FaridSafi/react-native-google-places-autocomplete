@@ -156,6 +156,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     focus: () => inputRef.current.focus(),
     isFocused: () => inputRef.current.isFocused(),
     clear: () => inputRef.current.clear(),
+    getCurrentLocation,
   }));
 
   const requestShouldUseWithCredentials = () =>
@@ -855,7 +856,9 @@ GooglePlacesAutocomplete.propTypes = {
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
-  listViewDisplayed: PropTypes.oneOf(['auto', PropTypes.bool]),
+  // Must write it this way: https://stackoverflow.com/a/54290946/7180620
+  listViewDisplayed: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['auto'])]),
+  keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
   numberOfLines: PropTypes.number,
