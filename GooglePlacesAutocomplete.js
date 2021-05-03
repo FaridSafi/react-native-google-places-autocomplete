@@ -887,9 +887,7 @@ GooglePlacesAutocomplete.propTypes = {
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
-    headers: PropTypes.shape({
-      authorization: PropTypes.string,
-    })
+    headers: PropTypes.object,
   }),
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
