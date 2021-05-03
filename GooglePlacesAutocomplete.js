@@ -131,8 +131,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const setRequestHeaders = (request, headers) => 
-    Object.keys(headers).map((headerKey) => request.setRequestHeader(headerKey, headers[headerKey]))
+  const setRequestHeaders = (request, headers) => {
+    Object.keys(headers).map((headerKey) => request.setRequestHeader(headerKey, headers[headerKey]));
+  }
 
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
@@ -311,7 +312,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers)
+      setRequestHeaders(request, headers);
+
       request.send();
     } else if (rowData.isCurrentLocation === true) {
       // display loader
@@ -470,8 +472,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers)
-      
+      setRequestHeaders(request, headers);
+
       request.send();
     } else {
       _results = [];
@@ -534,8 +536,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers)
-      
+      setRequestHeaders(request, headers);
+
       request.send();
     } else {
       _results = [];
