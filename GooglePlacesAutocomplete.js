@@ -108,12 +108,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const getRequestHeaders = (requestUrl) => {
-    if(requestUrl) {
-      if (requestUrl.headers) {
-        return requestUrl.headers;
-      } else {
-        return {}
-      }
+    if(requestUrl && requestUrl.headers) {
+      return requestUrl.headers;
+    } else {
+      return {}
     }
   }
 
@@ -134,8 +132,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const setRequestHeaders = (request, headers) => 
-    Object.keys(headers).map((k) => request.setRequestHeader(k, headers[k]))
-  
+    Object.keys(headers).map((headerKey) => request.setRequestHeader(headerKey, headers[headerKey]))
 
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
@@ -314,7 +311,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      // request headers must be set after open but before send
       setRequestHeaders(request, headers)
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -474,7 +470,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
-      // request headers must be set after open but before send
       setRequestHeaders(request, headers)
       
       request.send();
@@ -539,7 +534,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      // request headers must be set after open but before send
       setRequestHeaders(request, headers)
       
       request.send();

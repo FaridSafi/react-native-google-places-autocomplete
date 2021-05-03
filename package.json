@@ -8,10 +8,6 @@
     "lint": "eslint . && prettier --write .",
     "release": "npx release-it"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GetJobber/react-native-google-places-autocomplete.git"
-  },
   "keywords": [
     "autocomplete",
     "google",
