@@ -108,12 +108,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const getRequestHeaders = (requestUrl) => {
-    if(requestUrl && requestUrl.headers) {
+    if (requestUrl && requestUrl.headers) {
       return requestUrl.headers;
     } else {
-      return {}
+      return {};
     }
-  }
+  };
 
   const getRequestUrl = (requestUrl) => {
     if (requestUrl) {
@@ -132,8 +132,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const setRequestHeaders = (request, headers) => {
-    Object.keys(headers).map((headerKey) => request.setRequestHeader(headerKey, headers[headerKey]));
-  }
+    Object.keys(headers).map((headerKey) =>
+      request.setRequestHeader(headerKey, headers[headerKey]),
+    );
+  };
 
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
@@ -887,7 +889,7 @@ GooglePlacesAutocomplete.propTypes = {
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
-    headers: PropTypes.object,
+    headers: PropTypes.objectOf(PropTypes.string),
   }),
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
