@@ -123,6 +123,14 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  const getRequestHeaders = (requestUrl) => {
+    if (requestUrl) {
+      return requestUrl.headers;
+    } else {
+      return {};
+    }
+  };
+
   const setRequestHeaders = (request, headers) => {
     Object.keys(headers).map((headerKey) =>
       request.setRequestHeader(headerKey, headers[headerKey]),
@@ -135,13 +143,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
-  const [headers, setHeaders] = useState({});
-
-  useEffect(() => {
-    if (props.requestUrl) {
-      setHeaders(props.requestUrl.headers);
-    }
-  }, [props.requestUrl]);
 
   const inputRef = useRef();
 
@@ -313,7 +314,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -473,7 +474,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -482,7 +483,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const _request = (text, url, headers) => {
+  const _request = (text, requestUrl) => {
     _abortRequests();
     if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
@@ -528,6 +529,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         setStateText(props.preProcess(text));
       }
 
+      const url = getRequestUrl(requestUrl);
       request.open(
         'GET',
         `${url}/place/autocomplete/json?input=` +
@@ -537,7 +539,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(requestUrl));
 
       request.send();
     } else {
@@ -551,7 +553,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onChangeText = (text) => {
     setStateText(text);
-    debounceData(text, url, headers);
+    debounceData(text, props.requestUrl);
   };
 
   const _handleChangeText = (text) => {
