@@ -142,6 +142,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
+  const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
   const [url] = useState(getRequestUrl(props.requestUrl));
 
   const inputRef = useRef();
@@ -157,8 +158,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([]))
-  }, [props.predefinedPlaces])
+    setDataSource(buildRowsFromResults([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -492,9 +494,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -549,7 +553,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), [props.debounce]);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), [
+    props.debounce,
+  ]);
 
   const _onChangeText = (text) => {
     setStateText(text);
@@ -773,7 +779,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
           ListEmptyComponent={
-            stateText.length > props.minLength && props.listEmptyComponent
+            listLoaderDisplayed
+              ? props.listLoaderComponent
+              : stateText.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
             props.renderHeaderComponent &&
@@ -866,9 +874,13 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listLoaderComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
-  listViewDisplayed: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['auto'])]),
+  listViewDisplayed: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.oneOf(['auto']),
+  ]),
   keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
