@@ -394,6 +394,8 @@ interface GooglePlacesAutocompleteProps {
   keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
   /** use the ListEmptyComponent prop when no autocomplete results are found. */
   listEmptyComponent?: JSX.Element | React.ComponentType<{}>;
+  /** use the ListLoaderComponent prop when the results are loading. */
+  listLoaderComponent?: JSX.Element | React.ComponentType<{}>;
   listUnderlayColor?: string;
   listViewDisplayed?: 'auto' | boolean;
   /** minimum length of text to search */
@@ -437,5 +439,5 @@ export type GooglePlacesAutocompleteRef = {
 
 export const GooglePlacesAutocomplete: React.ForwardRefExoticComponent<
   React.PropsWithoutRef<GooglePlacesAutocompleteProps> &
-    React.RefAttributes<GooglePlacesAutocompleteRef>
+  React.RefAttributes<GooglePlacesAutocompleteRef>
 >;
