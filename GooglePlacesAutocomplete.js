@@ -674,6 +674,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onFocus = () => setListViewDisplayed(true);
 
+  const _autoSelectFirst = () => {
+    if (dataSource && dataSource[0]) {
+      _onPress(dataSource[0]);
+    }
+  };
+
   const _renderPoweredLogo = () => {
     if (!_shouldShowPoweredLogo()) {
       return null;
@@ -772,6 +778,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let {
     onFocus,
     onBlur,
+    onSubmitEditing,
     onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
     clearButtonMode,
     InputComp,
@@ -818,6 +825,15 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                   }
                 : _onBlur
             }
+            onSubmitEditing={(e) => {
+              if (props.autoSelectFirst) {
+                _autoSelectFirst();
+              }
+
+              if (onSubmitEditing) {
+                onSubmitEditing(e);
+              }
+            }}
             clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
             {...userProps}
@@ -833,6 +849,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
 GooglePlacesAutocomplete.propTypes = {
   autoFillOnNotFound: PropTypes.bool,
+  autoSelectFirst: PropTypes.bool,
   currentLocation: PropTypes.bool,
   currentLocationLabel: PropTypes.string,
   debounce: PropTypes.number,
@@ -881,6 +898,7 @@ GooglePlacesAutocomplete.propTypes = {
 
 GooglePlacesAutocomplete.defaultProps = {
   autoFillOnNotFound: false,
+  autoSelectFirst: false,
   currentLocation: false,
   currentLocationLabel: 'Current location',
   debounce: 0,
