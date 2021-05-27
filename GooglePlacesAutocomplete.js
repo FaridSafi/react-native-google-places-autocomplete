@@ -12,11 +12,8 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
-  Image,
   Keyboard,
   Platform,
-  ScrollView,
   Text,
   TextInput,
   TouchableHighlight,
@@ -143,7 +140,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -597,53 +594,26 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return null;
   };
 
-  const _renderRow = (rowData = {}, index) => {
+  const _renderRow = (rowData = {}, index, arr) => {
     return (
-      <ScrollView
-        contentContainerStyle={
-          props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
-        }
-        scrollEnabled={props.isRowScrollable}
-        keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
+      <TouchableHighlight
+        onPress={() => _onPress(rowData)}
+        underlayColor={props.listUnderlayColor || '#c8c7cc'}
+        key={rowData.place_id || index}
       >
-        <TouchableHighlight
-          style={
-            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
-          }
-          onPress={() => _onPress(rowData)}
-          underlayColor={props.listUnderlayColor || '#c8c7cc'}
+        <View
+          style={[
+            props.suppressDefaultStyles ? {} : defaultStyles.row,
+            props.styles.row,
+            rowData.isPredefinedPlace ? props.styles.specialItemRow : {},
+            // show separator for all items except last
+            arr.length > index+1 && props.styles.separator,
+          ]}
         >
-          <View
-            style={[
-              props.suppressDefaultStyles ? {} : defaultStyles.row,
-              props.styles.row,
-              rowData.isPredefinedPlace ? props.styles.specialItemRow : {},
-            ]}
-          >
-            {_renderLoader(rowData)}
-            {_renderRowData(rowData, index)}
-          </View>
-        </TouchableHighlight>
-      </ScrollView>
-    );
-  };
-
-  const _renderSeparator = (sectionID, rowID) => {
-    if (rowID === dataSource.length - 1) {
-      return null;
-    }
-
-    return (
-      <View
-        key={`${sectionID}-${rowID}`}
-        style={[
-          props.suppressDefaultStyles ? {} : defaultStyles.separator,
-          props.styles.separator,
-        ]}
-      />
+          {_renderLoader(rowData)}
+          {_renderRowData(rowData, index)}
+        </View>
+      </TouchableHighlight>
     );
   };
 
@@ -680,50 +650,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const _renderPoweredLogo = () => {
-    if (!_shouldShowPoweredLogo()) {
-      return null;
-    }
-
-    return (
-      <View
-        style={[
-          props.suppressDefaultStyles ? {} : defaultStyles.row,
-          defaultStyles.poweredContainer,
-          props.styles.poweredContainer,
-        ]}
-      >
-        <Image
-          style={[
-            props.suppressDefaultStyles ? {} : defaultStyles.powered,
-            props.styles.powered,
-          ]}
-          resizeMode='contain'
-          source={require('./images/powered_by_google_on_white.png')}
-        />
-      </View>
-    );
-  };
-
-  const _shouldShowPoweredLogo = () => {
-    if (!props.enablePoweredByContainer || dataSource.length === 0) {
-      return false;
-    }
-
-    for (let i = 0; i < dataSource.length; i++) {
-      let row = dataSource[i];
-
-      if (
-        !row.hasOwnProperty('isCurrentLocation') &&
-        !row.hasOwnProperty('isPredefinedPlace')
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
   const _renderLeftButton = () => {
     if (props.renderLeftButton) {
       return props.renderLeftButton();
@@ -734,45 +660,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     if (props.renderRightButton) {
       return props.renderRightButton();
     }
-  };
-
-  const _getFlatList = () => {
-    const keyGenerator = () => Math.random().toString(36).substr(2, 10);
-
-    if (
-      supportedPlatform() &&
-      (stateText !== '' ||
-        props.predefinedPlaces.length > 0 ||
-        props.currentLocation === true) &&
-      listViewDisplayed === true
-    ) {
-      return (
-        <FlatList
-          nativeID='result-list-id'
-          scrollEnabled={!props.disableScroll}
-          style={[
-            props.suppressDefaultStyles ? {} : defaultStyles.listView,
-            props.styles.listView,
-          ]}
-          data={dataSource}
-          keyExtractor={keyGenerator}
-          extraData={[dataSource, props]}
-          ItemSeparatorComponent={_renderSeparator}
-          renderItem={({ item, index }) => _renderRow(item, index)}
-          ListEmptyComponent={
-            stateText.length > props.minLength && props.listEmptyComponent
-          }
-          ListHeaderComponent={
-            props.renderHeaderComponent &&
-            props.renderHeaderComponent(stateText)
-          }
-          ListFooterComponent={_renderPoweredLogo}
-          {...props}
-        />
-      );
-    }
-
-    return null;
   };
 
   let {
@@ -841,7 +728,18 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           {_renderRightButton()}
         </View>
       )}
-      {_getFlatList()}
+
+      <View
+        style={[
+          props.suppressDefaultStyles ? {} : defaultStyles.listView,
+          props.styles.listView,
+        ]}
+      >
+        {dataSource.map((item, index, arr) => {
+          return _renderRow(item, index, arr)
+        })}
+      </View>
+
       {props.children}
     </View>
   );
