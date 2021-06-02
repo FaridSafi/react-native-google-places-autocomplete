@@ -426,6 +426,7 @@ interface GooglePlacesAutocompleteProps {
   /** text input props */
   textInputProps?: TextInputProps | Object;
   timeout?: number;
+  channel?: number;
 }
 
 export type GooglePlacesAutocompleteRef = {
