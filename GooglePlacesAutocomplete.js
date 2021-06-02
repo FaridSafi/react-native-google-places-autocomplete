@@ -466,7 +466,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const _request = (text, url, headers) => {
+  const _request = (text) => {
     _abortRequests();
     if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
@@ -534,7 +534,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onChangeText = (text) => {
     setStateText(text);
-    debounceData(text, url, headers);
+    debounceData(text);
   };
 
   const _handleChangeText = (text) => {
