@@ -262,7 +262,7 @@ _This list is a work in progress. PRs welcome!_
 | textInputHide                 | boolean  | Hide the Search input                                                                                                                                                                                                                       | false                                                             | true \| false                                              |
 | textInputProps                | object   | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                               |                                                                   |                                                            |
 | timeout                       | number   | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
-
+| channel                       | number   | used to track usage through billing reports                                                                                                                                                                                                   | | 0 - 999
 ## Methods
 
 | method name      | type                      | description                                                             |
@@ -504,9 +504,9 @@ Because the query parameters are different for each API, there are 4 different "
 3. Nearby Search -> `GooglePlacesSearchQuery` ([options](https://developers.google.com/places/web-service/search#PlaceSearchRequests))
 4. Geocode -> `GoogleReverseGeocodingQuery` ([options](https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests))
 
-Number 1 is used while getting autocomplete results.  
-Number 2 is used when you click on a result.  
-Number 3 is used when you select 'Current Location' to load nearby results.  
+Number 1 is used while getting autocomplete results.
+Number 2 is used when you click on a result.
+Number 3 is used when you select 'Current Location' to load nearby results.
 Number 4 is used when `nearbyPlacesAPI='GoogleReverseGeocoding'` is set and you select 'Current Location' to load nearby results.
 
 ## Changelog
