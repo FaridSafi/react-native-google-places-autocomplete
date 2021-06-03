@@ -128,6 +128,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
+  const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
   const [url] = useState(getRequestUrl(props.requestUrl));
 
   const inputRef = useRef();
@@ -143,7 +144,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -398,9 +399,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -475,9 +478,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -674,6 +679,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onFocus = () => setListViewDisplayed(true);
 
+  const _renderLoaderOrEmptyComponent = () => {
+    if (listLoaderDisplayed && props.listLoaderComponent) {
+      return props.listLoaderComponent
+    }
+
+    const isSearching = stateText.length > props.minLength
+
+    return isSearching && props.listEmptyComponent
+  }
+
   const _renderPoweredLogo = () => {
     if (!_shouldShowPoweredLogo()) {
       return null;
@@ -753,9 +768,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           extraData={[dataSource, props]}
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
-          ListEmptyComponent={
-            stateText.length > props.minLength && props.listEmptyComponent
-          }
+          ListEmptyComponent={_renderLoaderOrEmptyComponent}
           ListHeaderComponent={
             props.renderHeaderComponent &&
             props.renderHeaderComponent(stateText)
@@ -847,6 +860,7 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listLoaderComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
   listViewDisplayed: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['auto'])]),
