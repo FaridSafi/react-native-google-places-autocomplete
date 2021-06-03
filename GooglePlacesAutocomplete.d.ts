@@ -363,6 +363,7 @@ interface Place {
 interface RequestUrl {
   url: string;
   useOnPlatform: 'web' | 'all';
+  headers?: Record<string, string>;
 }
 
 interface GooglePlacesAutocompleteProps {
