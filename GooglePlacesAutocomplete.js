@@ -107,14 +107,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return [...res, ...results];
   };
 
-  const getRequestHeaders = (requestUrl) => {
-    if (requestUrl && requestUrl.headers) {
-      return requestUrl.headers;
-    } else {
-      return {};
-    }
-  };
-
   const getRequestUrl = (requestUrl) => {
     if (requestUrl) {
       if (requestUrl.useOnPlatform === 'all') {
@@ -128,6 +120,14 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
     } else {
       return 'https://maps.googleapis.com/maps/api';
+    }
+  };
+
+  const getRequestHeaders = (requestUrl) => {
+    if (requestUrl) {
+      return requestUrl.headers;
+    } else {
+      return {};
     }
   };
 
@@ -164,7 +164,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -320,7 +320,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -480,7 +480,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -544,7 +544,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, headers);
+      setRequestHeaders(request, getRequestHeaders(requestUrl));
 
       request.send();
     } else {
