@@ -466,7 +466,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const _request = (text) => {
+  const _request = (text, requestUrl, query) => {
     _abortRequests();
     if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
@@ -512,12 +512,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         setStateText(props.preProcess(text));
       }
 
+      const url = getRequestUrl(requestUrl);
       request.open(
         'GET',
         `${url}/place/autocomplete/json?input=` +
           encodeURIComponent(text) +
           '&' +
-          Qs.stringify(props.query),
+          Qs.stringify(query),
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
@@ -534,7 +535,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onChangeText = (text) => {
     setStateText(text);
-    debounceData(text);
+    debounceData(text, props.requestUrl, props.query);
   };
 
   const _handleChangeText = (text) => {
