@@ -143,13 +143,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
-  const [headers, setHeaders] = useState({});
-
-  useEffect(() => {
-    if (props.requestUrl) {
-      setHeaders(props.requestUrl.headers);
-    }
-  }, [props.requestUrl]);
 
   const inputRef = useRef();
 
@@ -544,7 +537,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, getRequestHeaders(requestUrl));
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
