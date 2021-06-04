@@ -679,16 +679,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _onFocus = () => setListViewDisplayed(true);
 
-  const _renderLoaderOrEmptyComponent = () => {
-    if (listLoaderDisplayed && props.listLoaderComponent) {
-      return props.listLoaderComponent
-    }
-
-    const isSearching = stateText.length > props.minLength
-
-    return isSearching && props.listEmptyComponent
-  }
-
   const _renderPoweredLogo = () => {
     if (!_shouldShowPoweredLogo()) {
       return null;
@@ -768,7 +758,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           extraData={[dataSource, props]}
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
-          ListEmptyComponent={_renderLoaderOrEmptyComponent}
+          ListEmptyComponent={
+            listLoaderDisplayed
+              ? props.listLoaderComponent
+              : stateText.length > props.minLength && props.listEmptyComponent
+          }
           ListHeaderComponent={
             props.renderHeaderComponent &&
             props.renderHeaderComponent(stateText)
