@@ -30,7 +30,8 @@
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
-    "qs": "~6.9.1"
+    "qs": "~6.9.1",
+    "react-native-gesture-handler": "^1.10.3"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "2.0.0",
