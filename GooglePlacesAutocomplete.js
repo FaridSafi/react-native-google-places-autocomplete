@@ -143,7 +143,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -294,6 +294,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             key: props.query.key,
             placeid: rowData.place_id,
             language: props.query.language,
+            channel: props.channel,
             ...props.GooglePlacesDetailsQuery,
           }),
       );
@@ -517,7 +518,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         `${url}/place/autocomplete/json?input=` +
           encodeURIComponent(text) +
           '&' +
-          Qs.stringify(props.query),
+          Qs.stringify({...props.query, channel: props.channel}),
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
@@ -877,6 +878,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
+  channel: PropTypes.number,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
