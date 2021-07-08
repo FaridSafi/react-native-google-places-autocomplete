@@ -143,7 +143,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -693,7 +693,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             props.styles.powered,
           ]}
           resizeMode='contain'
-          source={require('./images/powered_by_google_on_white.png')}
+          source={props.poweredByLogoSource || require('./images/powered_by_google_on_white.png')}
         />
       </View>
     );
@@ -858,6 +858,7 @@ GooglePlacesAutocomplete.propTypes = {
   onNotFound: PropTypes.func,
   onPress: PropTypes.func,
   onTimeout: PropTypes.func,
+  poweredByLogoSource: PropTypes.any,
   placeholder: PropTypes.string,
   predefinedPlaces: PropTypes.array,
   predefinedPlacesAlwaysVisible: PropTypes.bool,

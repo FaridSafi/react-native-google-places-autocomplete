@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   ImageStyle,
+  ImageSourcePropType,
   StyleProp,
   TextInput,
   TextInputProps,
@@ -409,6 +410,7 @@ interface GooglePlacesAutocompleteProps {
   predefinedPlaces?: Place[];
   predefinedPlacesAlwaysVisible?: boolean;
   preProcess?: (text: string) => string;
+  poweredByLogoSource?: ImageSourcePropType;
   query: Query | Object;
   renderDescription?: (description: DescriptionRow) => string;
   renderHeaderComponent?: () => JSX.Element | React.ComponentType<{}>;
