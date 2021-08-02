@@ -1,4 +1,3 @@
-
 <a href="https://www.npmjs.com/package/react-native-google-places-autocomplete">
   <img alt="npm version" src="https://img.shields.io/npm/v/react-native-google-places-autocomplete"/>
 </a>
@@ -29,7 +28,7 @@ yarn add react-native-google-places-autocomplete
 
 **Step 2.**
 
-Get your [Google Places API keys](https://developers.google.com/places/documentation/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console. Billing must be enabled on the account.
+Get your [Google Places API keys](https://developers.google.com/maps/documentation/places/web-service/get-api-key/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console. Billing must be enabled on the account.
 
 **Step 3.**
 
@@ -233,7 +232,8 @@ _This list is a work in progress. PRs welcome!_
 | GooglePlacesDetailsQuery      | object   | "query" object for the Google Place Details API (when you press on a suggestion)                                                                                                                                                            |                                                                   |                                                            |
 | GooglePlacesSearchQuery       | object   | "query" object for the Google Places Nearby API (when you use current location to find nearby places)                                                                                                                                       | `{ rankby: 'distance', type: 'restaurant' }`                      |                                                            |
 | GoogleReverseGeocodingQuery   | object   | "query" object for the Google Geocode API (when you use current location to get the current address)                                                                                                                                        |                                                                   |                                                            |
-| isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |                                                            |
+| isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |
+| keepResultsAfterBlur          | boolean  | show list of results after blur                                                                                                                                                                                                             | false                                                             | true \| false                                              |
 | keyboardShouldPersistTaps     | string   | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
 | listEmptyComponent            | function | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
 | listUnderlayColor             | string   | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                | '#c8c7cc'                                                         |                                                            |
@@ -265,15 +265,15 @@ _This list is a work in progress. PRs welcome!_
 
 ## Methods
 
-| method name      | type                      | description                                                             |
-| ---------------- | ------------------------- | ----------------------------------------------------------------------- |
-| `getAddressText` | `() => string`            | return the value of TextInput                                           |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput                                              |
-| `focus`          | `void`                    | makes the TextInput focus                                               |
-| `blur`           | `void`                    | makes the TextInput lose focus                                          |
-| `clear`          | `void`                    | removes all text from the TextInput                                     |
-| `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
-| `getCurrentLocation` | `() => void`          | makes a query to find nearby places based on current location           |
+| method name          | type                      | description                                                             |
+| -------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `getAddressText`     | `() => string`            | return the value of TextInput                                           |
+| `setAddressText`     | `(value: string) => void` | set the value of TextInput                                              |
+| `focus`              | `void`                    | makes the TextInput focus                                               |
+| `blur`               | `void`                    | makes the TextInput lose focus                                          |
+| `clear`              | `void`                    | removes all text from the TextInput                                     |
+| `isFocused`          | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+| `getCurrentLocation` | `() => void`              | makes a query to find nearby places based on current location           |
 
 You can access these methods using a ref.
 
