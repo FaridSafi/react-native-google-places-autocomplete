@@ -1,4 +1,3 @@
-
 <a href="https://www.npmjs.com/package/react-native-google-places-autocomplete">
   <img alt="npm version" src="https://img.shields.io/npm/v/react-native-google-places-autocomplete"/>
 </a>
@@ -266,15 +265,15 @@ _This list is a work in progress. PRs welcome!_
 
 ## Methods
 
-| method name      | type                      | description                                                             |
-| ---------------- | ------------------------- | ----------------------------------------------------------------------- |
-| `getAddressText` | `() => string`            | return the value of TextInput                                           |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput                                              |
-| `focus`          | `void`                    | makes the TextInput focus                                               |
-| `blur`           | `void`                    | makes the TextInput lose focus                                          |
-| `clear`          | `void`                    | removes all text from the TextInput                                     |
-| `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
-| `getCurrentLocation` | `() => void`          | makes a query to find nearby places based on current location           |
+| method name          | type                      | description                                                             |
+| -------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `getAddressText`     | `() => string`            | return the value of TextInput                                           |
+| `setAddressText`     | `(value: string) => void` | set the value of TextInput                                              |
+| `focus`              | `void`                    | makes the TextInput focus                                               |
+| `blur`               | `void`                    | makes the TextInput lose focus                                          |
+| `clear`              | `void`                    | removes all text from the TextInput                                     |
+| `isFocused`          | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+| `getCurrentLocation` | `() => void`              | makes a query to find nearby places based on current location           |
 
 You can access these methods using a ref.
 
