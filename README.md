@@ -410,7 +410,7 @@ The `url` property is used to set the url that requests will be made to. If you 
 
 `useOnPlatform` configures when the proxy url is used. It can be set to either `web`- will be used only when the device platform is detected as web (but not iOS or Android, or `all` - will always be used.
 
-You can optionally specify headers to apply to your request in the `headers` object. 
+You can optionally specify headers to apply to your request in the `headers` object.
 
 ### Example:
 
@@ -435,8 +435,8 @@ const GooglePlacesInput = () => {
         url:
           'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api', // or any proxy server that hits https://maps.googleapis.com/maps/api
         headers: {
-          Authorization: `an auth token` // if required for your proxy
-        }
+          Authorization: `an auth token`, // if required for your proxy
+        },
       }}
     />
   );
