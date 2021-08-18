@@ -19,9 +19,11 @@ import {
   ScrollView,
   Text,
   TextInput,
-  TouchableHighlight,
   View,
+  TouchableHighlight as StandardTouchableHighlight
 } from 'react-native';
+
+import { TouchableHighlight as GestureTouchableHighlight} from 'react-native-gesture-handler';
 
 const defaultStyles = {
   container: {
@@ -624,7 +626,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableHighlight
+        {!props.useGestureTouchableHighlight &&
+        <StandardTouchableHighlight
           style={
             props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
           }
@@ -641,7 +644,28 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             {_renderLoader(rowData)}
             {_renderRowData(rowData, index)}
           </View>
-        </TouchableHighlight>
+        </StandardTouchableHighlight>
+        }
+        {props.useGestureTouchableHighlight &&
+        <GestureTouchableHighlight
+          style={
+            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
+          }
+          onPress={() => _onPress(rowData)}
+          underlayColor={props.listUnderlayColor || '#c8c7cc'}
+        >
+          <View
+            style={[
+              props.suppressDefaultStyles ? {} : defaultStyles.row,
+              props.styles.row,
+              rowData.isPredefinedPlace ? props.styles.specialItemRow : {},
+            ]}
+          >
+            {_renderLoader(rowData)}
+            {_renderRowData(rowData, index)}
+          </View>
+        </GestureTouchableHighlight>
+        }
       </ScrollView>
     );
   };
@@ -896,6 +920,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
+  useGestureTouchableHighlight: PropTypes.bool,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
@@ -939,6 +964,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   textInputProps: {},
   timeout: 20000,
+  useGestureTouchableHighlight: false,
 };
 
 export default { GooglePlacesAutocomplete };
