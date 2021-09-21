@@ -745,6 +745,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  const _renderBottomComponent = () => {
+    if (props.renderBottomComponent) {
+      return props.renderBottomComponent();
+    }
+  };
+
   const _getFlatList = () => {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
@@ -802,42 +808,45 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       pointerEvents='box-none'
     >
       {!props.textInputHide && (
-        <View
-          style={[
-            props.suppressDefaultStyles ? {} : defaultStyles.textInputContainer,
-            props.styles.textInputContainer,
-          ]}
-        >
-          {_renderLeftButton()}
-          <TextInputComp
-            ref={inputRef}
+        <View>
+          <View
             style={[
-              props.suppressDefaultStyles ? {} : defaultStyles.textInput,
-              props.styles.textInput,
+              props.suppressDefaultStyles ? {} : defaultStyles.textInputContainer,
+              props.styles.textInputContainer,
             ]}
-            value={stateText}
-            placeholder={props.placeholder}
-            onFocus={
-              onFocus
-                ? () => {
-                    _onFocus();
-                    onFocus();
-                  }
-                : _onFocus
-            }
-            onBlur={
-              onBlur
-                ? (e) => {
-                    _onBlur(e);
-                    onBlur();
-                  }
-                : _onBlur
-            }
-            clearButtonMode={clearButtonMode || 'while-editing'}
-            onChangeText={_handleChangeText}
-            {...userProps}
-          />
-          {_renderRightButton()}
+          >
+            {_renderLeftButton()}
+            <TextInputComp
+              ref={inputRef}
+              style={[
+                props.suppressDefaultStyles ? {} : defaultStyles.textInput,
+                props.styles.textInput,
+              ]}
+              value={stateText}
+              placeholder={props.placeholder}
+              onFocus={
+                onFocus
+                  ? () => {
+                      _onFocus();
+                      onFocus();
+                    }
+                  : _onFocus
+              }
+              onBlur={
+                onBlur
+                  ? (e) => {
+                      _onBlur(e);
+                      onBlur();
+                    }
+                  : _onBlur
+              }
+              clearButtonMode={clearButtonMode || 'while-editing'}
+              onChangeText={_handleChangeText}
+              {...userProps}
+            />
+            {_renderRightButton()}
+          </View>
+          {_renderBottomComponent()}
         </View>
       )}
       {_getFlatList()}
@@ -881,6 +890,7 @@ GooglePlacesAutocomplete.propTypes = {
   predefinedPlacesAlwaysVisible: PropTypes.bool,
   preProcess: PropTypes.func,
   query: PropTypes.object,
+  renderBottomComponent: PropTypes.func,
   renderDescription: PropTypes.func,
   renderHeaderComponent: PropTypes.func,
   renderLeftButton: PropTypes.func,

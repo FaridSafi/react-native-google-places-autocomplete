@@ -411,6 +411,7 @@ interface GooglePlacesAutocompleteProps {
   predefinedPlacesAlwaysVisible?: boolean;
   preProcess?: (text: string) => string;
   query: Query | Object;
+  renderBottomComponent?: () => JSX.Element | React.ComponentType<{}>;
   renderDescription?: (description: DescriptionRow) => string;
   renderHeaderComponent?: () => JSX.Element | React.ComponentType<{}>;
   renderLeftButton?: () => JSX.Element | React.ComponentType<{}>;
