@@ -8,6 +8,9 @@
 
 Version 2 of this library is now available. See more in the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0) section.
 
+# :warning: Maintainers Wanted ![Maintainers Wanted](https://img.shields.io/badge/Maintainers-Wanted-green)
+We are in need of more people or companies willing to help. If you have enough time and knowledge, and want to become a maintainer, please open a new issue.
+
 ## Preview
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
