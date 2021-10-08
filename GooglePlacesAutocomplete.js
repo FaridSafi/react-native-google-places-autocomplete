@@ -24,8 +24,11 @@ import {
 } from 'react-native';
 import { TouchableHighlight as GHTouchableHighlight } from 'react-native-gesture-handler';
 
-const TouchableHighlight = () =>
-  Platform.OS === 'ios' ? RNTouchableHighlight : GHTouchableHighlight;
+function getTouchableHighlight() {
+  return Platform.OS === 'ios' ? RNTouchableHighlight : GHTouchableHighlight;
+}
+
+export const TouchableHighlight = getTouchableHighlight();
 
 const defaultStyles = {
   container: {
