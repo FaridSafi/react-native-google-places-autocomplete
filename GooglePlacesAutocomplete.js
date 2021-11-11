@@ -529,7 +529,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           setStateText(props.preProcess(text));
         }
 
-        console.log(props);
         request.open('GET', `${url}/place/autocomplete/json?input=` + encodeURIComponent(text) + '&' + Qs.stringify(props.query));
 
         request.withCredentials = requestShouldUseWithCredentials();
