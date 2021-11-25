@@ -160,6 +160,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     setAddressText: (address) => {
       setStateText(address);
     },
+    setAddressTextAndDebounce: (address) => {
+      setStateText(address);
+      debounceData(address);
+    },
     getAddressText: () => stateText,
     blur: () => inputRef.current.blur(),
     focus: () => inputRef.current.focus(),
@@ -753,7 +757,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       (stateText !== '' ||
         props.predefinedPlaces.length > 0 ||
         props.currentLocation === true) &&
-      listViewDisplayed === true
+      listViewDisplayed === true || props.showListView
     ) {
       return (
         <FlatList
@@ -868,6 +872,7 @@ GooglePlacesAutocomplete.propTypes = {
     PropTypes.bool,
     PropTypes.oneOf(['auto']),
   ]),
+  showListView: PropTypes.bool,
   keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
@@ -918,6 +923,7 @@ GooglePlacesAutocomplete.defaultProps = {
   keyboardShouldPersistTaps: 'always',
   listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
+  showListView:false,
   keepResultsAfterBlur: false,
   minLength: 0,
   nearbyPlacesAPI: 'GooglePlacesSearch',
