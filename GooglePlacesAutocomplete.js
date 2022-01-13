@@ -141,6 +141,23 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [url] = useState(getRequestUrl(props.requestUrl));
 
   const inputRef = useRef();
+  const containerRef = useRef();
+
+  useEffect(() => {
+    // This will close search results list when user clicks outside the container
+    const outsideClickHandler = (e) => {
+      if (containerRef.current?.contains(e.target)) {
+        return;
+      }
+      setListViewDisplayed(false);
+    };
+
+    if (listViewDisplayed && Platform.OS === 'web') {
+      document.addEventListener('click', outsideClickHandler);
+    }
+
+    return () => document.removeEventListener('click', outsideClickHandler);
+  }, [listViewDisplayed]);
 
   useEffect(() => {
     // This will load the default value's search results after the view has
@@ -623,12 +640,14 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        focusable={false}
       >
         <TouchableHighlight
           style={
             props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
           }
           onPress={() => _onPress(rowData)}
+          onBlur={_onBlur}
           underlayColor={props.listUnderlayColor || '#c8c7cc'}
         >
           <View
@@ -799,6 +818,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         props.suppressDefaultStyles ? {} : defaultStyles.container,
         props.styles.container,
       ]}
+      ref={containerRef}
       pointerEvents='box-none'
     >
       {!props.textInputHide && (
