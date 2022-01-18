@@ -147,6 +147,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     if (Platform.OS !== 'web' || !listViewDisplayed) {
       return;
     }
+
     // This will close search results list when user clicks outside the container
     const outsideClickHandler = (e) => {
       if (containerRef.current?.contains(e.target)) {
@@ -155,9 +156,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setListViewDisplayed(false);
     };
 
-    document.addEventListener('click', outsideClickHandler);
+    document.addEventListener('mousedown', outsideClickHandler);
 
-    return () => document.removeEventListener('click', outsideClickHandler);
+    return () => document.removeEventListener('mousedown', outsideClickHandler);
   }, [listViewDisplayed]);
 
   useEffect(() => {
