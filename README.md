@@ -403,6 +403,28 @@ export default GooglePlacesInput;
 }
 ```
 
+## Nested Scroll View
+
+If you wrap the component inside a `ScrollView`, it would give you the following error:
+```
+VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.
+```
+
+This occurs because `react-native-google-places-autocomplete` component uses a `FlatList` and `react-native` by default doesn't allow nested Scroll Views in the same direction (vertical/horizontal). One way to fix this is adding another wrapper of `ScrollView` with inverse value of the scroll direction.
+
+```js
+  <ScrollView
+    horizontal
+    style={{ flex: 1, width: '100%', height: '100%' }}
+    scrollEnabled={false}
+        >
+        <GooglePlacesAutocomplete
+          // rest of the code
+        />
+  </ScrollView>
+```
+
+
 ## Web Support
 
 Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You will need to use a proxy server. Please be mindful of this limitation when opening an issue.
@@ -512,9 +534,9 @@ Because the query parameters are different for each API, there are 4 different "
 3. Nearby Search -> `GooglePlacesSearchQuery` ([options](https://developers.google.com/places/web-service/search#PlaceSearchRequests))
 4. Geocode -> `GoogleReverseGeocodingQuery` ([options](https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests))
 
-Number 1 is used while getting autocomplete results.  
-Number 2 is used when you click on a result.  
-Number 3 is used when you select 'Current Location' to load nearby results.  
+Number 1 is used while getting autocomplete results.
+Number 2 is used when you click on a result.
+Number 3 is used when you select 'Current Location' to load nearby results.
 Number 4 is used when `nearbyPlacesAPI='GoogleReverseGeocoding'` is set and you select 'Current Location' to load nearby results.
 
 ## Changelog
