@@ -758,6 +758,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       return (
         <FlatList
           nativeID='result-list-id'
+          listKey='result-list-id'
           scrollEnabled={!props.disableScroll}
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
