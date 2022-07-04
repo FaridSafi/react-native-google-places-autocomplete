@@ -16,7 +16,6 @@ import {
   Keyboard
 } from 'react-native';
 import Qs from 'qs';
-import debounce from 'lodash.debounce';
 
 const WINDOW = Dimensions.get('window');
 
@@ -88,7 +87,8 @@ export default class GooglePlacesAutocomplete extends Component {
     text: this.props.getDefaultValue(),
     dataSource: this.buildRowsFromResults([]),
     listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
-    url: this.props.url ? this.props.url : 'https://maps.googleapis.com/maps/api'
+    url: this.props.url ? this.props.url : 'https://maps.googleapis.com/maps/api',
+    debounceLoading:false
   })
 
   setAddressText = address => this.setState({ text: address })
@@ -119,8 +119,28 @@ export default class GooglePlacesAutocomplete extends Component {
 
   UNSAFE_componentWillMount() {
     this._request = this.props.debounce
-      ? debounce(this._request, this.props.debounce)
-      : this._request;
+    ? this.debounce(this._request, this.props.debounce)
+    : this._request;
+  }
+
+  debounce = (cb,delay)=>{
+    let timeout 
+    let loadingTimeout 
+
+    return (...args)=>{
+      clearTimeout(timeout)
+      clearTimeout(loadingTimeout)
+      this.setState({dataSource:[]});
+      this.setState({debounceLoading:false})
+
+      timeout= setTimeout(() => cb(args[0]) , delay); 
+        
+      loadingTimeout= setTimeout(() => {
+        if(args[0].length >= this.props.minLength){
+           this.setState({debounceLoading:true})
+        }
+      }, 700); 
+    }
   }
 
   componentDidMount() {
@@ -471,6 +491,7 @@ export default class GooglePlacesAutocomplete extends Component {
           return;
         }
 
+        this.setState({debounceLoading:false})
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -680,7 +701,7 @@ export default class GooglePlacesAutocomplete extends Component {
       Math.random().toString(36).substr(2, 10)
     );
 
-    if ((this.state.text !== '' || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
+    if ((this.state.text.length  >= this.props.minLength || this.props.predefinedPlaces.length || this.props.currentLocation === true) && this.state.listViewDisplayed === true) {
       return (
         <FlatList
           scrollEnabled={!this.props.disableScroll}
@@ -732,12 +753,18 @@ export default class GooglePlacesAutocomplete extends Component {
               onBlur={this._onBlur}
               underlineColorAndroid={this.props.underlineColorAndroid}
               clearButtonMode={
-                clearButtonMode ? clearButtonMode : "while-editing"
+                clearButtonMode ? clearButtonMode : this.state.debounceLoading ? 'never' : "while-editing"
               }
               { ...userProps }
               onChangeText={this._handleChangeText}
             />
             {this._renderRightButton()}
+
+            { this.state.debounceLoading && 
+            <View style={{ position:'absolute' ,top:2, right:5 }}>
+              {this._getRowLoader()}
+            </View>
+            }
           </View>
         }
         {this._getFlatList()}
