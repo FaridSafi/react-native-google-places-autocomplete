@@ -16,6 +16,7 @@ import {
   Keyboard,
 } from "react-native";
 import Qs from "qs";
+import debounce from "lodash.debounce";
 
 const WINDOW = Dimensions.get("window");
 
@@ -127,29 +128,10 @@ export default class GooglePlacesAutocomplete extends Component {
 
   UNSAFE_componentWillMount() {
     this._request = this.props.debounce
-      ? this.debounce(this._request, this.props.debounce)
+      ? debounce(this._request, this.props.debounce)
       : this._request;
   }
 
-  debounce = (cb, delay) => {
-    let timeout;
-    let loadingTimeout;
-
-    return (...args) => {
-      clearTimeout(timeout);
-      clearTimeout(loadingTimeout);
-      this.setState({ dataSource: [] });
-      this.setState({ debounceLoading: false });
-
-      timeout = setTimeout(() => cb(args[0]), delay);
-
-      loadingTimeout = setTimeout(() => {
-        if (args[0].length >= this.props.minLength) {
-          this.setState({ debounceLoading: true });
-        }
-      }, 700);
-    };
-  };
 
   componentDidMount() {
     // This will load the default value's search results after the view has
@@ -597,13 +579,22 @@ export default class GooglePlacesAutocomplete extends Component {
     });
   }
 
-  _onChangeText = (text) => {
-    this._request(text);
+  _loadingDebounce = debounce((text) => {
+    if (text.length >= this.props.minLength) {
+      this.setState({ debounceLoading: true });
+    }
+  }, 700);
 
+  _onChangeText = (text) => {
     this.setState({
       text: text,
       listViewDisplayed: this._isMounted || this.props.autoFocus,
     });
+    this.setState({ dataSource: [] });
+    this.setState({ debounceLoading: false });
+    this._loadingDebounce(text)
+    this._request(text);
+
   };
 
   _handleChangeText = (text) => {
