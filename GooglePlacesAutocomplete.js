@@ -589,7 +589,6 @@ export default class GooglePlacesAutocomplete extends Component {
     this.setState({
       text: text,
       listViewDisplayed: this._isMounted || this.props.autoFocus,
-      dataSource: [],
       debounceLoading: false 
     });
     this._loadingDebounce(text)
