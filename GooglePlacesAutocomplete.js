@@ -300,12 +300,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open(
         'GET',
         `${url}/place/details/json?` +
-          Qs.stringify({
-            key: props.query.key,
-            placeid: rowData.place_id,
-            language: props.query.language,
-            ...props.GooglePlacesDetailsQuery,
-          }),
+        Qs.stringify({
+          key: props.query.key,
+          placeid: rowData.place_id,
+          language: props.query.language,
+          ...props.GooglePlacesDetailsQuery,
+        }),
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
@@ -497,9 +497,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             const results =
               props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
                 ? _filterResultsByTypes(
-                    responseJSON.predictions,
-                    props.filterReverseGeocodingByTypes,
-                  )
+                  responseJSON.predictions,
+                  props.filterReverseGeocodingByTypes,
+                )
                 : responseJSON.predictions;
 
             _results = results;
@@ -527,9 +527,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open(
         'GET',
         `${url}/place/autocomplete/json?input=` +
-          encodeURIComponent(text) +
-          '&' +
-          Qs.stringify(props.query),
+        encodeURIComponent(text) +
+        '&' +
+        Qs.stringify(props.query),
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
@@ -757,6 +757,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       return (
         <FlatList
+          nestedScrollEnabled
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
           style={[
@@ -820,17 +821,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             onFocus={
               onFocus
                 ? () => {
-                    _onFocus();
-                    onFocus();
-                  }
+                  _onFocus();
+                  onFocus();
+                }
                 : _onFocus
             }
             onBlur={
               onBlur
                 ? (e) => {
-                    _onBlur(e);
-                    onBlur();
-                  }
+                  _onBlur(e);
+                  onBlur();
+                }
                 : _onBlur
             }
             clearButtonMode={clearButtonMode || 'while-editing'}
@@ -922,9 +923,9 @@ GooglePlacesAutocomplete.defaultProps = {
   minLength: 0,
   nearbyPlacesAPI: 'GooglePlacesSearch',
   numberOfLines: 1,
-  onFail: () => {},
-  onNotFound: () => {},
-  onPress: () => {},
+  onFail: () => { },
+  onNotFound: () => { },
+  onPress: () => { },
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
   placeholder: '',
   predefinedPlaces: [],
