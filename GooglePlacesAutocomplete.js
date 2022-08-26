@@ -201,7 +201,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       };
     }
     const getCurrentPosition =
-      navigator.geolocation.getCurrentPosition ||
+      (navigator.geolocation.getCurrentPosition && navigator.geolocation.getCurrentPosition.bind(navigator.geolocation)) ||
       navigator.geolocation.default.getCurrentPosition;
 
     getCurrentPosition &&
