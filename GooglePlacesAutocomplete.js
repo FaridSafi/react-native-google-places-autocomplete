@@ -123,6 +123,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  const getRequestHeaders = (requestUrl) => {
+    return requestUrl?.headers || {};
+  };
+
+  const setRequestHeaders = (request, headers) => {
+    Object.keys(headers).map((headerKey) =>
+      request.setRequestHeader(headerKey, headers[headerKey]),
+    );
+  };
+
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
@@ -144,8 +154,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([]))
-  }, [props.predefinedPlaces])
+    setDataSource(buildRowsFromResults([]));
+  }, [props.predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -300,6 +310,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -461,6 +472,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -526,6 +538,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -535,7 +548,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), [props.query]);
+  const debounceData = useMemo(() => debounce(_request, props.debounce), [
+    props.query,
+  ]);
 
   const _onChangeText = (text) => {
     setStateText(text);
@@ -857,7 +872,10 @@ GooglePlacesAutocomplete.propTypes = {
   listLoaderComponent: PropTypes.func,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
-  listViewDisplayed: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf(['auto'])]),
+  listViewDisplayed: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.oneOf(['auto']),
+  ]),
   keepResultsAfterBlur: PropTypes.bool,
   minLength: PropTypes.number,
   nearbyPlacesAPI: PropTypes.string,
@@ -879,6 +897,7 @@ GooglePlacesAutocomplete.propTypes = {
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
+    headers: PropTypes.objectOf(PropTypes.string),
   }),
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,

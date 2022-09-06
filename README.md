@@ -1,4 +1,3 @@
-
 <a href="https://www.npmjs.com/package/react-native-google-places-autocomplete">
   <img alt="npm version" src="https://img.shields.io/npm/v/react-native-google-places-autocomplete"/>
 </a>
@@ -8,6 +7,9 @@
 **Customizable Google Places autocomplete component for iOS and Android React-Native apps**
 
 Version 2 of this library is now available. See more in the [releases](https://github.com/FaridSafi/react-native-google-places-autocomplete/releases/tag/v2.0.0) section.
+
+# :warning: Maintainers Wanted ![Maintainers Wanted](https://img.shields.io/badge/Maintainers-Wanted-green)
+We are in need of more people or companies willing to help. If you have enough time and knowledge, and want to become a maintainer, please open a new issue.
 
 ## Preview
 
@@ -29,7 +31,7 @@ yarn add react-native-google-places-autocomplete
 
 **Step 2.**
 
-Get your [Google Places API keys](https://developers.google.com/places/documentation/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console. Billing must be enabled on the account.
+Get your [Google Places API keys](https://developers.google.com/maps/documentation/places/web-service/get-api-key/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console. Billing must be enabled on the account.
 
 **Step 3.**
 
@@ -233,7 +235,8 @@ _This list is a work in progress. PRs welcome!_
 | GooglePlacesDetailsQuery      | object   | "query" object for the Google Place Details API (when you press on a suggestion)                                                                                                                                                            |                                                                   |                                                            |
 | GooglePlacesSearchQuery       | object   | "query" object for the Google Places Nearby API (when you use current location to find nearby places)                                                                                                                                       | `{ rankby: 'distance', type: 'restaurant' }`                      |                                                            |
 | GoogleReverseGeocodingQuery   | object   | "query" object for the Google Geocode API (when you use current location to get the current address)                                                                                                                                        |                                                                   |                                                            |
-| isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |                                                            |
+| isRowScrollable               | boolean  | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |
+| keepResultsAfterBlur          | boolean  | show list of results after blur                                                                                                                                                                                                             | false                                                             | true \| false                                              |
 | keyboardShouldPersistTaps     | string   | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
 | listEmptyComponent            | function | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
 | listLoaderComponent           | function | show this component while results are loading                                                                                                                                                                                               |                                                                   |                                                            |
@@ -266,15 +269,15 @@ _This list is a work in progress. PRs welcome!_
 
 ## Methods
 
-| method name      | type                      | description                                                             |
-| ---------------- | ------------------------- | ----------------------------------------------------------------------- |
-| `getAddressText` | `() => string`            | return the value of TextInput                                           |
-| `setAddressText` | `(value: string) => void` | set the value of TextInput                                              |
-| `focus`          | `void`                    | makes the TextInput focus                                               |
-| `blur`           | `void`                    | makes the TextInput lose focus                                          |
-| `clear`          | `void`                    | removes all text from the TextInput                                     |
-| `isFocused`      | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
-| `getCurrentLocation` | `() => void`          | makes a query to find nearby places based on current location           |
+| method name          | type                      | description                                                             |
+| -------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `getAddressText`     | `() => string`            | return the value of TextInput                                           |
+| `setAddressText`     | `(value: string) => void` | set the value of TextInput                                              |
+| `focus`              | `void`                    | makes the TextInput focus                                               |
+| `blur`               | `void`                    | makes the TextInput lose focus                                          |
+| `clear`              | `void`                    | removes all text from the TextInput                                     |
+| `isFocused`          | `() => boolean`           | returns `true` if the TextInput is currently focused; `false` otherwise |
+| `getCurrentLocation` | `() => void`              | makes a query to find nearby places based on current location           |
 
 You can access these methods using a ref.
 
@@ -405,11 +408,13 @@ export default GooglePlacesInput;
 
 Web support can be enabled via the `requestUrl` prop, by passing in a URL that you can use to proxy your requests. CORS implemented by the Google Places API prevent using this library directly on the web. You will need to use a proxy server. Please be mindful of this limitation when opening an issue.
 
-The `requestUrl` prop takes an object with two properties: `useOnPlatform` and `url`.
+The `requestUrl` prop takes an object with two required properties: `useOnPlatform` and `url`, and an optional `headers` property.
 
 The `url` property is used to set the url that requests will be made to. If you are using the regular google maps API, you need to make sure you are ultimately hitting https://maps.googleapis.com/maps/api.
 
 `useOnPlatform` configures when the proxy url is used. It can be set to either `web`- will be used only when the device platform is detected as web (but not iOS or Android, or `all` - will always be used.
+
+You can optionally specify headers to apply to your request in the `headers` object.
 
 ### Example:
 
@@ -433,6 +438,9 @@ const GooglePlacesInput = () => {
         useOnPlatform: 'web', // or "all"
         url:
           'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api', // or any proxy server that hits https://maps.googleapis.com/maps/api
+        headers: {
+          Authorization: `an auth token`, // if required for your proxy
+        },
       }}
     />
   );
