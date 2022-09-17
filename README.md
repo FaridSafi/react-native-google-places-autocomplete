@@ -185,7 +185,7 @@ export default GooglePlacesInput;
 <details>
   <summary>Click to expand</summary>
 
-This is an example using the Text Input from [`react-native-elements`](https://reactnativeelements.com/docs/input).
+This is an example using the Text Input from [`react-native-elements`](https://reactnativeelements.com/docs/components/input).
 
 ```js
 import React from 'react';
