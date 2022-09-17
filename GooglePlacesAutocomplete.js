@@ -17,6 +17,7 @@ import {
   Keyboard,
   Platform,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
@@ -54,7 +55,7 @@ const defaultStyles = {
   },
   description: {},
   separator: {
-    height: 0.5,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: '#c8c7cc',
   },
   poweredContainer: {
