@@ -822,7 +822,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               onFocus
                 ? () => {
                     _onFocus();
-                    onFocus();
+                    onFocus(e);
                   }
                 : _onFocus
             }
@@ -830,7 +830,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               onBlur
                 ? (e) => {
                     _onBlur(e);
-                    onBlur();
+                    onBlur(e);
                   }
                 : _onBlur
             }
