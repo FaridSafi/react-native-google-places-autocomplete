@@ -583,7 +583,7 @@ export default class GooglePlacesAutocomplete extends Component {
     if (text.length >= this.props.minLength) {
       this.setState({ debounceLoading: true });
     }
-  }, 700);
+  }, this.props.debounce);
 
   _onChangeText = (text) => {
     this.setState({
