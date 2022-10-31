@@ -936,6 +936,8 @@ GooglePlacesAutocomplete.defaultProps = {
     key: 'missing api key',
     language: 'en',
     types: 'geocode',
+    location:'missing lnt and lng',
+    radius: 2000
   },
   styles: {},
   suppressDefaultStyles: false,
