@@ -820,7 +820,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             placeholder={props.placeholder}
             onFocus={
               onFocus
-                ? () => {
+                ? (e) => {
                     _onFocus();
                     onFocus(e);
                   }
