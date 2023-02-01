@@ -764,7 +764,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
             props.styles.listView,
           ]}
-          data={dataSource}
+          data={props.filter ? props.filter(dataSource): dataSource}
           keyExtractor={keyGenerator}
           extraData={[dataSource, props]}
           ItemSeparatorComponent={_renderSeparator}
