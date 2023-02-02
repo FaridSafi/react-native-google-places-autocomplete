@@ -16,10 +16,10 @@ import {
   Image,
   Keyboard,
   Platform,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -644,13 +644,19 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsVerticalScrollIndicator={false}
         focusable={false}
       >
-        <TouchableHighlight
-          style={
-            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
-          }
+        <Pressable
+          style={({ hovered, pressed }) => [
+            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' },
+            {
+              backgroundColor: pressed
+                ? props.listUnderlayColor
+                : hovered
+                ? props.listHoverColor
+                : undefined,
+            },
+          ]}
           onPress={() => _onPress(rowData)}
           onBlur={_onBlur}
-          underlayColor={props.listUnderlayColor || '#c8c7cc'}
         >
           <View
             style={[
@@ -662,7 +668,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             {_renderLoader(rowData)}
             {_renderRowData(rowData, index)}
           </View>
-        </TouchableHighlight>
+        </Pressable>
       </ScrollView>
     );
   };
@@ -884,6 +890,7 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listHoverColor: PropTypes.string,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
   listViewDisplayed: PropTypes.oneOfType([
@@ -938,6 +945,7 @@ GooglePlacesAutocomplete.defaultProps = {
   GoogleReverseGeocodingQuery: {},
   isRowScrollable: true,
   keyboardShouldPersistTaps: 'always',
+  listHoverColor: '#ececec',
   listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
   keepResultsAfterBlur: false,
