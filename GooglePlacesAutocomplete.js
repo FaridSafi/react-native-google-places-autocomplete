@@ -945,6 +945,7 @@ GooglePlacesAutocomplete.defaultProps = {
   GoogleReverseGeocodingQuery: {},
   isRowScrollable: true,
   keyboardShouldPersistTaps: 'always',
+  listHoverColor: '#ececec',
   listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
   keepResultsAfterBlur: false,
