@@ -424,6 +424,7 @@ interface GooglePlacesAutocompleteProps {
   requestUrl?: RequestUrl;
   styles?: Partial<Styles> | Object;
   suppressDefaultStyles?: boolean;
+  testID?: string;
   textInputHide?: boolean;
   /** text input props */
   textInputProps?: TextInputProps | Object;
