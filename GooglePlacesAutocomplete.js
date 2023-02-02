@@ -791,6 +791,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
     clearButtonMode,
     InputComp,
+    testID,
     ...userProps
   } = props.textInputProps;
   const TextInputComp = InputComp || TextInput;
@@ -836,6 +837,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             }
             clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
+            testID={testID}
             {...userProps}
           />
           {_renderRightButton()}
