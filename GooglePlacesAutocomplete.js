@@ -41,6 +41,7 @@ const defaultStyles = {
     flex: 1,
     marginBottom: 5,
   },
+  listContentContainer: {},
   listView: {},
   row: {
     backgroundColor: '#FFFFFF',
@@ -760,6 +761,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         <FlatList
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
+          contentContainerStyle={[props.suppressDefaultStyles ? {} : defaultStyles.listContentContainer,
+            props.styles.listContentContainer]}
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
             props.styles.listView,
