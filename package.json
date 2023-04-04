@@ -1,6 +1,6 @@
 {
   "name": "react-native-google-places-autocomplete",
-  "version": "2.4.1",
+  "version": "2.5.1",
   "description": "Customizable Google Places autocomplete component for iOS and Android React-Native apps",
   "main": "GooglePlacesAutocomplete.js",
   "types": "GooglePlacesAutocomplete.d.ts",
