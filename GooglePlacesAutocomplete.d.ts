@@ -281,6 +281,7 @@ interface GooglePlaceData {
   place_id: string;
   reference: string;
   structured_formatting: StructuredFormatting;
+  isPredefinedPlace?: boolean;
 }
 
 interface Point {
