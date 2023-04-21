@@ -390,6 +390,7 @@ interface GooglePlacesAutocompleteProps {
     region?: string;
     components?: string;
   };
+  inbetweenCompo?: React.ReactNode;
   isRowScrollable?: boolean;
   keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
   /** use the ListEmptyComponent prop when no autocomplete results are found. */
