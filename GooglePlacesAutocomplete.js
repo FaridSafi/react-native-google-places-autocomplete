@@ -478,6 +478,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setDataSource(buildRowsFromResults([]));
     }
   };
+  
+  const _onFail = (message) => {
+    if (!props.onFail)
+      console.warn(
+        'google places autocomplete: ' + message,
+      );
+    else {
+      props.onFail(message);
+    }
+  };
 
   const _request = (text) => {
     _abortRequests();
@@ -508,16 +518,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             // }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
-            if (!props.onFail)
-              console.warn(
-                'google places autocomplete: ' + responseJSON.error_message,
-              );
-            else {
-              props.onFail(responseJSON.error_message);
-            }
+            _onFail(responseJSON.error_message);
           }
         } else {
-          // console.warn("google places autocomplete: request could not be completed or has been aborted");
+          _onFail("request could not be completed or has been aborted");
         }
       };
 
@@ -925,7 +929,7 @@ GooglePlacesAutocomplete.defaultProps = {
   minLength: 0,
   nearbyPlacesAPI: 'GooglePlacesSearch',
   numberOfLines: 1,
-  onFail: () => {},
+  onFail: undefined,
   onNotFound: () => {},
   onPress: () => {},
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
