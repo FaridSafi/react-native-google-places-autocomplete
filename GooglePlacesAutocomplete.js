@@ -626,6 +626,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsVerticalScrollIndicator={false}
       >
         <TouchableHighlight
+          testID={'autocomplete-item'}
           style={
             props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
           }
