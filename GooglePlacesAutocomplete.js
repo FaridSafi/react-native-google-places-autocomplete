@@ -823,6 +823,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 ? (e) => {
                     _onFocus();
                     onFocus(e);
+                    _handleChangeText(stateText);
                   }
                 : _onFocus
             }
