@@ -163,14 +163,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, [listViewDisplayed]);
 
   useEffect(() => {
-    // This will load the default value's search results after the view has
-    // been rendered
+    // This will load the search results after the query object ref gets changed
     _handleChangeText(stateText);
     return () => {
       _abortRequests();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.query]);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
     setDataSource(buildRowsFromResults([]));
