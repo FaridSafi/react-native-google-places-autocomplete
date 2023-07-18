@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import Qs from 'qs';
 import React, {
   forwardRef,
-  useMemo,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -159,7 +159,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
-      setStateText(address);
+      _handleChangeText(address);
     },
     getAddressText: () => stateText,
     blur: () => inputRef.current.blur(),
