@@ -431,6 +431,7 @@ interface GooglePlacesAutocompleteProps {
 }
 
 export type GooglePlacesAutocompleteRef = {
+  setAddressTextAndQuery(address: string): void;
   setAddressText(address: string): void;
   getAddressText(): string;
   getCurrentLocation(): void;
