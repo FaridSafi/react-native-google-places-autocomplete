@@ -499,6 +499,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _request = (text) => {
     _abortRequests();
+    if (!url) {
+      return;
+    }
     if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
       _requests.push(request);
