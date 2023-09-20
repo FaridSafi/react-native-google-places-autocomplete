@@ -142,25 +142,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [url] = useState(getRequestUrl(props.requestUrl));
 
   const inputRef = useRef();
-  const containerRef = useRef();
-
-  useEffect(() => {
-    if (Platform.OS !== 'web' || !listViewDisplayed) {
-      return;
-    }
-
-    // This will close search results list when user clicks outside the container
-    const outsideClickHandler = (e) => {
-      if (containerRef.current?.contains(e.target)) {
-        return;
-      }
-      setListViewDisplayed(false);
-    };
-
-    document.addEventListener('mousedown', outsideClickHandler);
-
-    return () => document.removeEventListener('mousedown', outsideClickHandler);
-  }, [listViewDisplayed]);
 
   useEffect(() => {
     // This will load the search results after the query object ref gets changed
@@ -645,7 +626,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        focusable={false}
       >
         <Pressable
           style={({ hovered, pressed }) => [
@@ -829,7 +809,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         props.suppressDefaultStyles ? {} : defaultStyles.container,
         props.styles.container,
       ]}
-      ref={containerRef}
       pointerEvents='box-none'
     >
       {!props.textInputHide && (
