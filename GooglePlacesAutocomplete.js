@@ -16,11 +16,11 @@ import {
   Image,
   Keyboard,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -144,14 +144,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const inputRef = useRef();
 
   useEffect(() => {
-    // This will load the default value's search results after the view has
-    // been rendered
+    // This will load the search results after the query object ref gets changed
     _handleChangeText(stateText);
     return () => {
       _abortRequests();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.query]);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
     setDataSource(buildRowsFromResults([]));
@@ -481,6 +480,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _request = (text) => {
     _abortRequests();
+    if (!url) {
+      return;
+    }
     if (supportedPlatform() && text && text.length >= props.minLength) {
       const request = new XMLHttpRequest();
       _requests.push(request);
@@ -625,12 +627,19 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableHighlight
-          style={
-            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
-          }
+        <Pressable
+          style={({ hovered, pressed }) => [
+            props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' },
+            {
+              backgroundColor: pressed
+                ? props.listUnderlayColor
+                : hovered
+                ? props.listHoverColor
+                : undefined,
+            },
+          ]}
           onPress={() => _onPress(rowData)}
-          underlayColor={props.listUnderlayColor || '#c8c7cc'}
+          onBlur={_onBlur}
         >
           <View
             style={[
@@ -642,7 +651,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             {_renderLoader(rowData)}
             {_renderRowData(rowData, index)}
           </View>
-        </TouchableHighlight>
+        </Pressable>
       </ScrollView>
     );
   };
@@ -865,6 +874,7 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listHoverColor: PropTypes.string,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
   listViewDisplayed: PropTypes.oneOfType([
@@ -919,6 +929,7 @@ GooglePlacesAutocomplete.defaultProps = {
   GoogleReverseGeocodingQuery: {},
   isRowScrollable: true,
   keyboardShouldPersistTaps: 'always',
+  listHoverColor: '#ececec',
   listUnderlayColor: '#c8c7cc',
   listViewDisplayed: 'auto',
   keepResultsAfterBlur: false,
