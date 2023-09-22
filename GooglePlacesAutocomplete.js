@@ -20,9 +20,16 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
+  TouchableHighlight as RNTouchableHighlight,
   View,
 } from 'react-native';
+import { TouchableHighlight as GHTouchableHighlight } from 'react-native-gesture-handler';
+
+function getTouchableHighlight() {
+  return Platform.OS === 'ios' ? RNTouchableHighlight : GHTouchableHighlight;
+}
+
+export const TouchableHighlight = getTouchableHighlight();
 
 const defaultStyles = {
   container: {
