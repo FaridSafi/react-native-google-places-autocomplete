@@ -146,7 +146,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   useEffect(() => {
     // This will load the default value's search results after the view has
     // been rendered
-    _handleChangeText(stateText);
+    if (props.loadOnMount) {
+      _handleChangeText(stateText);
+    }
     return () => {
       _abortRequests();
     };
@@ -899,6 +901,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputHide: PropTypes.bool,
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
+  loadOnMount: PropTypes.bool,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
@@ -942,6 +945,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputHide: false,
   textInputProps: {},
   timeout: 20000,
+  loadOnMount: true
 };
 
 export default { GooglePlacesAutocomplete };
