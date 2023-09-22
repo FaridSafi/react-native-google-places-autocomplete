@@ -414,7 +414,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           return;
         }
 
-        setListViewDisplayed(false);
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -497,7 +497,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           return;
         }
 
-        setListViewDisplayed(false);
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
