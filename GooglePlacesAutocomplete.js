@@ -603,8 +603,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return rowData.description || rowData.formatted_address || rowData.name;
   };
 
-  const _renderLoader = ({isLoading = false} = {}) => {
-    if (isLoading === true || listLoaderDisplayed === true) {
+  const _renderLoader = (rowData) => {
+    if (rowData.isLoading === true) {
       return (
         <View
           style={[
@@ -612,9 +612,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             props.styles.loader,
           ]}
         >
-          {props.loadingText && (
-            <Text style={props.styles.loadingText}>{props.loadingText}</Text>
-          )}
           {_getRowLoader()}
         </View>
       );
@@ -775,6 +772,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       return (
         <FlatList
+          {...props}
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
           style={[
@@ -787,15 +785,15 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
           ListEmptyComponent={
-            listLoaderDisplayed ? _renderLoader() :
-            stateText.length > props.minLength && props.listEmptyComponent
+            listLoaderDisplayed
+              ? props.listLoaderComponent
+              : stateText.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
             props.renderHeaderComponent &&
             props.renderHeaderComponent(stateText)
           }
           ListFooterComponent={_renderPoweredLogo}
-          {...props}
         />
       );
     }
@@ -883,6 +881,7 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listLoaderComponent: PropTypes.func,
   listHoverColor: PropTypes.string,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
@@ -963,5 +962,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputProps: {},
   timeout: 20000,
 };
+
+GooglePlacesAutocomplete.displayName = 'GooglePlacesAutocomplete';
 
 export default { GooglePlacesAutocomplete };
