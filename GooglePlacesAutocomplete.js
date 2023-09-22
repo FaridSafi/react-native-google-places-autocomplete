@@ -140,6 +140,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
+  const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
 
   const inputRef = useRef();
 
@@ -409,9 +410,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListViewDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -490,9 +493,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListViewDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -598,8 +603,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return rowData.description || rowData.formatted_address || rowData.name;
   };
 
-  const _renderLoader = (rowData) => {
-    if (rowData.isLoading === true) {
+  const _renderLoader = ({isLoading = false} = {}) => {
+    if (isLoading === true || listLoaderDisplayed === true) {
       return (
         <View
           style={[
@@ -607,6 +612,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             props.styles.loader,
           ]}
         >
+          {props.loadingText && (
+            <Text style={props.styles.loadingText}>{props.loadingText}</Text>
+          )}
           {_getRowLoader()}
         </View>
       );
@@ -779,6 +787,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
           ListEmptyComponent={
+            listLoaderDisplayed ? _renderLoader() :
             stateText.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
