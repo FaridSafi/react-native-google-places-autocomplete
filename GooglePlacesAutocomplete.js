@@ -20,7 +20,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -625,7 +625,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableHighlight
+        <TouchableOpacity
           style={
             props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
           }
@@ -642,7 +642,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             {_renderLoader(rowData)}
             {_renderRowData(rowData, index)}
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </ScrollView>
     );
   };
