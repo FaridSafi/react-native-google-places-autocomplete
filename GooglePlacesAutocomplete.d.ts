@@ -395,6 +395,8 @@ interface GooglePlacesAutocompleteProps {
   keyboardShouldPersistTaps?: 'never' | 'always' | 'handled';
   /** use the ListEmptyComponent prop when no autocomplete results are found. */
   listEmptyComponent?: JSX.Element | React.ComponentType<{}>;
+  /** use the ListLoaderComponent prop when no results are loading. */
+  listLoaderComponent?: JSX.Element | React.ComponentType<{}>;
   listHoverColor?: string;
   listUnderlayColor?: string;
   listViewDisplayed?: 'auto' | boolean;

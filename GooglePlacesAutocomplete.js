@@ -140,6 +140,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
   const [url] = useState(getRequestUrl(props.requestUrl));
+  const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
 
   const inputRef = useRef();
 
@@ -409,9 +410,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -490,9 +493,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
+          setListLoaderDisplayed(true);
           return;
         }
 
+        setListLoaderDisplayed(false);
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
           if (typeof responseJSON.predictions !== 'undefined') {
@@ -779,7 +784,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ItemSeparatorComponent={_renderSeparator}
           renderItem={({ item, index }) => _renderRow(item, index)}
           ListEmptyComponent={
-            stateText.length > props.minLength && props.listEmptyComponent
+            listLoaderDisplayed
+              ? props.listLoaderComponent
+              : stateText.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
             props.renderHeaderComponent &&
@@ -874,6 +881,7 @@ GooglePlacesAutocomplete.propTypes = {
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
   listEmptyComponent: PropTypes.func,
+  listLoaderComponent: PropTypes.func,
   listHoverColor: PropTypes.string,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
@@ -954,5 +962,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputProps: {},
   timeout: 20000,
 };
+
+GooglePlacesAutocomplete.displayName = 'GooglePlacesAutocomplete';
 
 export default { GooglePlacesAutocomplete };
