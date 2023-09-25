@@ -772,7 +772,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       return (
         <FlatList
-          {...props}
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
           style={[
@@ -794,6 +793,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             props.renderHeaderComponent(stateText)
           }
           ListFooterComponent={_renderPoweredLogo}
+          {...props}
         />
       );
     }
