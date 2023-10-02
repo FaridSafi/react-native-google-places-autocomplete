@@ -84,10 +84,15 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const buildRowsFromResults = (results) => {
+  const buildRowsFromResults = (results, text) => {
     let res = [];
-
-    if (results.length === 0 || props.predefinedPlacesAlwaysVisible === true) {
+    const shouldDisplayPredefinedPlaces = text
+      ? results.length === 0 && text.length === 0
+      : results.length === 0;
+    if (
+      shouldDisplayPredefinedPlaces ||
+      props.predefinedPlacesAlwaysVisible === true
+    ) {
       res = [
         ...props.predefinedPlaces.filter((place) => place?.description.length),
       ];
@@ -511,7 +516,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 : responseJSON.predictions;
 
             _results = results;
-            setDataSource(buildRowsFromResults(results));
+            setDataSource(buildRowsFromResults(results, text));
             // }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
