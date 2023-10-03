@@ -178,7 +178,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     url === 'https://maps.googleapis.com/maps/api';
 
   const _abortRequests = () => {
-    _requests.map((i) => i.abort());
+    _requests.map((i) => {
+      i.onreadystatechange = null;
+      i.abort();
+    });
     _requests = [];
   };
 
