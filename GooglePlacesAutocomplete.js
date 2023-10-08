@@ -9,6 +9,7 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
+  useCallback,
 } from 'react';
 import {
   ActivityIndicator,
@@ -84,36 +85,46 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const buildRowsFromResults = (results, text) => {
-    let res = [];
-    const shouldDisplayPredefinedPlaces = text
-      ? results.length === 0 && text.length === 0
-      : results.length === 0;
-    if (
-      shouldDisplayPredefinedPlaces ||
-      props.predefinedPlacesAlwaysVisible === true
-    ) {
-      res = [
-        ...props.predefinedPlaces.filter((place) => place?.description.length),
-      ];
+  const buildRowsFromResults = useCallback(
+    (results, text) => {
+      let res = [];
+      const shouldDisplayPredefinedPlaces = text
+        ? results.length === 0 && text.length === 0
+        : results.length === 0;
+      if (
+        shouldDisplayPredefinedPlaces ||
+        props.predefinedPlacesAlwaysVisible === true
+      ) {
+        res = [
+          ...props.predefinedPlaces.filter(
+            (place) => place?.description.length,
+          ),
+        ];
 
-      if (props.currentLocation === true && hasNavigator()) {
-        res.unshift({
-          description: props.currentLocationLabel,
-          isCurrentLocation: true,
-        });
+        if (props.currentLocation === true && hasNavigator()) {
+          res.unshift({
+            description: props.currentLocationLabel,
+            isCurrentLocation: true,
+          });
+        }
       }
-    }
 
-    res = res.map((place) => ({
-      ...place,
-      isPredefinedPlace: true,
-    }));
+      res = res.map((place) => ({
+        ...place,
+        isPredefinedPlace: true,
+      }));
 
-    return [...res, ...results];
-  };
+      return [...res, ...results];
+    },
+    [
+      props.currentLocation,
+      props.currentLocationLabel,
+      props.predefinedPlaces,
+      props.predefinedPlacesAlwaysVisible,
+    ],
+  );
 
-  const getRequestUrl = (requestUrl) => {
+  const getRequestUrl = useCallback((requestUrl) => {
     if (requestUrl) {
       if (requestUrl.useOnPlatform === 'all') {
         return requestUrl.url;
@@ -127,7 +138,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     } else {
       return 'https://maps.googleapis.com/maps/api';
     }
-  };
+  }, []);
 
   const getRequestHeaders = (requestUrl) => {
     return requestUrl?.headers || {};
@@ -144,10 +155,14 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
   );
-  const [url] = useState(getRequestUrl(props.requestUrl));
+  const [url, setUrl] = useState(getRequestUrl(props.requestUrl));
   const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
 
   const inputRef = useRef();
+
+  useEffect(() => {
+    setUrl(getRequestUrl(props.requestUrl));
+  }, [getRequestUrl, props.requestUrl]);
 
   useEffect(() => {
     // This will load the search results after the query object ref gets changed
@@ -157,10 +172,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.query]);
+
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
     setDataSource(buildRowsFromResults([]));
-  }, [props.predefinedPlaces]);
+  }, [buildRowsFromResults, props.predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -561,6 +577,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceData = useMemo(() => debounce(_request, props.debounce), [
     props.query,
+    url,
   ]);
 
   const _onChangeText = (text) => {
@@ -888,8 +905,8 @@ GooglePlacesAutocomplete.propTypes = {
   inbetweenCompo: PropTypes.object,
   isRowScrollable: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.oneOf(['never', 'always', 'handled']),
-  listEmptyComponent: PropTypes.func,
-  listLoaderComponent: PropTypes.func,
+  listEmptyComponent: PropTypes.element,
+  listLoaderComponent: PropTypes.element,
   listHoverColor: PropTypes.string,
   listUnderlayColor: PropTypes.string,
   // Must write it this way: https://stackoverflow.com/a/54290946/7180620
