@@ -6,7 +6,8 @@
   "types": "GooglePlacesAutocomplete.d.ts",
   "scripts": {
     "lint": "eslint . && prettier --write .",
-    "release": "npx release-it"
+    "release": "npx release-it",
+    "prettier": "prettier --write ."
   },
   "author": "Farid from Safi",
   "license": "MIT",
