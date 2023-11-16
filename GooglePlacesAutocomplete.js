@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
 import React, {
   forwardRef,
-  useMemo,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -574,11 +572,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceData = useMemo(() => debounce(_request, props.debounce), [
-    props.query,
-    url,
-  ]);
+  const timeoutRef = useRef();
+  const debounceData = (text) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = null;
+      _request(text);
+    }, props.debounce);
+  };
 
   const _onChangeText = (text) => {
     setStateText(text);
