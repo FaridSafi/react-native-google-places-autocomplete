@@ -307,6 +307,16 @@ interface PlusCode {
   global_code: string;
 }
 
+/** @see https://developers.google.com/maps/documentation/javascript/reference/places-service#PlacePhoto */
+interface PlacePhoto {
+  width: number;
+  height: number;
+  html_attributions: string[];
+}
+
+/** @see https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult.price_level */
+/**  0: Free 1: Inexpensive 2: Moderate 3: Expensive 4: Very Expensive  */
+type PriceLevel = 0 | 1 | 2 | 3 | 4;
 interface GooglePlaceDetail {
   address_components: AddressComponent[];
   adr_address: string;
@@ -323,6 +333,10 @@ interface GooglePlaceDetail {
   url: string;
   utc_offset: number;
   vicinity: string;
+  photos: PlacePhoto[];
+  price_level: PriceLevel;
+  rating: number;
+  website: string;
 }
 
 /** @see https://developers.google.com/places/web-service/autocomplete */
