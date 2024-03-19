@@ -150,7 +150,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     );
   };
 
-  const [stateText, setStateText] = useState('');
+  const [stateText, setStateText] = useState(props.defaultValue || '');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
     props.listViewDisplayed === 'auto' ? false : props.listViewDisplayed,
@@ -177,6 +177,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     // Update dataSource if props.predefinedPlaces changed
     setDataSource(buildRowsFromResults([]));
   }, [buildRowsFromResults, props.predefinedPlaces]);
+
+  useEffect(() => {
+    setStateText(props.defaultValue || '');
+  }, [props.defaultValue]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -835,6 +839,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ...userProps
   } = props.textInputProps;
   const TextInputComp = InputComp || TextInput;
+  console.log(props.defaultValue);
   return (
     <View
       style={[
