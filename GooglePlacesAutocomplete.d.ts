@@ -409,6 +409,7 @@ interface GooglePlacesAutocompleteProps {
   onFail?: (error?: any) => void;
   onNotFound?: () => void;
   onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
+  onSubmitEditingSelectFirst?: boolean;
   onTimeout?: () => void;
   placeholder: string;
   predefinedPlaces?: Place[];
