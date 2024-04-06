@@ -727,6 +727,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     inputRef?.current?.blur();
   };
 
+  const _onSubmitEditing = useCallback((e) => {
+    if (props.onSubmitEditingSelectFirst && dataSource && dataSource.length > 0) {
+      _onPress(dataSource[0]);
+    }
+  }, [dataSource]);
+
   const _onFocus = () => setListViewDisplayed(true);
 
   const _renderPoweredLogo = () => {
@@ -829,6 +835,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let {
     onFocus,
     onBlur,
+    onSubmitEditing,
     onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
     clearButtonMode,
     InputComp,
@@ -874,6 +881,14 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                     onBlur(e);
                   }
                 : _onBlur
+            }
+            onSubmitEditing={
+              onSubmitEditing
+                ? (e) => {
+                    _onSubmitEditing(e);
+                    onSubmitEditing(e);
+                  }
+                : _onSubmitEditing
             }
             clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
@@ -921,6 +936,7 @@ GooglePlacesAutocomplete.propTypes = {
   onFail: PropTypes.func,
   onNotFound: PropTypes.func,
   onPress: PropTypes.func,
+  onSubmitEditingSelectFirst: PropTypes.bool,
   onTimeout: PropTypes.func,
   placeholder: PropTypes.string,
   predefinedPlaces: PropTypes.array,
@@ -972,6 +988,7 @@ GooglePlacesAutocomplete.defaultProps = {
   onFail: () => {},
   onNotFound: () => {},
   onPress: () => {},
+  onSubmitEditingSelectFirst: false,
   onTimeout: () => console.warn('google places autocomplete: request timeout'),
   placeholder: '',
   predefinedPlaces: [],
