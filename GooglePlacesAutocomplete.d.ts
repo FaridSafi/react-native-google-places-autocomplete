@@ -262,7 +262,7 @@ interface MatchedSubString {
 
 interface Term {
   offset: number;
-  value: string;
+  value?: string;
 }
 
 interface StructuredFormatting {
@@ -431,6 +431,7 @@ interface GooglePlacesAutocompleteProps {
   /** text input props */
   textInputProps?: TextInputProps | Object;
   timeout?: number;
+  defaultValue?: string;
 }
 
 export type GooglePlacesAutocompleteRef = {
