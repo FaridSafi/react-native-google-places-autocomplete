@@ -262,7 +262,7 @@ interface MatchedSubString {
 
 interface Term {
   offset: number;
-  value: string;
+  value?: string;
 }
 
 interface StructuredFormatting {
