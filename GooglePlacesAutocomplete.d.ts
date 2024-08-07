@@ -286,6 +286,8 @@ interface GooglePlaceData {
 interface Point {
   lat: number;
   lng: number;
+  latitude: number;
+  longitude: number;
 }
 
 interface AddressComponent {
@@ -323,6 +325,11 @@ interface GooglePlaceDetail {
   url: string;
   utc_offset: number;
   vicinity: string;
+  // New Places API parameters
+  addressComponents: AddressComponent[];
+  adrFormatAddress: string;
+  formattedAddress: string;
+  location: Point;
 }
 
 /** @see https://developers.google.com/places/web-service/autocomplete */
@@ -431,6 +438,7 @@ interface GooglePlacesAutocompleteProps {
   /** text input props */
   textInputProps?: TextInputProps | Object;
   timeout?: number;
+  isNewPlacesAPI?: boolean;
 }
 
 export type GooglePlacesAutocompleteRef = {
