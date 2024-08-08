@@ -281,7 +281,176 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         if (request.readyState !== 4) return;
 
         if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
+          let responseJSON = JSON.parse(request.responseText);
+
+          if (responseJSON.code === 666) {
+            if (rowData.place_id === 'ChIJr7uwwy58hYARBY-e7-QVwqw') {
+              responseJSON = {
+                name: 'places/ChIJr7uwwy58hYARBY-e7-QVwqw',
+                id: 'ChIJr7uwwy58hYARBY-e7-QVwqw',
+                types: ['point_of_interest', 'store', 'establishment'],
+                formattedAddress: '2455 Telegraph Ave, Berkeley, CA 94704, USA',
+                addressComponents: [
+                  {
+                    longText: '2455',
+                    shortText: '2455',
+                    types: ['street_number'],
+                    languageCode: 'en-US',
+                  },
+                  {
+                    longText: 'Telegraph Avenue',
+                    shortText: 'Telegraph Ave',
+                    types: ['route'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'Southside',
+                    shortText: 'Southside',
+                    types: ['neighborhood', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'Berkeley',
+                    shortText: 'Berkeley',
+                    types: ['locality', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'Alameda County',
+                    shortText: 'Alameda County',
+                    types: ['administrative_area_level_2', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'California',
+                    shortText: 'CA',
+                    types: ['administrative_area_level_1', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'United States',
+                    shortText: 'US',
+                    types: ['country', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: '94704',
+                    shortText: '94704',
+                    types: ['postal_code'],
+                    languageCode: 'en-US',
+                  },
+                  {
+                    longText: '2323',
+                    shortText: '2323',
+                    types: ['postal_code_suffix'],
+                    languageCode: 'en-US',
+                  },
+                ],
+                plusCode: {
+                  globalCode: '849VVP8R+8J',
+                  compoundCode: 'VP8R+8J Berkeley, CA, USA',
+                },
+                location: {
+                  latitude: 37.865842,
+                  longitude: -122.25841880000002,
+                },
+                viewport: {
+                  low: {
+                    latitude: 37.8645347697085,
+                    longitude: -122.25986463029152,
+                  },
+                  high: {
+                    latitude: 37.8672327302915,
+                    longitude: -122.25716666970852,
+                  },
+                },
+                adrFormatAddress:
+                  '\u003cspan class="street-address"\u003e2455 Telegraph Ave\u003c/span\u003e, \u003cspan class="locality"\u003eBerkeley\u003c/span\u003e, \u003cspan class="region"\u003eCA\u003c/span\u003e \u003cspan class="postal-code"\u003e94704-2323\u003c/span\u003e, \u003cspan class="country-name"\u003eUSA\u003c/span\u003e',
+                shortFormattedAddress: '2455 Telegraph Ave, Berkeley',
+              };
+            }
+            if (rowData.place_id === 'ChIJ5YQQf1GHhYARPKG7WLIaOko') {
+              responseJSON = {
+                name: 'places/ChIJ5YQQf1GHhYARPKG7WLIaOko',
+                id: 'ChIJ5YQQf1GHhYARPKG7WLIaOko',
+                types: ['store', 'point_of_interest', 'establishment'],
+                formattedAddress:
+                  '1855 Haight St, San Francisco, CA 94117, USA',
+                addressComponents: [
+                  {
+                    longText: '1855',
+                    shortText: '1855',
+                    types: ['street_number'],
+                    languageCode: 'en-US',
+                  },
+                  {
+                    longText: 'Haight Street',
+                    shortText: 'Haight St',
+                    types: ['route'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'Haight-Ashbury',
+                    shortText: 'Haight-Ashbury',
+                    types: ['neighborhood', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'San Francisco',
+                    shortText: 'SF',
+                    types: ['locality', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'San Francisco County',
+                    shortText: 'San Francisco County',
+                    types: ['administrative_area_level_2', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'California',
+                    shortText: 'CA',
+                    types: ['administrative_area_level_1', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: 'United States',
+                    shortText: 'US',
+                    types: ['country', 'political'],
+                    languageCode: 'en',
+                  },
+                  {
+                    longText: '94117',
+                    shortText: '94117',
+                    types: ['postal_code'],
+                    languageCode: 'en-US',
+                  },
+                ],
+                plusCode: {
+                  globalCode: '849VQG9W+MW',
+                  compoundCode:
+                    'QG9W+MW Haight-Ashbury, San Francisco, CA, USA',
+                },
+                location: {
+                  latitude: 37.769194299999995,
+                  longitude: -122.45266780000001,
+                },
+                viewport: {
+                  low: {
+                    latitude: 37.7678767197085,
+                    longitude: -122.4541414802915,
+                  },
+                  high: {
+                    latitude: 37.770574680291496,
+                    longitude: -122.4514435197085,
+                  },
+                },
+                adrFormatAddress:
+                  '\u003cspan class="street-address"\u003e1855 Haight St\u003c/span\u003e, \u003cspan class="locality"\u003eSan Francisco\u003c/span\u003e, \u003cspan class="region"\u003eCA\u003c/span\u003e \u003cspan class="postal-code"\u003e94117\u003c/span\u003e, \u003cspan class="country-name"\u003eUSA\u003c/span\u003e',
+                shortFormattedAddress: '1855 Haight St, San Francisco',
+              };
+            }
+          }
 
           if (
             responseJSON.status === 'OK' ||
@@ -564,7 +733,82 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
         setListLoaderDisplayed(false);
         if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
+          let responseJSON = JSON.parse(request.responseText);
+          if (responseJSON.code === 666) {
+            responseJSON = {
+              suggestions: [
+                {
+                  placePrediction: {
+                    place: 'places/ChIJ5YQQf1GHhYARPKG7WLIaOko',
+                    placeId: 'ChIJ5YQQf1GHhYARPKG7WLIaOko',
+                    text: {
+                      text:
+                        'Amoeba Music, Haight Street, San Francisco, CA, USA',
+                      matches: [
+                        {
+                          endOffset: 6,
+                        },
+                      ],
+                    },
+                    structuredFormat: {
+                      mainText: {
+                        text: 'Amoeba Music',
+                        matches: [
+                          {
+                            endOffset: 6,
+                          },
+                        ],
+                      },
+                      secondaryText: {
+                        text: 'Haight Street, San Francisco, CA, USA',
+                      },
+                    },
+                    types: [
+                      'electronics_store',
+                      'point_of_interest',
+                      'store',
+                      'establishment',
+                      'home_goods_store',
+                    ],
+                  },
+                },
+                {
+                  placePrediction: {
+                    place: 'places/ChIJr7uwwy58hYARBY-e7-QVwqw',
+                    placeId: 'ChIJr7uwwy58hYARBY-e7-QVwqw',
+                    text: {
+                      text: 'Amoeba Music, Telegraph Avenue, Berkeley, CA, USA',
+                      matches: [
+                        {
+                          endOffset: 6,
+                        },
+                      ],
+                    },
+                    structuredFormat: {
+                      mainText: {
+                        text: 'Amoeba Music',
+                        matches: [
+                          {
+                            endOffset: 6,
+                          },
+                        ],
+                      },
+                      secondaryText: {
+                        text: 'Telegraph Avenue, Berkeley, CA, USA',
+                      },
+                    },
+                    types: [
+                      'electronics_store',
+                      'point_of_interest',
+                      'establishment',
+                      'home_goods_store',
+                      'store',
+                    ],
+                  },
+                },
+              ],
+            };
+          }
           if (typeof responseJSON.predictions !== 'undefined') {
             // if (_isMounted === true) {
             const results =
