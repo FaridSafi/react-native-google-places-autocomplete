@@ -334,7 +334,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           `${url}/v1/places/${rowData.place_id}?` +
             Qs.stringify({
               sessionToken,
-              fields: props.query?.fields,
+              fields: props.fields,
             }),
         );
         setSessionToken(uuidv4());
@@ -625,9 +625,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             Qs.stringify({
               input: text,
               sessionToken,
-              languageCode: props.query?.languageCode,
-              includedRegionCodes: props.query?.includedRegionCodes,
-              locationBias: props.query?.locationBias,
+              ...props.query,
             }),
           )
         : request.send();
@@ -1006,6 +1004,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputProps: PropTypes.object,
   timeout: PropTypes.number,
   isNewPlacesAPI: PropTypes.bool,
+  fields: PropTypes.string,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
@@ -1044,7 +1043,6 @@ GooglePlacesAutocomplete.defaultProps = {
     key: 'missing api key',
     language: 'en',
     types: 'geocode',
-    fields: '*',
   },
   styles: {},
   suppressDefaultStyles: false,
@@ -1052,6 +1050,7 @@ GooglePlacesAutocomplete.defaultProps = {
   textInputProps: {},
   timeout: 20000,
   isNewPlacesAPI: false,
+  fields: '*',
 };
 
 GooglePlacesAutocomplete.displayName = 'GooglePlacesAutocomplete';
