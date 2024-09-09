@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
@@ -9,20 +8,19 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
-  useCallback,
+  useCallback
 } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   Keyboard,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
+  FlatList,
 } from 'react-native';
 
 const defaultStyles = {
@@ -67,7 +65,10 @@ const defaultStyles = {
     borderColor: '#c8c7cc',
     borderTopWidth: 0.5,
   },
-  powered: {},
+  powered: {
+    height: 40,
+    width: 100
+  },
 };
 
 export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
@@ -264,6 +265,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         return;
       }
 
+      console.log("pressed")
       Keyboard.dismiss();
 
       _abortRequests();
@@ -645,19 +647,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return null;
   };
 
-  const _renderRow = (rowData = {}, index) => {
+  const _renderRow =useCallback((rowData = {}, index) => {
     return (
-      <ScrollView
-        contentContainerStyle={
-          props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' }
-        }
-        scrollEnabled={props.isRowScrollable}
-        keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-      >
         <Pressable
+         key={Math.random().toString(36)}
           style={({ hovered, pressed }) => [
             props.isRowScrollable ? { minWidth: '100%' } : { width: '100%' },
             {
@@ -668,7 +661,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 : undefined,
             },
           ]}
-          onPress={() => _onPress(rowData)}
+          onPress={() =>_onPress(rowData)}
           onBlur={_onBlur}
         >
           <View
@@ -682,9 +675,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             {_renderRowData(rowData, index)}
           </View>
         </Pressable>
-      </ScrollView>
     );
-  };
+  },[props]);
+
 
   const _renderSeparator = (sectionID, rowID) => {
     if (rowID === dataSource.length - 1) {
@@ -785,17 +778,20 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const _getFlatList = () => {
+  const _getFlatList =useCallback( () => {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
     if (
-      supportedPlatform() &&
-      (stateText !== '' ||
-        props.predefinedPlaces.length > 0 ||
-        props.currentLocation === true) &&
+      stateText !== '' &&
       listViewDisplayed === true
     ) {
       return (
+        // <View  style={{zIndex:0,}} >
+        //   {[...dataSource].slice(0,5).map((item,index)=>{
+        //     return _renderRow(item, index)
+        //   })}
+        // </View>
+        
         <FlatList
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
@@ -824,17 +820,18 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
 
     return null;
-  };
+  },[dataSource]);
 
   let {
     onFocus,
     onBlur,
-    onChangeText, // destructuring here stops this being set after onChangeText={_handleChangeText}
+    onChangeText, 
     clearButtonMode,
     InputComp,
     ...userProps
   } = props.textInputProps;
   const TextInputComp = InputComp || TextInput;
+
   return (
     <View
       style={[
