@@ -864,15 +864,18 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.withCredentials = requestShouldUseWithCredentials();
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
-      props.isNewPlacesAPI
-        ? request.send(
-            Qs.stringify({
-              input: text,
-              sessionToken,
-              ...props.query,
-            }),
-          )
-        : request.send();
+      if (props.isNewPlacesAPI) {
+        const { locationbias, types, ...rest } = props.query;
+        request.send(
+          Qs.stringify({
+            input: text,
+            sessionToken,
+            ...rest,
+          }),
+        );
+      } else {
+        request.send();
+      }
     } else {
       _results = [];
       setDataSource(buildRowsFromResults([]));
