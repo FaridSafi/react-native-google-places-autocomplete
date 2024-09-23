@@ -281,8 +281,101 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         if (request.readyState !== 4) return;
 
         if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
-
+          let responseJSON;
+          if(request.responseText) {
+            console.log("================> Place Details[Valid Response]");
+            responseJSON = JSON.parse(request.responseText);
+          } else {
+            console.log("================> Place Details[Constructing Fake Response]");
+            responseJSON = {
+              "name": "places/ChIJPTacEpBQwokRKwIlDXelxkA",
+              "id": "ChIJPTacEpBQwokRKwIlDXelxkA",
+              "types": [
+                "historical_landmark",
+                "tourist_attraction",
+                "point_of_interest",
+                "establishment"
+              ],
+              "formattedAddress": "New York, NY 10004",
+              "addressComponents": [
+                {
+                  "longText": "New York",
+                  "shortText": "New York",
+                  "types": [
+                    "locality",
+                    "political"
+                  ],
+                  "languageCode": "en"
+                },
+                {
+                  "longText": "Manhattan",
+                  "shortText": "Manhattan",
+                  "types": [
+                    "sublocality_level_1",
+                    "sublocality",
+                    "political"
+                  ],
+                  "languageCode": "en"
+                },
+                {
+                  "longText": "New York County",
+                  "shortText": "New York County",
+                  "types": [
+                    "administrative_area_level_2",
+                    "political"
+                  ],
+                  "languageCode": "en"
+                },
+                {
+                  "longText": "New York",
+                  "shortText": "NY",
+                  "types": [
+                    "administrative_area_level_1",
+                    "political"
+                  ],
+                  "languageCode": "en"
+                },
+                {
+                  "longText": "United States",
+                  "shortText": "US",
+                  "types": [
+                    "country",
+                    "political"
+                  ],
+                  "languageCode": "en"
+                },
+                {
+                  "longText": "10004",
+                  "shortText": "10004",
+                  "types": [
+                    "postal_code"
+                  ],
+                  "languageCode": "en"
+                }
+              ],
+              "plusCode": {
+                "globalCode": "87G7MXQ4+M5",
+                "compoundCode": "MXQ4+M5 New York, NY"
+              },
+              "location": {
+                "latitude": 40.6892494,
+                "longitude": -74.04450039999999
+              },
+              "viewport": {
+                "low": {
+                  "latitude": 40.6892494,
+                  "longitude": -74.04450039999999
+                },
+                "high": {
+                  "latitude": 40.708514799999996,
+                  "longitude": -74.0131828
+                }
+              },
+              "adrFormatAddress": "\u003cspan class=\"locality\"\u003eNew York\u003c/span\u003e, \u003cspan class=\"region\"\u003eNY\u003c/span\u003e \u003cspan class=\"postal-code\"\u003e10004\u003c/span\u003e, \u003cspan class=\"country-name\"\u003eUSA\u003c/span\u003e",
+              "shortFormattedAddress": "Statue of Liberty Nat'l Monument, New York"
+            };            
+          }
+          
           if (
             responseJSON.status === 'OK' ||
             (props.isNewPlacesAPI && responseJSON.id === rowData.place_id)
@@ -336,6 +429,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               key: props.query.key,
               sessionToken,
               fields: props.fields,
+              languageCode: `en`,
+              regionCode: `US`,
             }),
         );
         setSessionToken(uuidv4());
@@ -623,7 +718,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       if (props.isNewPlacesAPI) {
-        const { locationbias, types, ...rest } = props.query;
+        const { locationbias, locationBias, types, ...rest } = props.query;
         request.send(
           Qs.stringify({
             input: text,
