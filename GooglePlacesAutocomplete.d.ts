@@ -404,7 +404,7 @@ interface GooglePlacesAutocompleteProps {
   minLength?: number;
   keepResultsAfterBlur?: boolean;
   /** Which API to use: GoogleReverseGeocoding or GooglePlacesSearch */
-  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
+  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch' | 'None';
   numberOfLines?: number;
   onFail?: (error?: any) => void;
   onNotFound?: () => void;
