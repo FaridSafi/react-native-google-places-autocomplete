@@ -284,7 +284,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           const responseJSON = JSON.parse(request.responseText);
           if (
             responseJSON.status === 'OK' ||
-            (props.isNewPlacesAPI && responseJSON.id === rowData.place_id)
+            (props.isNewPlacesAPI && responseJSON.id)
           ) {
             // if (_isMounted === true) {
             const details = props.isNewPlacesAPI
@@ -607,7 +607,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
 
       if (props.isNewPlacesAPI) {
-        request.open('POST', `${url}/v1/places:autocomplete`);
+        const keyQueryParam = props.query.key
+          ? '?' +
+            Qs.stringify({
+              key: props.query.key,
+            })
+          : '';
+        request.open('POST', `${url}/v1/places:autocomplete${keyQueryParam}`);
       } else {
         request.open(
           'GET',
@@ -622,9 +628,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       if (props.isNewPlacesAPI) {
-        const { locationbias, locationBias, types, ...rest } = props.query;
+        const { key, locationbias, types, ...rest } = props.query;
         request.send(
-          Qs.stringify({
+          JSON.stringify({
             input: text,
             sessionToken,
             ...rest,

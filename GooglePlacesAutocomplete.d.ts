@@ -293,6 +293,8 @@ interface Point {
 interface AddressComponent {
   long_name: string;
   short_name: string;
+  longText: string;
+  shortText: string;
   types: PlaceType[];
 }
 
