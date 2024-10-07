@@ -160,7 +160,22 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
 
   const inputRef = useRef();
-  const [sessionToken, setSessionToken] = useState(uuidv4());
+
+  const randomGenerator = useCallback(() => {
+    const randomByteArray = [];
+    for (let i = 0; i < 16; i++) {
+      const rand = Math.floor(Math.random() * 256);
+      randomByteArray.push(rand);
+    }
+    return randomByteArray;
+  });
+
+  const generateSessionToken = useCallback(() => {
+    return uuidv4({ rng: randomGenerator });
+  }, [randomGenerator]);
+
+  const [sessionToken, setSessionToken] = useState(generateSessionToken());
+
   useEffect(() => {
     setUrl(getRequestUrl(props.requestUrl));
   }, [getRequestUrl, props.requestUrl]);
@@ -337,7 +352,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               fields: props.fields,
             }),
         );
-        setSessionToken(uuidv4());
+        setSessionToken(generateSessionToken());
       } else {
         request.open(
           'GET',
@@ -628,6 +643,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       if (props.isNewPlacesAPI) {
+        request.setRequestHeader(
+          'content-type',
+          'application/json; charset=utf-8',
+        );
         const { key, locationbias, types, ...rest } = props.query;
         request.send(
           JSON.stringify({
