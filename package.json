@@ -32,6 +32,7 @@
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
     "qs": "~6.9.1",
+    "react-native-get-random-values": "^1.11.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
