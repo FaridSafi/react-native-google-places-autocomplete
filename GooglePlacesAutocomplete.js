@@ -2,6 +2,7 @@
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import React, {
   forwardRef,
