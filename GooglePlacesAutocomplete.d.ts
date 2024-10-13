@@ -387,6 +387,8 @@ interface GooglePlacesAutocompleteProps {
   enablePoweredByContainer?: boolean;
   fetchDetails?: boolean;
   /** filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities */
+  filter?: (data: any[]) => any[];
+  /** add custom filter method for dataSource */
   filterReverseGeocodingByTypes?: PlaceType[];
   /** available options for GooglePlacesDetails API: https://developers.google.com/places/web-service/details */
   GooglePlacesDetailsQuery?: Partial<Query> & { fields?: string };
