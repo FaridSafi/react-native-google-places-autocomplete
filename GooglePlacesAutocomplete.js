@@ -948,6 +948,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             }
             clearButtonMode={clearButtonMode || 'while-editing'}
             onChangeText={_handleChangeText}
+            testID={props.testID}
             {...userProps}
           />
           {_renderRightButton()}
