@@ -6,24 +6,6 @@
 
 **Customizable Google Places autocomplete component for iOS and Android React-Native apps**
 
-## Sponsor
-
-<p align="center">
-  <br/>
-  <a href="https://bit.ly/3rneTTI" target="_blank">
-    <img src="https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/expensify-logo.png">
-  </a>
-  <br>
-  <p align="center">
-    The financial management super app for expenses, corporate cards, and more.
-  </p>
-  <a href="https://bit.ly/3rneTTI" target="_blank">
-    <p align="center">
-      Click to learn more
-    </p>
-  </a>
-</p>
-
 ## Preview
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
