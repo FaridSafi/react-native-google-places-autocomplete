@@ -5,9 +5,9 @@ import Qs from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 import React, {
   forwardRef,
-  useMemo,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
   useCallback,
@@ -181,7 +181,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
-      setStateText(address);
+      _handleChangeText(address);
     },
     getAddressText: () => stateText,
     blur: () => inputRef.current.blur(),
