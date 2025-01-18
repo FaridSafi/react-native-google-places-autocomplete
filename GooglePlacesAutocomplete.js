@@ -180,6 +180,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, [buildRowsFromResults, props.predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
+    setAddressTextAndQuery:(address) => {
+      setStateText(address);
+      _handleAddressTextAndQuery(address);
+    },
     setAddressText: (address) => {
       setStateText(address);
     },
@@ -663,6 +667,28 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
     if (onChangeText) {
       onChangeText(text);
+    }
+  };
+
+  const _handleAddressTextAndQuery = async (address) => {
+
+    // Use Promise to ensure that the query is completed before logging addresses
+    await new Promise((resolve) => {
+      // Trigger the query to fetch autocomplete results based on the entered address
+      _request(address);
+
+      // Wait for a short delay to ensure the query is completed and results are available
+      setTimeout(() => {
+        resolve(dataSource);
+      }, 500); // Adjust the delay as needed
+    });
+
+    if (_results.length > 0) {
+      // Get the first item from _results
+      const firstResult = _results[0];
+
+      // Trigger the onPress function with the first result
+      _onPress(firstResult);
     }
   };
 
