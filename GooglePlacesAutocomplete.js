@@ -75,6 +75,15 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   let _results = [];
   let _requests = [];
 
+  const {
+    timeout = 20000,
+    onTimeout = () => console.warn('google places autocomplete: request timeout'),
+    predefinedPlaces = [],
+    predefinedPlacesAlwaysVisible = false,
+    currentLocation = false,
+    isNewPlacesAPI = false,
+  } = props;
+
   const hasNavigator = () => {
     if (navigator?.geolocation) {
       return true;
@@ -86,44 +95,39 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
-  const buildRowsFromResults = useCallback(
-    (results, text) => {
-      let res = [];
-      const shouldDisplayPredefinedPlaces = text
-        ? results.length === 0 && text.length === 0
-        : results.length === 0;
-      if (
-        shouldDisplayPredefinedPlaces ||
-        props.predefinedPlacesAlwaysVisible === true
-      ) {
-        res = [
-          ...props.predefinedPlaces.filter(
-            (place) => place?.description.length,
-          ),
-        ];
+  const buildRowsFromResults = useCallback((results, text) => {
+    let res = [];
+    const shouldDisplayPredefinedPlaces = text
+      ? results.length === 0 && text.length === 0
+      : results.length === 0;
+    if (shouldDisplayPredefinedPlaces || predefinedPlacesAlwaysVisible) {
+      res = [
+        ...predefinedPlaces.filter((place) => place?.description.length),
+      ];
 
-        if (props.currentLocation === true && hasNavigator()) {
-          res.unshift({
-            description: props.currentLocationLabel,
-            isCurrentLocation: true,
-          });
-        }
+      if (currentLocation && hasNavigator()) {
+        res.unshift({
+          description: props.currentLocationLabel,
+          isCurrentLocation: true,
+        });
       }
+    }
 
-      res = res.map((place) => ({
-        ...place,
-        isPredefinedPlace: true,
-      }));
+    if (!res.length) return [...results];
 
-      return [...res, ...results];
-    },
-    [
-      props.currentLocation,
-      props.currentLocationLabel,
-      props.predefinedPlaces,
-      props.predefinedPlacesAlwaysVisible,
-    ],
-  );
+    res = res.map((place) => ({
+      ...place,
+      isPredefinedPlace: true,
+    }));
+
+    return [...res, ...results];
+  },
+  [
+    currentLocation,
+    props.currentLocationLabel,
+    predefinedPlaces,
+    predefinedPlacesAlwaysVisible,
+  ]);
 
   const getRequestUrl = useCallback((requestUrl) => {
     if (requestUrl) {
@@ -176,8 +180,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([]));
-  }, [buildRowsFromResults, props.predefinedPlaces]);
+    // TODO: predefinedPlaces because it's an array is saved in memeory as a reference
+    // so it's not possible to compare it with the previous value
+    // used here as a dependency it creates an infinite loop, my conditional rule stop this but not solve the entire problem
+    // so we need to find a way to compare the previous value with the new one or use memoization
+    if (predefinedPlaces?.length) setDataSource(buildRowsFromResults([]));
+  }, [buildRowsFromResults, predefinedPlaces]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -234,7 +242,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       getCurrentPosition(
         (position) => {
           if (props.nearbyPlacesAPI === 'None') {
-            let currentLocation = {
+            let _currentLocation = {
               description: props.currentLocationLabel,
               geometry: {
                 location: {
@@ -245,7 +253,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             };
 
             _disableRowLoaders();
-            props.onPress(currentLocation, currentLocation);
+            props.onPress(_currentLocation, _currentLocation);
           } else {
             _requestNearby(position.coords.latitude, position.coords.longitude);
           }
@@ -275,8 +283,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       // fetch details
       const request = new XMLHttpRequest();
       _requests.push(request);
-      request.timeout = props.timeout;
-      request.ontimeout = props.onTimeout;
+      request.timeout = timeout;
+      request.ontimeout = onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) return;
 
@@ -284,10 +292,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           const responseJSON = JSON.parse(request.responseText);
           if (
             responseJSON.status === 'OK' ||
-            (props.isNewPlacesAPI && responseJSON.id)
+            (isNewPlacesAPI && responseJSON.id)
           ) {
             // if (_isMounted === true) {
-            const details = props.isNewPlacesAPI
+            const details = isNewPlacesAPI
               ? responseJSON
               : responseJSON.result;
             _disableRowLoaders();
@@ -327,7 +335,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         }
       };
 
-      if (props.isNewPlacesAPI) {
+      if (isNewPlacesAPI) {
         request.open(
           'GET',
           `${url}/v1/places/${rowData.place_id}?` +
@@ -407,9 +415,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       return rowData;
     }
 
-    for (let i = 0; i < props.predefinedPlaces.length; i++) {
-      if (props.predefinedPlaces[i].description === rowData.description) {
-        return props.predefinedPlaces[i];
+    for (let i = 0; i < predefinedPlaces.length; i++) {
+      if (predefinedPlaces[i].description === rowData.description) {
+        return predefinedPlaces[i];
       }
     }
 
@@ -471,8 +479,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     ) {
       const request = new XMLHttpRequest();
       _requests.push(request);
-      request.timeout = props.timeout;
-      request.ontimeout = props.onTimeout;
+      request.timeout = timeout;
+      request.ontimeout = onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
           setListLoaderDisplayed(true);
@@ -551,11 +559,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     if (!url) {
       return;
     }
-    if (supportedPlatform() && text && text.length >= props.minLength) {
+    const isSearchTerm = text
+      ? props.minLength && text.length >= props.minLength
+        ? true
+        : text.length >= 0
+      : false
+    if (supportedPlatform() && isSearchTerm) {
       const request = new XMLHttpRequest();
       _requests.push(request);
-      request.timeout = props.timeout;
-      request.ontimeout = props.onTimeout;
+      request.timeout = timeout;
+      request.ontimeout = onTimeout;
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
           setListLoaderDisplayed(true);
@@ -606,7 +619,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         setStateText(props.preProcess(text));
       }
 
-      if (props.isNewPlacesAPI) {
+      if (isNewPlacesAPI) {
         const keyQueryParam = props.query.key
           ? '?' +
             Qs.stringify({
@@ -627,7 +640,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.withCredentials = requestShouldUseWithCredentials();
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
-      if (props.isNewPlacesAPI) {
+      if (isNewPlacesAPI) {
         const { key, locationbias, types, ...rest } = props.query;
         request.send(
           JSON.stringify({
@@ -861,9 +874,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
     if (
       supportedPlatform() &&
-      (stateText !== '' ||
-        props.predefinedPlaces.length > 0 ||
-        props.currentLocation === true) &&
+      (stateText !== '' || predefinedPlaces.length > 0 || currentLocation) &&
       listViewDisplayed === true
     ) {
       return (
