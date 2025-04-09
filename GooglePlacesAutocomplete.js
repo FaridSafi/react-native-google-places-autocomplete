@@ -2,9 +2,9 @@
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import React, {
-  forwardRef,
   useMemo,
   useEffect,
   useImperativeHandle,
@@ -71,7 +71,58 @@ const defaultStyles = {
   powered: {},
 };
 
-export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+const defaultProps = {
+  autoFillOnNotFound: false,
+  currentLocation: false,
+  currentLocationLabel: 'Current location',
+  debounce: 0,
+  disableScroll: false,
+  enableHighAccuracyLocation: true,
+  enablePoweredByContainer: true,
+  fetchDetails: false,
+  filterReverseGeocodingByTypes: [],
+  GooglePlacesDetailsQuery: {},
+  GooglePlacesSearchQuery: {
+    rankby: 'distance',
+    type: 'restaurant',
+  },
+  GoogleReverseGeocodingQuery: {},
+  isRowScrollable: true,
+  keyboardShouldPersistTaps: 'always',
+  listHoverColor: '#ececec',
+  listUnderlayColor: '#c8c7cc',
+  listViewDisplayed: 'auto',
+  keepResultsAfterBlur: false,
+  minLength: 0,
+  nearbyPlacesAPI: 'GooglePlacesSearch',
+  numberOfLines: 1,
+  onFail: () => { },
+  onNotFound: () => { },
+  onPress: () => { },
+  onTimeout: () => console.warn('google places autocomplete: request timeout'),
+  placeholder: '',
+  predefinedPlaces: [],
+  predefinedPlacesAlwaysVisible: false,
+  query: {
+    key: 'missing api key',
+    language: 'en',
+    types: 'geocode',
+  },
+  styles: {},
+  suppressDefaultStyles: false,
+  textInputHide: false,
+  textInputProps: {},
+  timeout: 20000,
+  isNewPlacesAPI: false,
+  fields: '*',
+};
+
+export const GooglePlacesAutocomplete = ({ ref, ...rest }) => {
+  const props = {
+    ...defaultProps,
+    ...rest,
+  };
+
   let _results = [];
   let _requests = [];
 
@@ -331,23 +382,23 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         request.open(
           'GET',
           `${url}/v1/places/${rowData.place_id}?` +
-            Qs.stringify({
-              key: props.query.key,
-              sessionToken,
-              fields: props.fields,
-            }),
+          Qs.stringify({
+            key: props.query.key,
+            sessionToken,
+            fields: props.fields,
+          }),
         );
         setSessionToken(uuidv4());
       } else {
         request.open(
           'GET',
           `${url}/place/details/json?` +
-            Qs.stringify({
-              key: props.query.key,
-              placeid: rowData.place_id,
-              language: props.query.language,
-              ...props.GooglePlacesDetailsQuery,
-            }),
+          Qs.stringify({
+            key: props.query.key,
+            placeid: rowData.place_id,
+            language: props.query.language,
+            ...props.GooglePlacesDetailsQuery,
+          }),
         );
       }
 
@@ -571,9 +622,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             const results =
               props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
                 ? _filterResultsByTypes(
-                    responseJSON.predictions,
-                    props.filterReverseGeocodingByTypes,
-                  )
+                  responseJSON.predictions,
+                  props.filterReverseGeocodingByTypes,
+                )
                 : responseJSON.predictions;
 
             _results = results;
@@ -609,18 +660,18 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       if (props.isNewPlacesAPI) {
         const keyQueryParam = props.query.key
           ? '?' +
-            Qs.stringify({
-              key: props.query.key,
-            })
+          Qs.stringify({
+            key: props.query.key,
+          })
           : '';
         request.open('POST', `${url}/v1/places:autocomplete${keyQueryParam}`);
       } else {
         request.open(
           'GET',
           `${url}/place/autocomplete/json?input=` +
-            encodeURIComponent(text) +
-            '&' +
-            Qs.stringify(props.query),
+          encodeURIComponent(text) +
+          '&' +
+          Qs.stringify(props.query),
         );
       }
 
@@ -735,8 +786,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               backgroundColor: pressed
                 ? props.listUnderlayColor
                 : hovered
-                ? props.listHoverColor
-                : undefined,
+                  ? props.listHoverColor
+                  : undefined,
             },
           ]}
           onPress={() => _onPress(rowData)}
@@ -933,17 +984,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             onFocus={
               onFocus
                 ? (e) => {
-                    _onFocus();
-                    onFocus(e);
-                  }
+                  _onFocus();
+                  onFocus(e);
+                }
                 : _onFocus
             }
             onBlur={
               onBlur
                 ? (e) => {
-                    _onBlur(e);
-                    onBlur(e);
-                  }
+                  _onBlur(e);
+                  onBlur(e);
+                }
                 : _onBlur
             }
             clearButtonMode={clearButtonMode || 'while-editing'}
@@ -958,7 +1009,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       {props.children}
     </View>
   );
-});
+};
 
 GooglePlacesAutocomplete.propTypes = {
   autoFillOnNotFound: PropTypes.bool,
@@ -1015,52 +1066,6 @@ GooglePlacesAutocomplete.propTypes = {
   timeout: PropTypes.number,
   isNewPlacesAPI: PropTypes.bool,
   fields: PropTypes.string,
-};
-
-GooglePlacesAutocomplete.defaultProps = {
-  autoFillOnNotFound: false,
-  currentLocation: false,
-  currentLocationLabel: 'Current location',
-  debounce: 0,
-  disableScroll: false,
-  enableHighAccuracyLocation: true,
-  enablePoweredByContainer: true,
-  fetchDetails: false,
-  filterReverseGeocodingByTypes: [],
-  GooglePlacesDetailsQuery: {},
-  GooglePlacesSearchQuery: {
-    rankby: 'distance',
-    type: 'restaurant',
-  },
-  GoogleReverseGeocodingQuery: {},
-  isRowScrollable: true,
-  keyboardShouldPersistTaps: 'always',
-  listHoverColor: '#ececec',
-  listUnderlayColor: '#c8c7cc',
-  listViewDisplayed: 'auto',
-  keepResultsAfterBlur: false,
-  minLength: 0,
-  nearbyPlacesAPI: 'GooglePlacesSearch',
-  numberOfLines: 1,
-  onFail: () => {},
-  onNotFound: () => {},
-  onPress: () => {},
-  onTimeout: () => console.warn('google places autocomplete: request timeout'),
-  placeholder: '',
-  predefinedPlaces: [],
-  predefinedPlacesAlwaysVisible: false,
-  query: {
-    key: 'missing api key',
-    language: 'en',
-    types: 'geocode',
-  },
-  styles: {},
-  suppressDefaultStyles: false,
-  textInputHide: false,
-  textInputProps: {},
-  timeout: 20000,
-  isNewPlacesAPI: false,
-  fields: '*',
 };
 
 GooglePlacesAutocomplete.displayName = 'GooglePlacesAutocomplete';
