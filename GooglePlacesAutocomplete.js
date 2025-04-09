@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Qs from 'qs';
 import { v4 as uuidv4 } from 'uuid';
 import React, {
-  forwardRef,
   useMemo,
   useEffect,
   useImperativeHandle,
@@ -71,7 +70,7 @@ const defaultStyles = {
   powered: {},
 };
 
-export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+export const GooglePlacesAutocomplete = ({ref, ...props}) => {
   let _results = [];
   let _requests = [];
 
@@ -958,7 +957,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       {props.children}
     </View>
   );
-});
+};
 
 GooglePlacesAutocomplete.propTypes = {
   autoFillOnNotFound: PropTypes.bool,
