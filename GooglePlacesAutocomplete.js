@@ -71,7 +71,15 @@ const defaultStyles = {
   powered: {},
 };
 
-export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+export const GooglePlacesAutocomplete = forwardRef((providedProps, ref) => {
+  let props = useMemo(
+    () => ({
+      ...defaultProps,
+      ...providedProps,
+    }),
+    [providedProps],
+  );
+
   let _results = [];
   let _requests = [];
 
@@ -1017,7 +1025,7 @@ GooglePlacesAutocomplete.propTypes = {
   fields: PropTypes.string,
 };
 
-GooglePlacesAutocomplete.defaultProps = {
+let defaultProps = {
   autoFillOnNotFound: false,
   currentLocation: false,
   currentLocationLabel: 'Current location',
