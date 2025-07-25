@@ -2,7 +2,7 @@
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import Qs from 'qs';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'expo-crypto';
 import React, {
   forwardRef,
   useMemo,
@@ -96,11 +96,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         shouldDisplayPredefinedPlaces ||
         props.predefinedPlacesAlwaysVisible === true
       ) {
-        res = [
-          ...props.predefinedPlaces.filter(
-            (place) => place?.description.length,
-          ),
-        ];
+       
+       
+       if(props.predefinedPlaces) 
+        { 
+          res = [
+            ...props.predefinedPlaces.filter(
+              (place) => place?.description.length,
+            ),
+          ];
+        }
 
         if (props.currentLocation === true && hasNavigator()) {
           res.unshift({
@@ -160,7 +165,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
 
   const inputRef = useRef();
-  const [sessionToken, setSessionToken] = useState(uuidv4());
+  const [sessionToken, setSessionToken] = useState(randomUUID());
   useEffect(() => {
     setUrl(getRequestUrl(props.requestUrl));
   }, [getRequestUrl, props.requestUrl]);
@@ -337,7 +342,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               fields: props.fields,
             }),
         );
-        setSessionToken(uuidv4());
+        setSessionToken(randomUUID());
       } else {
         request.open(
           'GET',
