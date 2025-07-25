@@ -684,9 +684,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       <Text
         style={[
           props.suppressDefaultStyles ? {} : defaultStyles.description,
-          props.styles.description,
+          props.styles?.description,
           rowData.isPredefinedPlace
-            ? props.styles.predefinedPlacesDescription
+            ? props.styles?.predefinedPlacesDescription
             : {},
         ]}
         numberOfLines={props.numberOfLines}
@@ -710,7 +710,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         <View
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.loader,
-            props.styles.loader,
+            props.styles?.loader,
           ]}
         >
           {_getRowLoader()}
@@ -750,8 +750,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           <View
             style={[
               props.suppressDefaultStyles ? {} : defaultStyles.row,
-              props.styles.row,
-              rowData.isPredefinedPlace ? props.styles.specialItemRow : {},
+              props.styles?.row,
+              rowData.isPredefinedPlace ? props.styles?.specialItemRow : {},
             ]}
           >
             {_renderLoader(rowData)}
@@ -772,7 +772,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         key={`${sectionID}-${rowID}`}
         style={[
           props.suppressDefaultStyles ? {} : defaultStyles.separator,
-          props.styles.separator,
+          props.styles?.separator,
         ]}
       />
     );
@@ -815,13 +815,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         style={[
           props.suppressDefaultStyles ? {} : defaultStyles.row,
           defaultStyles.poweredContainer,
-          props.styles.poweredContainer,
+          props.styles?.poweredContainer,
         ]}
       >
         <Image
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.powered,
-            props.styles.powered,
+            props.styles?.powered,
           ]}
           resizeMode='contain'
           source={require('./images/powered_by_google_on_white.png')}
@@ -877,7 +877,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           scrollEnabled={!props.disableScroll}
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
-            props.styles.listView,
+            props.styles?.listView,
           ]}
           data={dataSource}
           keyExtractor={keyGenerator}
@@ -909,13 +909,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     clearButtonMode,
     InputComp,
     ...userProps
-  } = props.textInputProps;
+  } = props.textInputProps || {};
   const TextInputComp = InputComp || TextInput;
   return (
     <View
       style={[
         props.suppressDefaultStyles ? {} : defaultStyles.container,
-        props.styles.container,
+        props.styles?.container,
       ]}
       pointerEvents='box-none'
     >
@@ -923,7 +923,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         <View
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.textInputContainer,
-            props.styles.textInputContainer,
+            props.styles?.textInputContainer,
           ]}
         >
           {_renderLeftButton()}
@@ -931,7 +931,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             ref={inputRef}
             style={[
               props.suppressDefaultStyles ? {} : defaultStyles.textInput,
-              props.styles.textInput,
+              props.styles?.textInput,
             ]}
             value={stateText}
             placeholder={props.placeholder}
