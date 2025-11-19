@@ -43,7 +43,9 @@ const defaultStyles = {
     flex: 1,
     marginBottom: 5,
   },
-  listView: {},
+  listView: {
+    backgroundColor: '#FFFFFF',
+  },
   row: {
     backgroundColor: '#FFFFFF',
     padding: 13,
@@ -72,16 +74,27 @@ const defaultStyles = {
 };
 
 export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+  const predefinedPlaces = useMemo(() => props.predefinedPlaces || [], [props.predefinedPlaces]);
   let _results = [];
   let _requests = [];
+  const hasWarnedAboutNavigator = useRef(false);
 
   const hasNavigator = () => {
     if (navigator?.geolocation) {
       return true;
     } else {
-      console.warn(
-        'If you are using React Native v0.60.0+ you must follow these instructions to enable currentLocation: https://git.io/Jf4AR',
-      );
+      if (!hasWarnedAboutNavigator.current) {
+        if (Platform.OS === 'web') {
+          console.warn(
+            'Geolocation is not available. For web, ensure your site is served over HTTPS or localhost to use geolocation features.',
+          );
+        } else {
+          console.warn(
+            'Geolocation is not available. For React Native, you may need to install and configure @react-native-community/geolocation or expo-location to enable currentLocation.',
+          );
+        }
+        hasWarnedAboutNavigator.current = true;
+      }
       return false;
     }
   };
@@ -89,20 +102,19 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const buildRowsFromResults = useCallback(
     (results, text) => {
       let res = [];
-      const shouldDisplayPredefinedPlaces = text
-        ? results.length === 0 && text.length === 0
-        : results.length === 0;
+      // Show predefined places if:
+      // 1. No text entered and no results, OR
+      // 2. predefinedPlacesAlwaysVisible is true
+      const shouldDisplayPredefinedPlaces = 
+        (!text || text.length === 0) && results.length === 0;
       if (
         shouldDisplayPredefinedPlaces ||
         props.predefinedPlacesAlwaysVisible === true
       ) {
-       
-       
-       if(props.predefinedPlaces) 
-        { 
+        if (predefinedPlaces.length > 0) {
           res = [
-            ...props.predefinedPlaces.filter(
-              (place) => place?.description.length,
+            ...predefinedPlaces.filter(
+              (place) => place?.description?.length,
             ),
           ];
         }
@@ -125,7 +137,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     [
       props.currentLocation,
       props.currentLocationLabel,
-      props.predefinedPlaces,
+      predefinedPlaces,
       props.predefinedPlacesAlwaysVisible,
     ],
   );
@@ -168,7 +180,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [sessionToken, setSessionToken] = useState(randomUUID());
   useEffect(() => {
     setUrl(getRequestUrl(props.requestUrl));
-  }, [getRequestUrl, props.requestUrl]);
+  }, [props.requestUrl]);
 
   useEffect(() => {
     // This will load the search results after the query object ref gets changed
@@ -182,7 +194,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
     setDataSource(buildRowsFromResults([]));
-  }, [buildRowsFromResults, props.predefinedPlaces]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [predefinedPlaces]);
+
+  useEffect(() => {
+    // Auto-show list when dataSource has items in 'auto' mode
+    if (props.listViewDisplayed === 'auto' && dataSource.length > 0 && !listViewDisplayed) {
+      setListViewDisplayed(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataSource]);
 
   useImperativeHandle(ref, () => ({
     setAddressText: (address) => {
@@ -412,9 +433,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       return rowData;
     }
 
-    for (let i = 0; i < props.predefinedPlaces.length; i++) {
-      if (props.predefinedPlaces[i].description === rowData.description) {
-        return props.predefinedPlaces[i];
+    if (predefinedPlaces.length > 0) {
+      for (let i = 0; i < predefinedPlaces.length; i++) {
+        if (predefinedPlaces[i].description === rowData.description) {
+          return predefinedPlaces[i];
+        }
       }
     }
 
@@ -422,7 +445,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _filterResultsByTypes = (unfilteredResults, types) => {
-    if (types.length === 0) return unfilteredResults;
+    if (!types || types.length === 0) return unfilteredResults;
 
     const results = [];
     for (let i = 0; i < unfilteredResults.length; i++) {
@@ -502,7 +525,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               results = responseJSON.results;
             }
 
-            setDataSource(buildRowsFromResults(results));
+            const newDataSource = buildRowsFromResults(results);
+            setDataSource(newDataSource);
+            // Auto-show list when results arrive if in 'auto' mode
+            if (props.listViewDisplayed === 'auto' && newDataSource.length > 0) {
+              setListViewDisplayed(true);
+            }
             // }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
@@ -553,12 +581,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const _request = (text) => {
     _abortRequests();
+  
     if (!url) {
       return;
     }
-    if (supportedPlatform() && text && text.length >= props.minLength) {
+
+
+    if (supportedPlatform() && text && text.length >= (props.minLength || 0)) {
+
       const request = new XMLHttpRequest();
       _requests.push(request);
+
       request.timeout = props.timeout;
       request.ontimeout = props.onTimeout;
       request.onreadystatechange = () => {
@@ -568,6 +601,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         }
 
         setListLoaderDisplayed(false);
+     
         if (request.status === 200) {
           const responseJSON = JSON.parse(request.responseText);
 
@@ -582,7 +616,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 : responseJSON.predictions;
 
             _results = results;
-            setDataSource(buildRowsFromResults(results, text));
+            const newDataSource = buildRowsFromResults(results, text);
+            setDataSource(newDataSource);
+            // Auto-show list when results arrive if in 'auto' mode
+            if (props.listViewDisplayed === 'auto' && newDataSource.length > 0) {
+              setListViewDisplayed(true);
+            }
             // }
           }
           if (typeof responseJSON.suggestions !== 'undefined') {
@@ -591,7 +630,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             );
 
             _results = results;
-            setDataSource(buildRowsFromResults(results, text));
+            const newDataSource = buildRowsFromResults(results, text);
+            setDataSource(newDataSource);
+            // Auto-show list when results arrive if in 'auto' mode
+            if (props.listViewDisplayed === 'auto' && newDataSource.length > 0) {
+              setListViewDisplayed(true);
+            }
           }
           if (typeof responseJSON.error_message !== 'undefined') {
             if (!props.onFail)
@@ -603,7 +647,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             }
           }
         } else {
-          // console.warn("google places autocomplete: request could not be completed or has been aborted");
+          console.warn("google places autocomplete: request could not be completed or has been aborted");
         }
       };
 
@@ -659,6 +703,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _onChangeText = (text) => {
     setStateText(text);
     debounceData(text);
+
   };
 
   const _handleChangeText = (text) => {
@@ -864,17 +909,22 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _getFlatList = () => {
     const keyGenerator = () => Math.random().toString(36).substr(2, 10);
 
-    if (
+    // Show list if:
+    // 1. Platform is supported
+    // 2. There's data to show (dataSource has items)
+    // 3. listViewDisplayed is true OR we're in 'auto' mode (auto-shows when data exists)
+    const isAutoMode = props.listViewDisplayed === 'auto' || props.listViewDisplayed === undefined;
+    const shouldShowList = 
       supportedPlatform() &&
-      (stateText !== '' ||
-        props.predefinedPlaces.length > 0 ||
-        props.currentLocation === true) &&
-      listViewDisplayed === true
-    ) {
+      dataSource.length > 0 &&
+      (listViewDisplayed === true || isAutoMode);
+
+    if (shouldShowList) {
       return (
         <FlatList
           nativeID='result-list-id'
           scrollEnabled={!props.disableScroll}
+          nestedScrollEnabled={true}
           style={[
             props.suppressDefaultStyles ? {} : defaultStyles.listView,
             props.styles?.listView,
