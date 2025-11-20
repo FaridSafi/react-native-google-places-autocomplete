@@ -178,6 +178,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const inputRef = useRef();
   const [sessionToken, setSessionToken] = useState(randomUUID());
+
+  
   useEffect(() => {
     setUrl(getRequestUrl(props.requestUrl));
   }, [props.requestUrl]);
@@ -586,9 +588,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       return;
     }
 
-
     if (supportedPlatform() && text && text.length >= (props.minLength || 0)) {
-
       const request = new XMLHttpRequest();
       _requests.push(request);
 
@@ -703,7 +703,6 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _onChangeText = (text) => {
     setStateText(text);
     debounceData(text);
-
   };
 
   const _handleChangeText = (text) => {
