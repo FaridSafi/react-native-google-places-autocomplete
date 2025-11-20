@@ -887,7 +887,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           ListEmptyComponent={
             listLoaderDisplayed
               ? props.listLoaderComponent
-              : stateText.length > props.minLength && props.listEmptyComponent
+              : stateText?.length > props.minLength && props.listEmptyComponent
           }
           ListHeaderComponent={
             props.renderHeaderComponent &&
