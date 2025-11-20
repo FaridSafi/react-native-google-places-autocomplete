@@ -5,6 +5,7 @@ This is an example Expo project to test the `react-native-google-places-autocomp
 ## Setup
 
 1. **Install dependencies:**
+
    ```bash
    cd example
    npm install
@@ -13,6 +14,7 @@ This is an example Expo project to test the `react-native-google-places-autocomp
    ```
 
 2. **Get your Google Places API Key:**
+
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
    - Create a new project or select an existing one
    - Enable the "Places API" (Web Service)
@@ -20,10 +22,12 @@ This is an example Expo project to test the `react-native-google-places-autocomp
    - Optionally, enable "Geocoding API" if you want to use current location features
 
 3. **Add your API Key:**
+
    - Open `App.js`
    - Replace `YOUR_API_KEY_HERE` with your actual Google Places API key
 
 4. **Run the app:**
+
    ```bash
    npm start
    # or
@@ -31,6 +35,7 @@ This is an example Expo project to test the `react-native-google-places-autocomp
    ```
 
    Then press:
+
    - `i` for iOS simulator
    - `a` for Android emulator
    - `w` for web browser
@@ -57,4 +62,3 @@ Since this example uses `file:..` to link to the parent library, any changes you
 - For iOS, you'll need Xcode installed
 - For Android, you'll need Android Studio and an emulator set up
 - The library requires a valid Google Places API key to function
-
