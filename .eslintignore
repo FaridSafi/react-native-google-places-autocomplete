@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Lock files
+yarn.lock
+package-lock.json
+**/yarn.lock
+**/package-lock.json
+
+# Build outputs
+dist/
+build/
+*.min.js
+
+# Config files that don't need linting
+*.config.js
+babel.config.js
+
+# Other
+.DS_Store
+*.log
+.expo/
+.expo-shared/
+

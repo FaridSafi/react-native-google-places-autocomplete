@@ -1,2 +1,12 @@
 # Ignore all png files:
 *.png
+
+# Lock files
+yarn.lock
+**/yarn.lock
+package-lock.json
+**/package-lock.json
+
+# Dependencies
+node_modules/
+**/node_modules/

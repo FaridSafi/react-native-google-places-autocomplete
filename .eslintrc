@@ -3,5 +3,18 @@
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "warn"
-  }
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "**/node_modules/",
+    "yarn.lock",
+    "**/yarn.lock",
+    "package-lock.json",
+    "**/package-lock.json",
+    "dist/",
+    "build/",
+    "*.min.js",
+    ".expo/",
+    ".expo-shared/"
+  ]
 }

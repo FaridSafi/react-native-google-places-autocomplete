@@ -29,10 +29,9 @@
   },
   "homepage": "https://github.com/FaridSafi/react-native-google-places-autocomplete#readme",
   "dependencies": {
+    "expo-crypto": "^14.1.5",
     "lodash.debounce": "^4.0.8",
-    "prop-types": "^15.7.2",
-    "qs": "~6.9.1",
-    "expo-crypto": "^14.1.5"
+    "qs": "~6.9.1"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "2.0.0",
