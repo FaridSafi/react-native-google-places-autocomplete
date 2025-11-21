@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import debounce from 'lodash.debounce';
 import Qs from 'qs';
-import { randomUUID } from 'expo-crypto';
+import uuid from 'react-native-uuid';
 import React, {
   forwardRef,
   useMemo,
@@ -168,7 +168,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   );
   const [url, setUrl] = useState('');
   const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
-  const [sessionToken, setSessionToken] = useState(randomUUID());
+  const [sessionToken, setSessionToken] = useState(uuid.v4());
 
   // ==========================================================================
   // UTILITY FUNCTIONS
@@ -731,7 +731,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               fields,
             }),
         );
-        setSessionToken(randomUUID());
+        setSessionToken(uuid.v4());
       } else {
         request.open(
           'GET',
