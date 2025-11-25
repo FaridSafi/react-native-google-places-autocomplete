@@ -203,24 +203,67 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     return true;
   };
 
-  const getRequestUrl = (requestUrl) => {
-    if (requestUrl) {
-      if (requestUrl.useOnPlatform === 'all') {
-        return requestUrl.url;
+  const getRequestUrl = useCallback(
+    (requestUrl) => {
+      // If using new Places API, default to places.googleapis.com
+      if (isNewPlacesAPI && !requestUrl) {
+        return 'https://places.googleapis.com';
       }
-      if (requestUrl.useOnPlatform === 'web') {
-        return Platform.select({
-          web: requestUrl.url,
-          default: 'https://maps.googleapis.com/maps/api',
-        });
-      }
-    }
-    return 'https://maps.googleapis.com/maps/api';
-  };
 
-  const getRequestHeaders = (requestUrl) => {
-    return requestUrl?.headers || {};
-  };
+      if (requestUrl) {
+        if (requestUrl.useOnPlatform === 'all') {
+          return requestUrl.url;
+        }
+        if (requestUrl.useOnPlatform === 'web') {
+          return Platform.select({
+            web: requestUrl.url,
+            default: isNewPlacesAPI
+              ? 'https://places.googleapis.com'
+              : 'https://maps.googleapis.com/maps/api',
+          });
+        }
+      }
+      return isNewPlacesAPI
+        ? 'https://places.googleapis.com'
+        : 'https://maps.googleapis.com/maps/api';
+    },
+    [isNewPlacesAPI],
+  );
+
+  const getRequestHeaders = useCallback(
+    (requestUrl, isPlaceDetails = false) => {
+      const headers = requestUrl?.headers || {};
+
+      // Add required headers for new Places API if not already provided
+      if (isNewPlacesAPI) {
+        // Add API key to headers if not already provided
+        if (!headers['X-Goog-Api-Key'] && query.key) {
+          headers['X-Goog-Api-Key'] = query.key;
+        }
+
+        if (isPlaceDetails) {
+          // For place details, use fields prop as field mask if not provided
+          if (!headers['X-Goog-FieldMask'] && fields) {
+            headers['X-Goog-FieldMask'] = fields;
+          }
+        } else {
+          // For autocomplete, request both place and query predictions with all needed fields
+          if (!headers['X-Goog-FieldMask']) {
+            headers['X-Goog-FieldMask'] =
+              'suggestions.placePrediction.text.text,suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat,suggestions.placePrediction.types,suggestions.queryPrediction.text.text';
+          }
+        }
+
+        // Ensure Content-Type is set for POST requests
+        if (!headers['Content-Type']) {
+          headers['Content-Type'] = 'application/json';
+        }
+      }
+
+      return headers;
+    },
+    [isNewPlacesAPI, query.key, fields],
+  );
 
   const setRequestHeaders = (request, headers) => {
     Object.keys(headers).forEach((headerKey) =>
@@ -239,6 +282,30 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     });
     requestsRef.current = [];
   }, []);
+
+  // Helper function to extract error message from API response
+  const extractErrorMessage = (responseJSON) => {
+    // New Places API error format
+    if (responseJSON.error) {
+      if (responseJSON.error.message) {
+        return responseJSON.error.message;
+      }
+      if (responseJSON.error.status) {
+        return `${responseJSON.error.status}: ${
+          responseJSON.error.message || 'Unknown error'
+        }`;
+      }
+    }
+    // Legacy API error format
+    if (responseJSON.error_message) {
+      return responseJSON.error_message;
+    }
+    if (responseJSON.status) {
+      return responseJSON.status;
+    }
+    // Fallback
+    return 'Unknown error occurred';
+  };
 
   // ==========================================================================
   // DATA PROCESSING FUNCTIONS
@@ -310,20 +377,34 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _filterResultsByPlacePredictions = (unfilteredResults) => {
     const results = [];
     for (let i = 0; i < unfilteredResults.length; i++) {
+      // Process place predictions (have placeId)
       if (unfilteredResults[i].placePrediction) {
+        const placePred = unfilteredResults[i].placePrediction;
         results.push({
-          description: unfilteredResults[i].placePrediction.text?.text,
-          place_id: unfilteredResults[i].placePrediction.placeId,
-          reference: unfilteredResults[i].placePrediction.placeId,
+          description: placePred.text?.text,
+          place_id: placePred.placeId,
+          reference: placePred.placeId,
           structured_formatting: {
-            main_text:
-              unfilteredResults[i].placePrediction.structuredFormat?.mainText
-                ?.text,
-            secondary_text:
-              unfilteredResults[i].placePrediction.structuredFormat
-                ?.secondaryText?.text,
+            main_text: placePred.structuredFormat?.mainText?.text,
+            secondary_text: placePred.structuredFormat?.secondaryText?.text,
           },
-          types: unfilteredResults[i].placePrediction.types ?? [],
+          types: placePred.types ?? [],
+        });
+      }
+      // Process query predictions (search queries, no placeId)
+      // These are shown but can't be used for place details
+      else if (unfilteredResults[i].queryPrediction) {
+        const queryPred = unfilteredResults[i].queryPrediction;
+        results.push({
+          description: queryPred.text?.text,
+          place_id: null, // Query predictions don't have place IDs
+          reference: null,
+          structured_formatting: {
+            main_text: queryPred.text?.text,
+            secondary_text: '',
+          },
+          types: [],
+          isQueryPrediction: true, // Flag to identify query predictions
         });
       }
     }
@@ -399,11 +480,11 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
               }
             }
             if (typeof responseJSON.error_message !== 'undefined') {
-              if (!onFail) {
-                console.warn(
-                  'google places autocomplete: ' + responseJSON.error_message,
-                );
-              } else {
+              // Always log the warning, and also call onFail if provided
+              console.warn(
+                'google places autocomplete: ' + responseJSON.error_message,
+              );
+              if (onFail) {
                 onFail(responseJSON.error_message);
               }
             }
@@ -433,7 +514,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         request.open('GET', requestUrl);
 
         request.withCredentials = requestShouldUseWithCredentials();
-        setRequestHeaders(request, getRequestHeaders(props.requestUrl));
+        setRequestHeaders(request, getRequestHeaders(props.requestUrl, false));
 
         request.send();
       } else {
@@ -458,6 +539,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       GooglePlacesSearchQuery,
       requestShouldUseWithCredentials,
       props.requestUrl,
+      getRequestHeaders,
     ],
   );
 
@@ -474,6 +556,44 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.timeout = timeout;
       request.ontimeout = onTimeout;
+
+      // Track if request was aborted to avoid showing warnings for intentional aborts
+      let requestAborted = false;
+      request.onabort = () => {
+        requestAborted = true;
+      };
+
+      request.onerror = () => {
+        setListLoaderDisplayed(false);
+        // Only show error if request wasn't intentionally aborted
+        if (!requestAborted && request.status !== 0) {
+          let errorMessage = 'Network error occurred';
+          try {
+            const responseText = request.responseText || '';
+            if (responseText) {
+              try {
+                const responseJSON = JSON.parse(responseText);
+                const extractedMessage = extractErrorMessage(responseJSON);
+                errorMessage = extractedMessage;
+              } catch (e) {
+                // If JSON parsing fails, use raw text if available
+                if (responseText.length > 0 && responseText.length < 500) {
+                  errorMessage = responseText;
+                }
+              }
+            }
+          } catch (e) {
+            // Keep default error message
+          }
+
+          // Always log the warning, and also call onFail if provided
+          console.warn(`google places autocomplete: ${errorMessage}`);
+          if (onFail) {
+            onFail(errorMessage);
+          }
+        }
+      };
+
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
           setListLoaderDisplayed(true);
@@ -482,52 +602,99 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
         setListLoaderDisplayed(false);
 
+        // Skip processing if request was aborted
+        if (requestAborted) {
+          return;
+        }
+
         if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
+          try {
+            const responseJSON = JSON.parse(request.responseText);
 
-          if (typeof responseJSON.predictions !== 'undefined') {
-            const results =
-              nearbyPlacesAPI === 'GoogleReverseGeocoding'
-                ? _filterResultsByTypes(
-                    responseJSON.predictions,
-                    filterReverseGeocodingByTypes,
-                  )
-                : responseJSON.predictions;
+            if (typeof responseJSON.predictions !== 'undefined') {
+              const results =
+                nearbyPlacesAPI === 'GoogleReverseGeocoding'
+                  ? _filterResultsByTypes(
+                      responseJSON.predictions,
+                      filterReverseGeocodingByTypes,
+                    )
+                  : responseJSON.predictions;
 
-            resultsRef.current = results;
-            const newDataSource = buildRowsFromResults(results, text);
-            setDataSource(newDataSource);
-            // Auto-show list when results arrive if in 'auto' mode
-            if (listViewDisplayedProp === 'auto' && newDataSource.length > 0) {
-              setListViewDisplayed(true);
+              resultsRef.current = results;
+              const newDataSource = buildRowsFromResults(results, text);
+              setDataSource(newDataSource);
+              // Auto-show list when results arrive if in 'auto' mode
+              if (
+                listViewDisplayedProp === 'auto' &&
+                newDataSource.length > 0
+              ) {
+                setListViewDisplayed(true);
+              }
             }
-          }
-          if (typeof responseJSON.suggestions !== 'undefined') {
-            const results = _filterResultsByPlacePredictions(
-              responseJSON.suggestions,
-            );
-
-            resultsRef.current = results;
-            const newDataSource = buildRowsFromResults(results, text);
-            setDataSource(newDataSource);
-            // Auto-show list when results arrive if in 'auto' mode
-            if (listViewDisplayedProp === 'auto' && newDataSource.length > 0) {
-              setListViewDisplayed(true);
-            }
-          }
-          if (typeof responseJSON.error_message !== 'undefined') {
-            if (!onFail) {
-              console.warn(
-                'google places autocomplete: ' + responseJSON.error_message,
+            if (typeof responseJSON.suggestions !== 'undefined') {
+              const results = _filterResultsByPlacePredictions(
+                responseJSON.suggestions,
               );
-            } else {
-              onFail(responseJSON.error_message);
+
+              resultsRef.current = results;
+              const newDataSource = buildRowsFromResults(results, text);
+              setDataSource(newDataSource);
+              // Auto-show list when results arrive if in 'auto' mode
+              if (
+                listViewDisplayedProp === 'auto' &&
+                newDataSource.length > 0
+              ) {
+                setListViewDisplayed(true);
+              }
+            }
+            // Check for errors in response (both legacy and new API formats)
+            if (
+              typeof responseJSON.error_message !== 'undefined' ||
+              responseJSON.error
+            ) {
+              const errorMessage = extractErrorMessage(responseJSON);
+              // Always log the warning, and also call onFail if provided
+              console.warn(`google places autocomplete: ${errorMessage}`);
+              if (onFail) {
+                onFail(errorMessage);
+              }
+            }
+          } catch (e) {
+            // Always log the warning, and also call onFail if provided
+            console.warn(
+              'google places autocomplete: failed to parse response',
+            );
+            if (onFail) {
+              onFail('failed to parse response');
             }
           }
-        } else {
-          console.warn(
-            'google places autocomplete: request could not be completed or has been aborted',
-          );
+        } else if (request.status !== 0) {
+          // Only show warning for non-zero status codes (not aborted requests)
+          // Status 0 typically means request was aborted or CORS blocked
+          let errorMessage = `Request failed with status ${request.status}`;
+          try {
+            const responseText = request.responseText || '';
+            if (responseText) {
+              try {
+                const responseJSON = JSON.parse(responseText);
+                const extractedMessage = extractErrorMessage(responseJSON);
+                errorMessage = extractedMessage;
+              } catch (e) {
+                // If JSON parsing fails, use raw text if available
+                if (responseText.length > 0 && responseText.length < 500) {
+                  errorMessage = responseText;
+                }
+              }
+            }
+          } catch (e) {
+            // Keep default error message
+          }
+
+          // Always log the warning, and also call onFail if provided
+          console.warn(`google places autocomplete: ${errorMessage}`);
+          if (onFail) {
+            onFail(errorMessage);
+          }
         }
       };
 
@@ -536,13 +703,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
 
       if (isNewPlacesAPI) {
-        const keyQueryParam = query.key
-          ? '?' +
-            Qs.stringify({
-              key: query.key,
-            })
-          : '';
-        request.open('POST', `${url}/v1/places:autocomplete${keyQueryParam}`);
+        // New Places API uses API key in headers, not query params
+        request.open('POST', `${url}/v1/places:autocomplete`);
       } else {
         request.open(
           'GET',
@@ -554,17 +716,51 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl, false));
 
       if (isNewPlacesAPI) {
-        const { key, locationbias, types, ...rest } = query;
-        request.send(
-          JSON.stringify({
-            input: text,
-            sessionToken,
-            ...rest,
-          }),
-        );
+        const {
+          key,
+          locationbias,
+          types,
+          language,
+          includedRegionCodes,
+          includeQueryPredictions,
+          ...rest
+        } = query;
+
+        // Build request body for new Places API
+        const requestBody = {
+          input: text,
+          sessionToken,
+        };
+
+        // Map language to languageCode
+        if (language) {
+          requestBody.languageCode = language;
+        }
+
+        // Add includedRegionCodes if provided
+        if (includedRegionCodes) {
+          requestBody.includedRegionCodes = Array.isArray(includedRegionCodes)
+            ? includedRegionCodes
+            : [includedRegionCodes];
+        }
+
+        // Add includeQueryPredictions (default to true if not specified)
+        requestBody.includeQueryPredictions =
+          includeQueryPredictions !== undefined
+            ? includeQueryPredictions
+            : true;
+
+        // Add any other query parameters that might be relevant
+        Object.keys(rest).forEach((restKey) => {
+          if (rest[restKey] !== undefined) {
+            requestBody[restKey] = rest[restKey];
+          }
+        });
+
+        request.send(JSON.stringify(requestBody));
       } else {
         request.send();
       }
@@ -657,9 +853,26 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, [buildRowsFromResults]);
 
   const _onPress = (rowData) => {
+    // Query predictions don't have place IDs, so they can't fetch details
+    if (rowData.isQueryPrediction === true) {
+      setStateText(_renderDescription(rowData));
+      _onBlur();
+      // For query predictions, pass the rowData as both data and details
+      onPress(rowData, rowData);
+      return;
+    }
+
     if (rowData.isPredefinedPlace !== true && fetchDetails === true) {
       if (rowData.isLoading === true) {
         // already requesting
+        return;
+      }
+
+      // Don't fetch details if there's no place_id
+      if (!rowData.place_id) {
+        setStateText(_renderDescription(rowData));
+        _onBlur();
+        onPress(rowData, rowData);
         return;
       }
 
@@ -675,58 +888,183 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       requestsRef.current.push(request);
       request.timeout = timeout;
       request.ontimeout = onTimeout;
+
+      // Track if request was aborted to avoid showing warnings for intentional aborts
+      let requestAborted = false;
+      request.onabort = () => {
+        requestAborted = true;
+      };
+
+      request.onerror = () => {
+        _disableRowLoaders();
+        // Only show error if request wasn't intentionally aborted
+        if (!requestAborted && request.status !== 0) {
+          let errorMessage = 'Network error occurred';
+          try {
+            const responseText = request.responseText || '';
+            if (responseText) {
+              try {
+                const responseJSON = JSON.parse(responseText);
+                const extractedMessage = extractErrorMessage(responseJSON);
+                errorMessage = extractedMessage;
+              } catch (e) {
+                // If JSON parsing fails, use raw text if available
+                if (responseText.length > 0 && responseText.length < 500) {
+                  errorMessage = responseText;
+                }
+              }
+            }
+          } catch (e) {
+            // Keep default error message
+          }
+
+          // Always log the warning, and also call onFail if provided
+          console.warn(`google places autocomplete: ${errorMessage}`);
+          if (onFail) {
+            onFail(errorMessage);
+          }
+        }
+      };
+
       request.onreadystatechange = () => {
         if (request.readyState !== 4) return;
 
+        // Skip processing if request was aborted
+        if (requestAborted) {
+          return;
+        }
+
         if (request.status === 200) {
-          const responseJSON = JSON.parse(request.responseText);
-          if (
-            responseJSON.status === 'OK' ||
-            (isNewPlacesAPI && responseJSON.id)
-          ) {
-            const details = isNewPlacesAPI ? responseJSON : responseJSON.result;
-            _disableRowLoaders();
-            _onBlur();
+          try {
+            const responseJSON = JSON.parse(request.responseText);
 
-            setStateText(_renderDescription(rowData));
+            if (isNewPlacesAPI) {
+              // New Places API returns place data directly (no status field)
+              // Check if we have place data (id, name, formattedAddress, etc.)
+              if (
+                responseJSON.id ||
+                responseJSON.name ||
+                responseJSON.formattedAddress
+              ) {
+                const details = responseJSON;
+                _disableRowLoaders();
+                _onBlur();
 
-            delete rowData.isLoading;
-            onPress(rowData, details);
-          } else {
-            _disableRowLoaders();
+                setStateText(_renderDescription(rowData));
 
-            if (autoFillOnNotFound) {
-              setStateText(_renderDescription(rowData));
-              delete rowData.isLoading;
-            }
-
-            if (!onNotFound) {
-              console.warn(
-                'google places autocomplete: ' + responseJSON.status,
-              );
+                delete rowData.isLoading;
+                onPress(rowData, details);
+              } else if (responseJSON.error) {
+                // Handle API errors
+                _disableRowLoaders();
+                if (autoFillOnNotFound) {
+                  setStateText(_renderDescription(rowData));
+                  delete rowData.isLoading;
+                }
+                if (!onNotFound) {
+                  console.warn(
+                    'google places autocomplete: ' +
+                      JSON.stringify(responseJSON.error),
+                  );
+                } else {
+                  onNotFound(responseJSON);
+                }
+              } else {
+                // Unexpected response format
+                _disableRowLoaders();
+                if (autoFillOnNotFound) {
+                  setStateText(_renderDescription(rowData));
+                  delete rowData.isLoading;
+                }
+                if (!onNotFound) {
+                  console.warn(
+                    'google places autocomplete: unexpected response format',
+                  );
+                } else {
+                  onNotFound(responseJSON);
+                }
+              }
             } else {
-              onNotFound(responseJSON);
+              // Legacy API handling
+              if (responseJSON.status === 'OK') {
+                const details = responseJSON.result;
+                _disableRowLoaders();
+                _onBlur();
+
+                setStateText(_renderDescription(rowData));
+
+                delete rowData.isLoading;
+                onPress(rowData, details);
+              } else {
+                _disableRowLoaders();
+
+                if (autoFillOnNotFound) {
+                  setStateText(_renderDescription(rowData));
+                  delete rowData.isLoading;
+                }
+
+                if (!onNotFound) {
+                  console.warn(
+                    'google places autocomplete: ' + responseJSON.status,
+                  );
+                } else {
+                  onNotFound(responseJSON);
+                }
+              }
+            }
+          } catch (e) {
+            _disableRowLoaders();
+            // Always log the warning, and also call onFail if provided
+            console.warn(
+              'google places autocomplete: failed to parse response',
+            );
+            if (onFail) {
+              onFail('failed to parse response');
             }
           }
-        } else {
+        } else if (request.status !== 0) {
+          // Only show warning for non-zero status codes (not aborted requests)
+          // Status 0 typically means request was aborted or CORS blocked
           _disableRowLoaders();
+          let errorMessage = `Request failed with status ${request.status}`;
+          try {
+            const responseText = request.responseText || '';
+            if (responseText) {
+              try {
+                const responseJSON = JSON.parse(responseText);
+                const extractedMessage = extractErrorMessage(responseJSON);
+                errorMessage = extractedMessage;
+              } catch (e) {
+                // If JSON parsing fails, use raw text if available
+                if (responseText.length > 0 && responseText.length < 500) {
+                  errorMessage = responseText;
+                }
+              }
+            }
+          } catch (e) {
+            // Keep default error message
+          }
 
-          if (!onFail) {
-            console.warn(
-              'google places autocomplete: request could not be completed or has been aborted',
-            );
-          } else {
-            onFail('request could not be completed or has been aborted');
+          // Always log the warning, and also call onFail if provided
+          console.warn(`google places autocomplete: ${errorMessage}`);
+          if (onFail) {
+            onFail(errorMessage);
           }
         }
       };
 
       if (isNewPlacesAPI) {
+        // New Places API uses places.googleapis.com endpoint
+        // API key should be in headers, not query params
+        const detailsUrl = url.includes('places.googleapis.com')
+          ? url
+          : 'https://places.googleapis.com';
+
+        // Endpoint format: /v1/places/{placeId} where placeId is just the ID
         request.open(
           'GET',
-          `${url}/v1/places/${rowData.place_id}?` +
+          `${detailsUrl}/v1/places/${rowData.place_id}?` +
             Qs.stringify({
-              key: query.key,
               sessionToken,
               fields,
             }),
@@ -746,7 +1084,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl, true));
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -1049,7 +1387,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   // Initialize URL from requestUrl prop
   useEffect(() => {
     setUrl(getRequestUrl(props.requestUrl));
-  }, [props.requestUrl]);
+  }, [props.requestUrl, getRequestUrl]);
 
   // Initialize dataSource on mount
   useEffect(() => {

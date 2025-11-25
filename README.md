@@ -26,7 +26,12 @@ yarn add react-native-google-places-autocomplete
 
 **Step 2.**
 
-Get your [Google Places API keys](https://developers.google.com/maps/documentation/places/web-service/get-api-key/) and enable "Google Places API Web Service" (NOT Android or iOS) in the console. Billing must be enabled on the account.
+Get your [Google Places API keys](https://developers.google.com/maps/documentation/places/web-service/get-api-key/) and enable the appropriate API in the console:
+
+- **For Legacy API:** Enable "Google Places API Web Service" (NOT Android or iOS)
+- **For New Places API:** Enable "Places API (New)" at https://console.cloud.google.com/apis/library/places.googleapis.com
+
+Billing must be enabled on the account.
 
 **Step 3.**
 
@@ -216,53 +221,55 @@ export default GooglePlacesInput;
 
 _This list is a work in progress. PRs welcome!_
 
-| Prop Name                     | type            | description                                                                                                                                                                                                                                 | default value                                                     | Options                                                    |
-| ----------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
-| autoFillOnNotFound            | boolean         | displays the result from autocomplete if the place details api return not found                                                                                                                                                             | false                                                             | true \| false                                              |
-| currentLocation               | boolean         | Will add a 'Current location' button at the top of the predefined places list                                                                                                                                                               | false                                                             | true \| false                                              |
-| currentLocationLabel          | string          | change the display label for the current location button                                                                                                                                                                                    | Current Location                                                  | Any string                                                 |
-| debounce                      | number          | debounce the requests (in ms)                                                                                                                                                                                                               | 0                                                                 |                                                            |
-| disableScroll                 | boolean         | disable scroll on the results list                                                                                                                                                                                                          |                                                                   |                                                            |
-| enableHighAccuracyLocation    | boolean         | use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. | true                                                              |                                                            |
-| enablePoweredByContainer      | boolean         | show "powered by Google" at the bottom of the search results list                                                                                                                                                                           | true                                                              |                                                            |
-| fetchDetails                  | boolean         | get more place details about the selected option from the Place Details API                                                                                                                                                                 | false                                                             |                                                            |
-| filterReverseGeocodingByTypes | array           | filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities                                                                                                              |                                                                   |                                                            |
-| GooglePlacesDetailsQuery      | object          | "query" object for the Google Place Details API (when you press on a suggestion)                                                                                                                                                            |                                                                   |                                                            |
-| GooglePlacesSearchQuery       | object          | "query" object for the Google Places Nearby API (when you use current location to find nearby places)                                                                                                                                       | `{ rankby: 'distance', type: 'restaurant' }`                      |                                                            |
-| GoogleReverseGeocodingQuery   | object          | "query" object for the Google Geocode API (when you use current location to get the current address)                                                                                                                                        |                                                                   |                                                            |
-| isRowScrollable               | boolean         | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                  | true                                                              |
-| inbetweenCompo                | React.ReactNode | Insert a ReactNode in between the search bar and the search results Flatlist                                                                                                                                                                |
-| keepResultsAfterBlur          | boolean         | show list of results after blur                                                                                                                                                                                                             | false                                                             | true \| false                                              |
-| keyboardShouldPersistTaps     | string          | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                              | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
-| listEmptyComponent            | function        | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                              |                                                                   |                                                            |
-| listLoaderComponent           | function        | show this component while results are loading.                                                                                                                                                                                              |                                                                   |                                                            |
-| listHoverColor                | string          | underlay color of the list result when hovered (web only)                                                                                                                                                                                   | '#ececec'                                                         |                                                            |
-| listUnderlayColor             | string          | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                | '#c8c7cc'                                                         |                                                            |
-| listViewDisplayed             | string          | override the default behavior of showing the list (results) view                                                                                                                                                                            | 'auto'                                                            | 'auto' \| true \| false                                    |
-| minLength                     | number          | minimum length of text to trigger a search                                                                                                                                                                                                  | 0                                                                 |                                                            |
-| nearbyPlacesAPI               | string          | which API to use for current location                                                                                                                                                                                                       | 'GooglePlacesSearch'                                              | 'none' \| 'GooglePlacesSearch' \| 'GoogleReverseGeocoding' |
-| numberOfLines                 | number          | number of lines (android - multiline must be set to true) https://reactnative.dev/docs/textinput#numberoflines                                                                                                                              | 1                                                                 |                                                            |
-| onFail                        | function        | returns if an unspecified error comes back from the API                                                                                                                                                                                     |                                                                   |                                                            |
-| onNotFound                    | function        | returns if the Google Places Details API returns a 'not found' code (when you press a suggestion).                                                                                                                                          |                                                                   |                                                            |
-| onPress                       | function        | returns when after a suggestion is selected                                                                                                                                                                                                 |                                                                   |                                                            |
-| onTimeout                     | function        | callback when a request timeout                                                                                                                                                                                                             | `()=>console.warn('google places autocomplete: request timeout')` |                                                            |
-| placeholder                   | string          | placeholder text https://reactnative.dev/docs/textinput#placeholder                                                                                                                                                                         | 'Search'                                                          |                                                            |
-| predefinedPlaces              | array           | Allows you to show pre-defined places (e.g. home, work)                                                                                                                                                                                     |                                                                   |                                                            |
-| predefinedPlacesAlwaysVisible | boolean         | Shows predefined places at the top of the search results                                                                                                                                                                                    | false                                                             |                                                            |
-| preProcess                    | function        | do something to the text of the search input before a search request is sent                                                                                                                                                                |                                                                   |                                                            |
-| query                         | object          | "query" object for the Google Places Autocomplete API (link)                                                                                                                                                                                | `{ key: 'missing api key', language: 'en', types: 'geocode' }`    |                                                            |
-| renderDescription             | function        | determines the data passed to each renderRow (search result)                                                                                                                                                                                |                                                                   |                                                            |
-| renderHeaderComponent         | function        | use the `ListHeaderComponent` from `FlatList` when showing autocomplete results                                                                                                                                                             |                                                                   |                                                            |
-| renderLeftButton              | function        | add a component to the left side of the Text Input                                                                                                                                                                                          |                                                                   |                                                            |
-| renderRightButton             | function        | add a component to the right side of the Text Input                                                                                                                                                                                         |                                                                   |                                                            |
-| renderRow                     | function        | custom component to render each result row (use this to show an icon beside each result). `data` and `index` will be passed as input parameters                                                                                             |                                                                   |                                                            |
-| requestUrl                    | object          | used to set the request url for the library                                                                                                                                                                                                 |                                                                   |                                                            |
-| returnKeyType                 | string          | the return key text https://reactnative.dev/docs/textinput#returnkeytype                                                                                                                                                                    | 'search'                                                          |                                                            |
-| styles                        | object          | See styles section below                                                                                                                                                                                                                    |                                                                   |                                                            |
-| suppressDefaultStyles         | boolean         | removes all default styling from the library                                                                                                                                                                                                | false                                                             | true \| false                                              |
-| textInputHide                 | boolean         | Hide the Search input                                                                                                                                                                                                                       | false                                                             | true \| false                                              |
-| textInputProps                | object          | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                               |                                                                   |                                                            |
-| timeout                       | number          | how many ms until the request will timeout                                                                                                                                                                                                  | 20000                                                             |                                                            |
+| Prop Name                     | type            | description                                                                                                                                                                                                                                                                                                                   | default value                                                     | Options                                                    |
+| ----------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
+| autoFillOnNotFound            | boolean         | displays the result from autocomplete if the place details api return not found                                                                                                                                                                                                                                               | false                                                             | true \| false                                              |
+| currentLocation               | boolean         | Will add a 'Current location' button at the top of the predefined places list                                                                                                                                                                                                                                                 | false                                                             | true \| false                                              |
+| currentLocationLabel          | string          | change the display label for the current location button                                                                                                                                                                                                                                                                      | Current Location                                                  | Any string                                                 |
+| debounce                      | number          | debounce the requests (in ms)                                                                                                                                                                                                                                                                                                 | 0                                                                 |                                                            |
+| disableScroll                 | boolean         | disable scroll on the results list                                                                                                                                                                                                                                                                                            |                                                                   |                                                            |
+| enableHighAccuracyLocation    | boolean         | use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested. use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested.                                                                                   | true                                                              |                                                            |
+| enablePoweredByContainer      | boolean         | show "powered by Google" at the bottom of the search results list                                                                                                                                                                                                                                                             | true                                                              |                                                            |
+| fetchDetails                  | boolean         | get more place details about the selected option from the Place Details API                                                                                                                                                                                                                                                   | false                                                             |                                                            |
+| fields                        | string          | comma-separated list of fields to return for place details (new Places API only)                                                                                                                                                                                                                                              | '\*'                                                              |                                                            |
+| filterReverseGeocodingByTypes | array           | filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities                                                                                                                                                                                                |                                                                   |                                                            |
+| GooglePlacesDetailsQuery      | object          | "query" object for the Google Place Details API (when you press on a suggestion)                                                                                                                                                                                                                                              |                                                                   |                                                            |
+| GooglePlacesSearchQuery       | object          | "query" object for the Google Places Nearby API (when you use current location to find nearby places)                                                                                                                                                                                                                         | `{ rankby: 'distance', type: 'restaurant' }`                      |                                                            |
+| GoogleReverseGeocodingQuery   | object          | "query" object for the Google Geocode API (when you use current location to get the current address)                                                                                                                                                                                                                          |                                                                   |                                                            |
+| isNewPlacesAPI                | boolean         | enable the new Google Places API (places.googleapis.com) instead of the legacy API                                                                                                                                                                                                                                            | false                                                             | true \| false                                              |
+| isRowScrollable               | boolean         | enable/disable horizontal scrolling of a list result https://reactnative.dev/docs/scrollview#scrollenabled                                                                                                                                                                                                                    | true                                                              |
+| inbetweenCompo                | React.ReactNode | Insert a ReactNode in between the search bar and the search results Flatlist                                                                                                                                                                                                                                                  |
+| keepResultsAfterBlur          | boolean         | show list of results after blur                                                                                                                                                                                                                                                                                               | false                                                             | true \| false                                              |
+| keyboardShouldPersistTaps     | string          | Determines when the keyboard should stay visible after a tap https://reactnative.dev/docs/scrollview#keyboardshouldpersisttaps                                                                                                                                                                                                | 'always'                                                          | 'never' \| 'always' \| 'handled'                           |
+| listEmptyComponent            | function        | use FlatList's ListEmptyComponent prop when no autocomplete results are found.                                                                                                                                                                                                                                                |                                                                   |                                                            |
+| listLoaderComponent           | function        | show this component while results are loading.                                                                                                                                                                                                                                                                                |                                                                   |                                                            |
+| listHoverColor                | string          | underlay color of the list result when hovered (web only)                                                                                                                                                                                                                                                                     | '#ececec'                                                         |                                                            |
+| listUnderlayColor             | string          | underlay color of the list result when pressed https://reactnative.dev/docs/touchablehighlight#underlaycolor                                                                                                                                                                                                                  | '#c8c7cc'                                                         |                                                            |
+| listViewDisplayed             | string          | override the default behavior of showing the list (results) view                                                                                                                                                                                                                                                              | 'auto'                                                            | 'auto' \| true \| false                                    |
+| minLength                     | number          | minimum length of text to trigger a search                                                                                                                                                                                                                                                                                    | 0                                                                 |                                                            |
+| nearbyPlacesAPI               | string          | which API to use for current location                                                                                                                                                                                                                                                                                         | 'GooglePlacesSearch'                                              | 'none' \| 'GooglePlacesSearch' \| 'GoogleReverseGeocoding' |
+| numberOfLines                 | number          | number of lines (android - multiline must be set to true) https://reactnative.dev/docs/textinput#numberoflines                                                                                                                                                                                                                | 1                                                                 |                                                            |
+| onFail                        | function        | returns if an unspecified error comes back from the API                                                                                                                                                                                                                                                                       |                                                                   |                                                            |
+| onNotFound                    | function        | returns if the Google Places Details API returns a 'not found' code (when you press a suggestion).                                                                                                                                                                                                                            |                                                                   |                                                            |
+| onPress                       | function        | returns when after a suggestion is selected                                                                                                                                                                                                                                                                                   |                                                                   |                                                            |
+| onTimeout                     | function        | callback when a request timeout                                                                                                                                                                                                                                                                                               | `()=>console.warn('google places autocomplete: request timeout')` |                                                            |
+| placeholder                   | string          | placeholder text https://reactnative.dev/docs/textinput#placeholder                                                                                                                                                                                                                                                           | 'Search'                                                          |                                                            |
+| predefinedPlaces              | array           | Allows you to show pre-defined places (e.g. home, work)                                                                                                                                                                                                                                                                       |                                                                   |                                                            |
+| predefinedPlacesAlwaysVisible | boolean         | Shows predefined places at the top of the search results                                                                                                                                                                                                                                                                      | false                                                             |                                                            |
+| preProcess                    | function        | do something to the text of the search input before a search request is sent                                                                                                                                                                                                                                                  |                                                                   |                                                            |
+| query                         | object          | "query" object for the Google Places Autocomplete API. For new Places API, supports: `key`, `language` (maps to `languageCode`), `includedRegionCodes` (array), `includeQueryPredictions` (boolean). For legacy API, see [options](https://developers.google.com/places/web-service/autocomplete#place_autocomplete_requests) | `{ key: 'missing api key', language: 'en', types: 'geocode' }`    |                                                            |
+| renderDescription             | function        | determines the data passed to each renderRow (search result)                                                                                                                                                                                                                                                                  |                                                                   |                                                            |
+| renderHeaderComponent         | function        | use the `ListHeaderComponent` from `FlatList` when showing autocomplete results                                                                                                                                                                                                                                               |                                                                   |                                                            |
+| renderLeftButton              | function        | add a component to the left side of the Text Input                                                                                                                                                                                                                                                                            |                                                                   |                                                            |
+| renderRightButton             | function        | add a component to the right side of the Text Input                                                                                                                                                                                                                                                                           |                                                                   |                                                            |
+| renderRow                     | function        | custom component to render each result row (use this to show an icon beside each result). `data` and `index` will be passed as input parameters                                                                                                                                                                               |                                                                   |                                                            |
+| requestUrl                    | object          | used to set the request url for the library                                                                                                                                                                                                                                                                                   |                                                                   |                                                            |
+| returnKeyType                 | string          | the return key text https://reactnative.dev/docs/textinput#returnkeytype                                                                                                                                                                                                                                                      | 'search'                                                          |                                                            |
+| styles                        | object          | See styles section below                                                                                                                                                                                                                                                                                                      |                                                                   |                                                            |
+| suppressDefaultStyles         | boolean         | removes all default styling from the library                                                                                                                                                                                                                                                                                  | false                                                             | true \| false                                              |
+| textInputHide                 | boolean         | Hide the Search input                                                                                                                                                                                                                                                                                                         | false                                                             | true \| false                                              |
+| textInputProps                | object          | define props for the [textInput](https://reactnative.dev/docs/textinput), or provide a custom input component                                                                                                                                                                                                                 |                                                                   |                                                            |
+| timeout                       | number          | how many ms until the request will timeout                                                                                                                                                                                                                                                                                    | 20000                                                             |                                                            |
 
 ## Methods
 
@@ -407,13 +414,21 @@ Web support can be enabled via the `requestUrl` prop, by passing in a URL that y
 
 The `requestUrl` prop takes an object with two required properties: `useOnPlatform` and `url`, and an optional `headers` property.
 
-The `url` property is used to set the url that requests will be made to. If you are using the regular google maps API, you need to make sure you are ultimately hitting https://maps.googleapis.com/maps/api.
+The `url` property is used to set the url that requests will be made to.
 
 `useOnPlatform` configures when the proxy url is used. It can be set to either `web`- will be used only when the device platform is detected as web (but not iOS or Android, or `all` - will always be used.
 
 You can optionally specify headers to apply to your request in the `headers` object.
 
-### Example:
+**Note:** When using `isNewPlacesAPI={true}`, headers (`X-Goog-Api-Key`, `X-Goog-FieldMask`, `Content-Type`) are automatically added, so you only need to provide them if you want to override the defaults. For the legacy API, headers must be manually provided for web requests.
+
+### Using the Legacy Places API (Default)
+
+If you are using the regular Google Maps API (not the new Places API), you need to make sure you are ultimately hitting `https://maps.googleapis.com/maps/api`.
+
+**Required configuration for web:**
+
+For the legacy API, you need to manually provide headers for web requests:
 
 ```js
 import React from 'react';
@@ -432,11 +447,11 @@ const GooglePlacesInput = () => {
         language: 'en',
       }}
       requestUrl={{
-        useOnPlatform: 'web', // or "all"
-        url:
-          'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api', // or any proxy server that hits https://maps.googleapis.com/maps/api
+        url: 'https://maps.googleapis.com/maps/api',
+        useOnPlatform: 'web',
         headers: {
-          Authorization: `an auth token`, // if required for your proxy
+          'X-Goog-Api-Key': 'YOUR API KEY',
+          'Content-Type': 'application/json',
         },
       }}
     />
@@ -446,7 +461,130 @@ const GooglePlacesInput = () => {
 export default GooglePlacesInput;
 ```
 
-**_Note:_** The library expects the same response that the Google Maps API would return.
+**Note:** For native platforms (iOS/Android), you can omit the `requestUrl` prop as the library will automatically use the correct endpoint.
+
+### Using the New Places API
+
+The new Places API (Places API (New)) is Google's latest version of the Places API with improved features and better performance. To use it, you need to:
+
+1. Enable "Places API (New)" in your Google Cloud Console
+2. Set `isNewPlacesAPI={true}`
+3. For web platforms, configure the `requestUrl` prop with the correct endpoint (headers are optional and automatically added)
+
+**Key Differences from Legacy API:**
+
+- Uses `https://places.googleapis.com` endpoint instead of `https://maps.googleapis.com/maps/api`
+- API key automatically added to headers as `X-Goog-Api-Key` (not in query parameters)
+- Uses POST requests for autocomplete (instead of GET)
+- `X-Goog-FieldMask` header automatically set with all necessary fields
+- Different request/response structure
+- Supports query predictions in addition to place predictions
+
+**Required configuration for new Places API (Web):**
+
+```js
+import React from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      isNewPlacesAPI={true}
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'es', // Maps to languageCode in new API
+        includedRegionCodes: ['us', 'mx'], // Optional: limit results to specific regions
+        includeQueryPredictions: true, // Optional: include query predictions
+      }}
+      requestUrl={{
+        url: 'https://places.googleapis.com',
+        useOnPlatform: 'web',
+        // Headers are optional - library automatically adds:
+        // X-Goog-Api-Key, X-Goog-FieldMask, and Content-Type
+        headers: {
+          'X-Goog-Api-Key': 'YOUR API KEY', // Optional: auto-added if omitted
+        },
+      }}
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+**Required configuration for new Places API (Native - iOS/Android):**
+
+For native platforms, you can omit the `requestUrl` prop as the library will automatically use the correct endpoint:
+
+```js
+import React from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      isNewPlacesAPI={true}
+      onPress={(data, details = null) => {
+        console.log(data, details);
+      }}
+      query={{
+        key: 'YOUR API KEY',
+        language: 'en',
+        includedRegionCodes: ['us', 'mx'], // Optional
+        includeQueryPredictions: true, // Optional
+      }}
+      fetchDetails={true}
+      fields='id,name,formattedAddress,location' // Optional: specify fields to return
+    />
+  );
+};
+
+export default GooglePlacesInput;
+```
+
+**Important Notes:**
+
+1. **Automatic Headers:** The library automatically adds required headers when using `isNewPlacesAPI={true}`:
+
+   - `X-Goog-Api-Key`: From `query.key`
+   - `X-Goog-FieldMask`: Automatically set with all necessary fields for autocomplete (placeId, structuredFormat, types, etc.)
+   - `Content-Type`: Set to `application/json`
+
+   You only need to provide these in `requestUrl.headers` if you want to override the defaults.
+
+2. **Field Mask Warning:** ⚠️ Only override `X-Goog-FieldMask` if you know what you're doing. The default includes all fields needed for proper functionality:
+
+   - `suggestions.placePrediction.text.text`
+   - `suggestions.placePrediction.placeId` (required for fetching place details)
+   - `suggestions.placePrediction.structuredFormat` (for main_text/secondary_text)
+   - `suggestions.placePrediction.types`
+   - `suggestions.queryPrediction.text.text`
+
+   Omitting required fields (like `placeId`) will result in incomplete data and broken place details.
+
+3. **Request Body Transformation:** The request body is automatically transformed:
+
+   - `language` → `languageCode`
+   - `includedRegionCodes` → passed as array
+   - `includeQueryPredictions` → defaults to `true` if not specified
+
+4. **Query Parameters:**
+
+   - `includedRegionCodes` (array): Limit results to specific regions
+   - `includeQueryPredictions` (boolean): Include query predictions (default: `true`)
+   - `language` (string): Maps to `languageCode` in request body
+
+5. **Response Format:** The library automatically transforms the new API response structure to match the legacy API format for compatibility.
+
+6. **Place Details Fields:** Use the `fields` prop to specify which fields to return for place details. Default is `'*'` (all fields). Example: `fields="id,name,formattedAddress,location"`
+
+7. **Session Tokens:** Automatically managed for billing optimization. A new token is generated for each autocomplete session and used for the corresponding place details request.
 
 ## Features
 
@@ -459,6 +597,9 @@ export default GooglePlacesInput;
 - [x] Predefined places
 - [x] typescript types
 - [x] Current location
+- [x] Support for new Places API (Places API (New))
+- [x] Query predictions support
+- [x] Automatic session token management
 
 ## Compatibility
 

@@ -17,6 +17,7 @@ const GOOGLE_PLACES_API_KEY = 'YOUR_API_KEY_HERE';
 
 export default function App() {
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedPlaceNewAPI, setSelectedPlaceNewAPI] = useState(null);
 
   return (
     <SafeAreaProvider>
@@ -42,6 +43,7 @@ export default function App() {
             </View>
 
             <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Legacy API Example</Text>
               <GooglePlacesAutocomplete
                 placeholder='Search for a place'
                 onPress={(data, details = null) => {
@@ -80,9 +82,65 @@ export default function App() {
               />
             </View>
 
+            <View style={styles.sectionWithMargin}>
+              <Text style={styles.sectionTitle}>New Places API Example</Text>
+              <GooglePlacesAutocomplete
+                placeholder='Search for a place (New API)'
+                isNewPlacesAPI={true}
+                onPress={(data, details = null) => {
+                  console.log('Selected place (New API):', data);
+                  console.log('Place details (New API):', details);
+                  setSelectedPlaceNewAPI({ data, details });
+                  Alert.alert('Place Selected (New API)', data.description);
+                }}
+                query={{
+                  key: GOOGLE_PLACES_API_KEY,
+                  language: 'en',
+                  includedRegionCodes: ['us', 'mx'],
+                  includeQueryPredictions: true,
+                }}
+                fetchDetails={true}
+                requestUrl={{
+                  url: 'https://places.googleapis.com',
+                  useOnPlatform: 'web',
+                  headers: {
+                    'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
+                    // Note: X-Goog-FieldMask is automatically set by the library
+                    // to include all necessary fields (placeId, structuredFormat, types, etc.)
+                    // Only override if you need a custom field mask
+                    'Content-Type': 'application/json',
+                  },
+                }}
+                styles={{
+                  textInputContainer: {
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                  },
+                  textInput: {
+                    marginLeft: 0,
+                    marginRight: 0,
+                    height: 50,
+                    color: '#5d5d5d',
+                    fontSize: 16,
+                    borderWidth: 1,
+                    borderColor: '#4CAF50',
+                    borderRadius: 8,
+                    paddingHorizontal: 12,
+                  },
+                  predefinedPlacesDescription: {
+                    color: '#1faadb',
+                  },
+                }}
+                debounce={200}
+              />
+            </View>
+
             {selectedPlace && (
               <View style={styles.resultSection}>
-                <Text style={styles.sectionTitle}>Selected Place</Text>
+                <Text style={styles.sectionTitle}>
+                  Selected Place (Legacy API)
+                </Text>
                 <View style={styles.resultBox}>
                   <Text style={styles.resultLabel}>Description:</Text>
                   <Text style={styles.resultText}>
@@ -100,6 +158,52 @@ export default function App() {
                           <Text style={styles.resultText}>
                             Lat: {selectedPlace.details.geometry.location.lat},
                             Lng: {selectedPlace.details.geometry.location.lng}
+                          </Text>
+                        </>
+                      )}
+                    </>
+                  )}
+                </View>
+              </View>
+            )}
+
+            {selectedPlaceNewAPI && (
+              <View style={styles.resultSection}>
+                <Text style={styles.sectionTitle}>
+                  Selected Place (New API)
+                </Text>
+                <View style={styles.resultBox}>
+                  <Text style={styles.resultLabel}>Description:</Text>
+                  <Text style={styles.resultText}>
+                    {selectedPlaceNewAPI.data.description}
+                  </Text>
+                  {selectedPlaceNewAPI.details && (
+                    <>
+                      <Text style={styles.resultLabel}>Address:</Text>
+                      <Text style={styles.resultText}>
+                        {selectedPlaceNewAPI.details.formattedAddress ||
+                          selectedPlaceNewAPI.details.formatted_address}
+                      </Text>
+                      {selectedPlaceNewAPI.details.location && (
+                        <>
+                          <Text style={styles.resultLabel}>Coordinates:</Text>
+                          <Text style={styles.resultText}>
+                            Lat: {selectedPlaceNewAPI.details.location.latitude}
+                            , Lng:{' '}
+                            {selectedPlaceNewAPI.details.location.longitude}
+                          </Text>
+                        </>
+                      )}
+                      {selectedPlaceNewAPI.details.geometry?.location && (
+                        <>
+                          <Text style={styles.resultLabel}>
+                            Coordinates (Legacy Format):
+                          </Text>
+                          <Text style={styles.resultText}>
+                            Lat:{' '}
+                            {selectedPlaceNewAPI.details.geometry.location.lat},
+                            Lng:{' '}
+                            {selectedPlaceNewAPI.details.geometry.location.lng}
                           </Text>
                         </>
                       )}
@@ -156,6 +260,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  sectionWithMargin: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
