@@ -621,6 +621,28 @@ This library does not use the iOS, Android or JS SDKs from Google. This comes wi
 
 If you need to include this component inside a ScrolView or FlatList, remember to apply the `keyboardShouldPersistTaps` attribute to all ancestors ScrollView or FlatList (see [this](https://github.com/FaridSafi/react-native-google-places-autocomplete/issues/486#issuecomment-665602257) issue comment).
 
+### Nested Scroll View
+
+If you wrap the component inside a `ScrollView`, it would give you the following error:
+
+```
+VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.
+```
+
+This occurs because `react-native-google-places-autocomplete` component uses a `FlatList` and `react-native` by default doesn't allow nested Scroll Views in the same direction (vertical/horizontal). One way to fix this is adding another wrapper of `ScrollView` with inverse value of the scroll direction.
+
+```js
+<ScrollView
+  horizontal
+  style={{ flex: 1, width: '100%', height: '100%' }}
+  scrollEnabled={false}
+>
+  <GooglePlacesAutocomplete
+  // rest of the code
+  />
+</ScrollView>
+```
+
 ## A word about the Google Maps APIs
 
 Google Provides a bunch of web APIs for finding an address or place, and getting it’s details.
