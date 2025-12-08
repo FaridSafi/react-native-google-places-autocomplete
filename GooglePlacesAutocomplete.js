@@ -1010,6 +1010,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           nativeID='result-list-id'
           scrollEnabled={!disableScroll}
           nestedScrollEnabled={true}
+          keyboardShouldPersistTaps={keyboardShouldPersistTaps}
           style={[
             suppressDefaultStyles ? {} : defaultStyles.listView,
             styles?.listView,
