@@ -166,6 +166,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const [listViewDisplayed, setListViewDisplayed] = useState(
     listViewDisplayedProp === 'auto' ? false : listViewDisplayedProp,
   );
+  const [listWasDismissed, setListWasDismissed] = useState(false);
   const [url, setUrl] = useState('');
   const [listLoaderDisplayed, setListLoaderDisplayed] = useState(false);
   const [sessionToken, setSessionToken] = useState(uuid.v4());
@@ -395,6 +396,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
                 listViewDisplayedProp === 'auto' &&
                 newDataSource.length > 0
               ) {
+                setListWasDismissed(false);
                 setListViewDisplayed(true);
               }
             }
@@ -499,6 +501,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             setDataSource(newDataSource);
             // Auto-show list when results arrive if in 'auto' mode
             if (listViewDisplayedProp === 'auto' && newDataSource.length > 0) {
+              setListWasDismissed(false);
               setListViewDisplayed(true);
             }
           }
@@ -512,6 +515,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
             setDataSource(newDataSource);
             // Auto-show list when results arrive if in 'auto' mode
             if (listViewDisplayedProp === 'auto' && newDataSource.length > 0) {
+              setListWasDismissed(false);
               setListViewDisplayed(true);
             }
           }
@@ -663,6 +667,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         return;
       }
 
+      hideListView(true);
       Keyboard.dismiss();
 
       _abortRequests();
@@ -750,6 +755,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
+      hideListView(true);
       // display loader
       _enableRowLoader(rowData);
 
@@ -758,6 +764,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       delete rowData.isLoading;
       getCurrentLocation();
     } else {
+      hideListView(true);
       setStateText(_renderDescription(rowData));
 
       _onBlur();
@@ -770,6 +777,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   };
 
   const _onChangeText = (text) => {
+    setListWasDismissed(false);
     setStateText(text);
     debounceData(text);
   };
@@ -783,6 +791,16 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       onChangeText(text);
     }
   };
+
+  const hideListView = useCallback(
+    (force = false) => {
+      if (!keepResultsAfterBlur || force) {
+        setListWasDismissed(true);
+        setListViewDisplayed(false);
+      }
+    },
+    [keepResultsAfterBlur],
+  );
 
   const isNewFocusInAutocompleteResultList = ({
     relatedTarget,
@@ -803,13 +821,12 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const _onBlur = (e) => {
     if (e && isNewFocusInAutocompleteResultList(e)) return;
 
-    if (!keepResultsAfterBlur) {
-      setListViewDisplayed(false);
-    }
+    hideListView();
     inputRef?.current?.blur();
   };
 
   const _onFocus = () => {
+    setListWasDismissed(false);
     setListViewDisplayed(true);
   };
 
@@ -1002,7 +1019,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     const shouldShowList =
       supportedPlatform() &&
       dataSource.length > 0 &&
-      (listViewDisplayed === true || isAutoMode);
+      (listViewDisplayed === true || (isAutoMode && !listWasDismissed));
 
     if (shouldShowList) {
       return (
@@ -1010,6 +1027,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
           nativeID='result-list-id'
           scrollEnabled={!disableScroll}
           nestedScrollEnabled={true}
+          keyboardShouldPersistTaps={keyboardShouldPersistTaps}
           style={[
             suppressDefaultStyles ? {} : defaultStyles.listView,
             styles?.listView,
@@ -1095,11 +1113,17 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     if (
       listViewDisplayedProp === 'auto' &&
       dataSource.length > 0 &&
-      !listViewDisplayed
+      !listViewDisplayed &&
+      !listWasDismissed
     ) {
       setListViewDisplayed(true);
     }
-  }, [dataSource.length, listViewDisplayedProp, listViewDisplayed]);
+  }, [
+    dataSource.length,
+    listViewDisplayedProp,
+    listViewDisplayed,
+    listWasDismissed,
+  ]);
 
   // ==========================================================================
   // IMPERATIVE HANDLE
