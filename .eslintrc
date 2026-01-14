@@ -15,6 +15,7 @@
     "build/",
     "*.min.js",
     ".expo/",
-    ".expo-shared/"
+    ".expo-shared/",
+    ".husky/"
   ]
 }

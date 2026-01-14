@@ -22,4 +22,5 @@ babel.config.js
 *.log
 .expo/
 .expo-shared/
+.husky/
 
