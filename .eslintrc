@@ -7,15 +7,38 @@
   "ignorePatterns": [
     "node_modules/",
     "**/node_modules/",
-    "yarn.lock",
-    "**/yarn.lock",
-    "package-lock.json",
-    "**/package-lock.json",
+    "example/",
     "dist/",
     "build/",
     "*.min.js",
     ".expo/",
-    ".expo-shared/",
-    ".husky/"
+    ".husky/",
+    "coverage/"
+  ],
+  "env": {
+    "jest": true
+  },
+  "globals": {
+    "globalThis": "readonly"
+  },
+  "overrides": [
+    {
+      "files": ["src/uuid.js"],
+      "rules": {
+        "no-bitwise": "off"
+      }
+    },
+    {
+      "files": ["src/debounce.js"],
+      "rules": {
+        "consistent-this": "off"
+      }
+    },
+    {
+      "files": ["types-test/**"],
+      "rules": {
+        "no-void": "off"
+      }
+    }
   ]
 }

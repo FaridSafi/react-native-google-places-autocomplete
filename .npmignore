@@ -1,9 +1,0 @@
-.DS_Store
-GooglePlacesAutocompleteExample
-Assets
-yarn.lock
-.eslintrc
-.prettierrc
-.*ignore
-.github
-.release-it.json

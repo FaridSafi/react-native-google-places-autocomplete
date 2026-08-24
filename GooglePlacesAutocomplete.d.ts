@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   ImageStyle,
   StyleProp,
-  TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
@@ -413,19 +412,21 @@ interface GooglePlacesAutocompleteProps {
   minLength?: number;
   keepResultsAfterBlur?: boolean;
   /** Which API to use: GoogleReverseGeocoding or GooglePlacesSearch */
-  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch';
+  nearbyPlacesAPI?: 'GoogleReverseGeocoding' | 'GooglePlacesSearch' | 'None';
   numberOfLines?: number;
   onFail?: (error?: any) => void;
-  onNotFound?: () => void;
+  onNotFound?: (response?: any) => void;
   onPress?: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void;
   onTimeout?: () => void;
-  placeholder: string;
+  placeholder?: string;
   predefinedPlaces?: Place[];
   predefinedPlacesAlwaysVisible?: boolean;
   preProcess?: (text: string) => string;
-  query: Query | Object;
-  renderDescription?: (description: DescriptionRow) => string;
-  renderHeaderComponent?: () => JSX.Element | React.ComponentType<{}>;
+  query?: Query | Object;
+  renderDescription?: (description: DescriptionRow) => React.ReactNode;
+  renderHeaderComponent?: (
+    text: string,
+  ) => JSX.Element | React.ComponentType<{}>;
   renderLeftButton?: () => JSX.Element | React.ComponentType<{}>;
   renderRightButton?: () => JSX.Element | React.ComponentType<{}>;
   renderRow?: (
@@ -442,13 +443,23 @@ interface GooglePlacesAutocompleteProps {
   timeout?: number;
   isNewPlacesAPI?: boolean;
   fields?: string;
+  /** Rendered after the results list, inside the container. */
+  children?: React.ReactNode;
 }
 
+/**
+ * The methods the component actually exposes. It is deliberately not `&
+ * TextInput`: only these are implemented.
+ */
 export type GooglePlacesAutocompleteRef = {
   setAddressText(address: string): void;
   getAddressText(): string;
   getCurrentLocation(): void;
-} & TextInput;
+  blur(): void;
+  focus(): void;
+  isFocused(): boolean;
+  clear(): void;
+};
 
 export const GooglePlacesAutocomplete: React.ForwardRefExoticComponent<
   React.PropsWithoutRef<GooglePlacesAutocompleteProps> &

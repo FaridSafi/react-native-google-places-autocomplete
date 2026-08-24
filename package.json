@@ -4,11 +4,23 @@
   "description": "Customizable Google Places autocomplete component for iOS and Android React-Native apps",
   "main": "GooglePlacesAutocomplete.js",
   "types": "GooglePlacesAutocomplete.d.ts",
+  "sideEffects": false,
+  "files": [
+    "GooglePlacesAutocomplete.js",
+    "GooglePlacesAutocomplete.d.ts",
+    "src/",
+    "images/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "lint": "eslint . && prettier --write .",
     "release": "npx release-it",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "author": "Farid from Safi",
   "license": "MIT",
@@ -29,21 +41,29 @@
     "url": "https://github.com/FaridSafi/react-native-google-places-autocomplete/issues"
   },
   "homepage": "https://github.com/FaridSafi/react-native-google-places-autocomplete#readme",
-  "dependencies": {
-    "lodash.debounce": "^4.0.8",
-    "qs": "^6.14.1",
-    "react-native-uuid": "^2.0.3"
-  },
   "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "@babel/preset-env": "^7.25.0",
+    "@babel/preset-react": "^7.25.0",
     "@react-native-community/eslint-config": "2.0.0",
+    "@react-native/babel-preset": "0.81.5",
+    "@testing-library/react-native": "^13.2.0",
+    "@types/react": "^19.0.0",
+    "babel-jest": "^29.7.0",
     "eslint": "7.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^8.0.3",
+    "jest": "^29.7.0",
     "lint-staged": "10.4.0",
     "prettier": "2.1.2",
-    "typescript": "^3.8.3"
+    "qs": "^6.14.1",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-test-renderer": "19.1.0",
+    "typescript": "^5.6.0"
   },
   "peerDependencies": {
+    "react": ">=16.8.0",
     "react-native": ">= 0.59"
   },
   "lint-staged": {
