@@ -152,6 +152,189 @@ describe('search flow', () => {
   });
 });
 
+describe('details request lifetime', () => {
+  const searchAndShowPredictions = () => {
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'par');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    act(() => mockXhr.last.respond(PREDICTIONS));
+  };
+
+  // Regression (#998): the last keystroke leaves a debounce timer armed. When
+  // it fired it ran the search path, whose abort used to reach the Place
+  // Details request that the row press had just started -- with the handler
+  // already detached, so onPress/onFail/onNotFound/onTimeout never ran and the
+  // selection was silently lost.
+  it('keeps the details request alive when a pending debounce fires', () => {
+    const onPress = jest.fn();
+    const onFail = jest.fn();
+    setup({ onPress, onFail, fetchDetails: true });
+    searchAndShowPredictions();
+
+    // Another keystroke arms a timer that has not elapsed yet.
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'pari');
+
+    // The user taps a result inside the debounce window.
+    fireEvent.press(screen.getByText('Paris, France'));
+    const details = mockXhr.last;
+    expect(details.url).toContain('placeid=paris-id');
+
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    expect(details.aborted).toBe(false);
+
+    act(() =>
+      details.respond({
+        status: 'OK',
+        result: { name: 'Paris', place_id: 'paris-id' },
+      }),
+    );
+
+    expect(onFail).not.toHaveBeenCalled();
+    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onPress.mock.calls[0][1]).toMatchObject({ name: 'Paris' });
+  });
+
+  // Selecting a row ends the search: the queued query is dead weight, and
+  // sending it would bill an extra autocomplete call per selection.
+  it('cancels the pending debounce when a row is tapped', () => {
+    setup({ fetchDetails: true });
+    searchAndShowPredictions();
+
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'pari');
+    fireEvent.press(screen.getByText('Paris, France'));
+    const afterPress = mockXhr.instances.length;
+
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(mockXhr.instances).toHaveLength(afterPress);
+  });
+
+  // Regression (#998): loadingRowKey is set for the duration of the details
+  // request and gates re-taps of the same row. A request that ends without
+  // running its handler left the key set forever, so that row stayed dead for
+  // the rest of the session even after a fresh search re-rendered it.
+  it('leaves the row tappable after a details request fails', () => {
+    const onFail = jest.fn();
+    setup({ onFail, fetchDetails: true });
+    searchAndShowPredictions();
+
+    fireEvent.press(screen.getByText('Paris, France'));
+    act(() => mockXhr.last.fail(500));
+    expect(onFail).toHaveBeenCalledTimes(1);
+
+    searchAndShowPredictions();
+    fireEvent.press(screen.getByText('Paris, France'));
+
+    expect(mockXhr.last.url).toContain('placeid=paris-id');
+    expect(mockXhr.last.aborted).toBe(false);
+  });
+
+  it('aborts an in-flight details request on unmount', () => {
+    const view = setup({ fetchDetails: true });
+    searchAndShowPredictions();
+    fireEvent.press(screen.getByText('Paris, France'));
+    const details = mockXhr.last;
+
+    view.unmount();
+    expect(details.aborted).toBe(true);
+  });
+});
+
+describe('list stays closed after a selection', () => {
+  const searchAndShowPredictions = () => {
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'par');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    act(() => mockXhr.last.respond(PREDICTIONS));
+  };
+
+  // Regression: focus re-opened the list unconditionally, so anything that
+  // returned focus to the input after a selection -- the keyboard closing, an
+  // Alert in the consumer's onPress dismissing, a stray tap -- popped the old
+  // predictions back up over the row the user had just chosen.
+  it('does not re-open on focus after a row was selected', () => {
+    setup({ fetchDetails: true });
+    searchAndShowPredictions();
+
+    fireEvent.press(screen.getByText('Paris, France'));
+    act(() =>
+      mockXhr.last.respond({ status: 'OK', result: { name: 'Paris' } }),
+    );
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+
+    fireEvent(screen.getByPlaceholderText('Search'), 'focus');
+
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+  });
+
+  // Regression: on iOS the platform writes the chosen description into the
+  // input and echoes it back through onChangeText as a single event. That was
+  // indistinguishable from typing, so it cleared the selection flag, re-opened
+  // the list and fired a fresh search for the text just selected.
+  it('ignores the platform echoing the selected description back', () => {
+    setup({ fetchDetails: true });
+    searchAndShowPredictions();
+
+    fireEvent.press(screen.getByText('Paris, France'));
+    const afterPress = mockXhr.instances.length;
+
+    fireEvent.changeText(
+      screen.getByPlaceholderText('Search'),
+      'Paris, France',
+    );
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    // No search for the text we ourselves just put there.
+    expect(mockXhr.instances).toHaveLength(afterPress);
+
+    act(() =>
+      mockXhr.last.respond({ status: 'OK', result: { name: 'Paris' } }),
+    );
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+  });
+
+  it('re-opens once the user types again', () => {
+    setup();
+    searchAndShowPredictions();
+    fireEvent.press(screen.getByText('Paris, France'));
+    fireEvent(screen.getByPlaceholderText('Search'), 'focus');
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'lond');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    act(() => mockXhr.last.respond(PREDICTIONS));
+
+    expect(screen.getByText('Paris, TX, USA')).toBeOnTheScreen();
+  });
+
+  // A search that was already on the wire when the row was tapped used to land
+  // afterwards and re-open the list through showResults().
+  it('is not re-opened by a search that was in flight when the row was tapped', () => {
+    setup();
+    searchAndShowPredictions();
+
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'pari');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    const inFlight = mockXhr.last;
+
+    fireEvent.press(screen.getByText('Paris, France'));
+    expect(inFlight.aborted).toBe(true);
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+  });
+});
+
 describe('reverse geocoding type filter', () => {
   // Regression: results without a `types` field passed the filter.
   it('drops untyped results', () => {
@@ -245,6 +428,54 @@ describe('list visibility', () => {
     act(() => mockXhr.last.respond(PREDICTIONS));
     fireEvent(screen.getByPlaceholderText('Search'), 'blur');
     expect(screen.getByText('Paris, France')).toBeOnTheScreen();
+  });
+});
+
+describe('clearing the input', () => {
+  const searchAndShowPredictions = () => {
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'par');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    act(() => mockXhr.last.respond(PREDICTIONS));
+  };
+
+  // Regression: the clear button fires onChangeText(''), which un-dismissed
+  // the list while the previous predictions were still in dataSource. They
+  // were only cleared by the debounced request, so the old list flashed back
+  // for the length of the debounce before disappearing.
+  it('drops the old predictions immediately, without waiting for the debounce', () => {
+    setup();
+    searchAndShowPredictions();
+    expect(screen.getByText('Paris, France')).toBeOnTheScreen();
+
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), '');
+
+    expect(screen.queryByText('Paris, France')).toBeNull();
+    expect(screen.queryByText('Paris, TX, USA')).toBeNull();
+  });
+
+  it('stays hidden once the debounce would have elapsed', () => {
+    setup();
+    searchAndShowPredictions();
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), '');
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(screen.queryByText('Paris, France')).toBeNull();
+    // Nothing is worth requesting for an empty query.
+    expect(mockXhr.live).toHaveLength(0);
+  });
+
+  it('also clears immediately when text drops below minLength', () => {
+    setup({ minLength: 3 });
+    searchAndShowPredictions();
+    expect(screen.getByText('Paris, France')).toBeOnTheScreen();
+
+    fireEvent.changeText(screen.getByPlaceholderText('Search'), 'pa');
+
+    expect(screen.queryByText('Paris, France')).toBeNull();
   });
 });
 

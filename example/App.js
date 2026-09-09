@@ -13,7 +13,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // Replace with your Google Places API Key
-const GOOGLE_PLACES_API_KEY = 'YOUR_API_KEY_HERE';
+const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 export default function App() {
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -45,8 +45,8 @@ export default function App() {
               <GooglePlacesAutocomplete
                 placeholder='Search for a place'
                 onPress={(data, details = null) => {
-                  console.log('Selected place:', data);
-                  console.log('Place details:', details);
+                  // console.log('Selected place:', data);
+                  // console.log('Place details:', details);
                   setSelectedPlace({ data, details });
                   Alert.alert('Place Selected', data.description);
                 }}
@@ -54,6 +54,7 @@ export default function App() {
                   key: GOOGLE_PLACES_API_KEY,
                   language: 'en',
                 }}
+                debounce={200}
                 fetchDetails={true}
                 styles={{
                   textInputContainer: {
@@ -76,7 +77,6 @@ export default function App() {
                     color: '#1faadb',
                   },
                 }}
-                debounce={200}
               />
             </View>
 
