@@ -5,11 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "splash": {
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.googleplacesautocomplete"
@@ -19,6 +17,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.example.googleplacesautocomplete"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "autolinkingModuleResolution": true
     }
   }
 }
