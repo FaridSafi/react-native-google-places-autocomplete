@@ -8,7 +8,7 @@
 
 ## Preview
 
-![](https://raw.githubusercontent.com/FaridSafi/react-native-google-places-autocomplete/master/Assets/screenshot.png)
+![GooglePlacesAutocomplete preview](./Assets/screenshot.png)
 
 ## Installation
 
