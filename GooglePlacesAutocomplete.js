@@ -69,6 +69,16 @@ const getRequestUrl = (requestUrl) => {
   return GOOGLE_API_BASE;
 };
 
+/**
+ * Detaching the handler before aborting keeps `abort()` from reporting itself
+ * as a transport failure. Nothing can be observed about a request after this,
+ * so only ever call it on a request the component has decided to abandon.
+ */
+const abortRequest = (request) => {
+  request.onreadystatechange = null;
+  request.abort();
+};
+
 const setRequestHeaders = (request, headers) => {
   if (!headers) {
     return;
@@ -228,9 +238,18 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const resultsRef = useRef(EMPTY_ARRAY);
   const requestsRef = useRef([]);
+  const detailsRequestRef = useRef(null);
   const stateTextRef = useRef(stateText);
   const loadingRowKeyRef = useRef(loadingRowKey);
   const prevQueryStringRef = useRef(null);
+  // True from the moment a row is chosen until the user edits the text again.
+  // Focus alone must not re-open the list while it is set: the field already
+  // holds what the user picked, and the predictions behind it are spent.
+  const selectionMadeRef = useRef(false);
+  // The description of the row that was chosen. The platform writes it into
+  // the input and echoes it back through onChangeText, which is indisting-
+  // uishable from typing unless we remember what we are expecting.
+  const selectedTextRef = useRef(null);
 
   stateTextRef.current = stateText;
   loadingRowKeyRef.current = loadingRowKey;
@@ -246,22 +265,47 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   // (Expo web, Vite, webpack with modern targets).
   // --------------------------------------------------------------------------
 
-  const abortRequests = useCallback(() => {
-    requestsRef.current.forEach((request) => {
-      request.onreadystatechange = null;
-      request.abort();
-    });
+  // Searches and the Place Details lookup are tracked separately because their
+  // lifetimes are independent: a details request is started by a row press and
+  // outlives the search that produced the row. Sharing one list meant the next
+  // search aborted the details request that had just been sent, and since the
+  // abort detaches the handler the selection was lost without a single
+  // callback firing (#998).
+  const abortSearchRequests = useCallback(() => {
+    requestsRef.current.forEach(abortRequest);
     requestsRef.current = [];
   }, []);
 
-  const trackRequest = useCallback(
+  const abortDetailsRequest = useCallback(() => {
+    if (detailsRequestRef.current) {
+      abortRequest(detailsRequestRef.current);
+      detailsRequestRef.current = null;
+    }
+  }, []);
+
+  const prepareRequest = useCallback(
     (request) => {
       request.timeout = timeout;
       request.ontimeout = onTimeout;
-      requestsRef.current.push(request);
       return request;
     },
     [timeout, onTimeout],
+  );
+
+  const trackSearchRequest = useCallback(
+    (request) => {
+      requestsRef.current.push(prepareRequest(request));
+      return request;
+    },
+    [prepareRequest],
+  );
+
+  const trackDetailsRequest = useCallback(
+    (request) => {
+      detailsRequestRef.current = prepareRequest(request);
+      return request;
+    },
+    [prepareRequest],
   );
 
   const buildRows = useCallback(
@@ -309,7 +353,13 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     (results, text) => {
       resultsRef.current = results;
       setDataSource(buildRows(results, text));
-      setListWasDismissed(false);
+
+      // A response that lands after the user has already chosen a row is
+      // stale by definition: showing it would re-open the list over the
+      // selection.
+      if (!selectionMadeRef.current) {
+        setListWasDismissed(false);
+      }
     },
     [buildRows],
   );
@@ -320,7 +370,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const requestNearby = useCallback(
     (latitude, longitude) => {
-      abortRequests();
+      abortSearchRequests();
 
       if (latitude == null || longitude == null) {
         resultsRef.current = EMPTY_ARRAY;
@@ -328,7 +378,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         return;
       }
 
-      const request = trackRequest(new XMLHttpRequest());
+      const request = trackSearchRequest(new XMLHttpRequest());
 
       request.onreadystatechange = () => {
         if (request.readyState !== 4) {
@@ -383,8 +433,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.send();
     },
     [
-      abortRequests,
-      trackRequest,
+      abortSearchRequests,
+      trackSearchRequest,
       buildRows,
       disableRowLoaders,
       showResults,
@@ -402,7 +452,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const request = useCallback(
     (text) => {
-      abortRequests();
+      abortSearchRequests();
 
       if (!isSupportedPlatform) {
         return;
@@ -414,7 +464,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
         return;
       }
 
-      const httpRequest = trackRequest(new XMLHttpRequest());
+      const httpRequest = trackSearchRequest(new XMLHttpRequest());
 
       httpRequest.onreadystatechange = () => {
         if (httpRequest.readyState !== 4) {
@@ -496,8 +546,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       }
     },
     [
-      abortRequests,
-      trackRequest,
+      abortSearchRequests,
+      trackSearchRequest,
       buildRows,
       showResults,
       reportFailure,
@@ -602,14 +652,21 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     (rowData) => {
       hideListView(true);
       Keyboard.dismiss();
-      abortRequests();
+      abortSearchRequests();
+      abortDetailsRequest();
       setLoadingRowKey(getRowKey(rowData));
 
-      const detailsRequest = trackRequest(new XMLHttpRequest());
+      const detailsRequest = trackDetailsRequest(new XMLHttpRequest());
 
       detailsRequest.onreadystatechange = () => {
         if (detailsRequest.readyState !== 4) {
           return;
+        }
+
+        // Whatever the outcome, this request is no longer in flight: releasing
+        // it here keeps a later abort from reaching a settled request.
+        if (detailsRequestRef.current === detailsRequest) {
+          detailsRequestRef.current = null;
         }
 
         if (detailsRequest.status !== 200) {
@@ -669,8 +726,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     },
     [
       hideListView,
-      abortRequests,
-      trackRequest,
+      abortSearchRequests,
+      abortDetailsRequest,
+      trackDetailsRequest,
       disableRowLoaders,
       reportFailure,
       handleBlur,
@@ -692,7 +750,20 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const handleRowPress = useCallback(
     (rowData) => {
+      // Selecting a row ends the search. The keystroke that armed this timer is
+      // already answered by the row the user just tapped, so firing it would
+      // only bill another autocomplete call and repaint a dismissed list. A
+      // search already on the wire would do the same through showResults(),
+      // so it goes too.
+      debouncedRequest.cancel();
+      abortSearchRequests();
+      selectionMadeRef.current = true;
+      selectedTextRef.current = renderRowDescription(rowData);
+
       if (rowData.isCurrentLocation === true) {
+        // Current location is not a terminal choice when it feeds a nearby
+        // search: those results are meant to open the list again.
+        selectionMadeRef.current = false;
         hideListView(true);
         setLoadingRowKey(getRowKey(rowData));
         setStateText(renderRowDescription(rowData));
@@ -717,6 +788,8 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       onPressProp(predefinedPlace, predefinedPlace);
     },
     [
+      debouncedRequest,
+      abortSearchRequests,
       hideListView,
       renderRowDescription,
       getCurrentLocation,
@@ -730,17 +803,41 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
 
   const handleChangeText = useCallback(
     (text) => {
+      // The platform writes the chosen description into the input and echoes
+      // it straight back here. That is our own value returning, not the user
+      // editing, so it must not re-open the list or start another search.
+      if (selectionMadeRef.current && text === selectedTextRef.current) {
+        textInputProps?.onChangeText?.(text);
+        return;
+      }
+
+      // Editing the text supersedes whatever was selected before.
+      selectionMadeRef.current = false;
+      selectedTextRef.current = null;
       setListWasDismissed(false);
       setStateText(text);
-      debouncedRequest(text);
+
+      // Text that cannot produce a search clears the results now instead of a
+      // debounce later. Deferring it left the previous predictions on screen —
+      // and un-dismissed the list to show them — until the timer elapsed, so
+      // pressing the clear button flashed the old list back for `debounce` ms.
+      if (!text || text.length < minLength) {
+        debouncedRequest.cancel();
+        request(text);
+      } else {
+        debouncedRequest(text);
+      }
+
       textInputProps?.onChangeText?.(text);
     },
-    [debouncedRequest, textInputProps],
+    [debouncedRequest, request, minLength, textInputProps],
   );
 
   const handleFocus = useCallback(
     (event) => {
-      setListWasDismissed(false);
+      if (!selectionMadeRef.current) {
+        setListWasDismissed(false);
+      }
       textInputProps?.onFocus?.(event);
     },
     [textInputProps],
@@ -805,9 +902,10 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   useEffect(
     () => () => {
       debouncedRequest.cancel();
-      abortRequests();
+      abortSearchRequests();
+      abortDetailsRequest();
     },
-    [debouncedRequest, abortRequests],
+    [debouncedRequest, abortSearchRequests, abortDetailsRequest],
   );
 
   // --------------------------------------------------------------------------

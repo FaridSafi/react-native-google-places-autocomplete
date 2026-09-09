@@ -3,3 +3,4 @@ npm-debug.log
 node_modules/
 coverage/
 *.tgz
+.env.development
